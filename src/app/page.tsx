@@ -1,7 +1,8 @@
 const Home = () => {
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-107.5 flex-col items-center justify-between pt-24">
-      <h1 className="text-2xl font-bold">퍼즐밋</h1>
+    <main className="mt-20 flex flex-col items-center gap-4">
+      <h1 className="h1 text-sub1-dark">퍼즐밋</h1>
+      <p className="body2">모임을 퍼즐로 완성하는 약속 관리 서비스</p>
     </main>
   );
 };
