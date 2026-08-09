@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { IcExtension, IcViewAgenda } from "@/components/icons";
-import { Toggle } from "@/components/ui/toggle";
+import { Toggle } from "./Toggle";
 
 const meta = {
-  title: "UI/Toggle",
+  title: "Common/Toggle",
   component: Toggle,
   parameters: {
     layout: "centered",
