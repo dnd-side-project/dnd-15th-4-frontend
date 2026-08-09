@@ -22,6 +22,7 @@ export const TabMenu = ({
       <button
         type="button"
         onClick={onLeftClick}
+        aria-pressed={selectedTab === "left"}
         className={cn(
           "menu flex-1 pb-3.25 text-center text-disable transition-colors",
           selectedTab === "left" && "menu-select text-primary"
@@ -32,6 +33,7 @@ export const TabMenu = ({
       <button
         type="button"
         onClick={onRightClick}
+        aria-pressed={selectedTab === "right"}
         className={cn(
           "menu flex-1 pb-3.25 text-center text-disable transition-colors",
           selectedTab === "right" && "menu-select text-primary"
