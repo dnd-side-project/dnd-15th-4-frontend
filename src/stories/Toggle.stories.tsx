@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { IcExtension, IcViewAgenda } from "@/components/icons";
-import { Toggle } from "@/components/ui/toggle";
+import { Toggle } from "@/components/common/Toggle";
 
 const meta = {
   title: "UI/Toggle",
