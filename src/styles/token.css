@@ -5,11 +5,12 @@
 
 @theme {
   /* text */
-  --color-title: #1f2124;
-  --color-primary: #101112;
-  --color-secondary-1: #4b4b4b;
-  --color-secondary-2: #858894;
-  --color-disable: #9da5b6;
+  --color-text-title: #1f2124;
+  --color-text-primary: #101112;
+  --color-text-secondary-1: #616161;
+  --color-text-secondary-2: #858894;
+  --color-text-disable: #999999;
+  --color-text-white: #ffffff;
 
   /* primary palette (Blue) */
   --color-primary-light: #ecf8ff;
@@ -59,8 +60,11 @@
   --color-point-dark-active: #737152;
   --color-point-darker: #595840;
 
+  /* kakao brand */
+  --color-kakao: #fee500;
+
   /* neutral */
-  --color-white: #ffffff;
+  --white: #ffffff;
   --color-gray-1: #e9e9ea;
   --color-gray-2: #dedefe;
   --color-gray-3: #bbbcbd;
@@ -69,7 +73,7 @@
   --color-gray-6: #1e1e22;
   --color-gray-7: #1c1d20;
   --color-gray-8: #161719;
-  --color-black: #000000;
+  --black: #000000;
 
   /* bg */
   --color-bg-gray: #f6f7f9;
@@ -78,8 +82,7 @@
   /* border */
   --color-border-1: #e9e9ea;
   --color-border-2: #bbbcbd;
-  --color-border-3: #3dbaff;
-  --color-border-4: #291d11;
+  --color-border-4: #3dbaff;
 
   /* surface */
   --color-surface-1: #e9ecf1;
