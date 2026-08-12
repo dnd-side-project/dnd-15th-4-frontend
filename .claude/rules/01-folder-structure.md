@@ -4,7 +4,7 @@
 
 ## 🏗️ 폴더 구조 채택 방식
 
-기본적으로 **역할 기반(Role-based)** 구조를 채택하되, 파일 수 증가 및 모듈 엉킴을 방지하기 위해 `types/`, `hooks/`, `apis/` 내부에서는 **도메인별 서브 폴더**를 생성합니다.
+기본적으로 **역할 기반(Role-based)** 구조를 채택하되, 파일 수 증가 및 모듈 엉킴을 방지하기 위해 `types/`, `hooks/`, `apis/`, `components/` 내부에서는 **도메인별 서브 폴더**를 생성합니다.
 
 ```text
 src/
@@ -17,7 +17,8 @@ src/
 │   └── images/
 ├── components/      # UI 컴포넌트
 │   ├── icons/       # SVG 컴포넌트
-│   └── ui/          # shadcn / Base UI 공통 컴포넌트
+│   ├── common/      # 여러 도메인에서 재사용하는 컴포넌트 (shadcn / Base UI 포함)
+│   └── auth/        # 도메인 전용 컴포넌트
 ├── constants/       # 전역 상수
 ├── hooks/           # 도메인별/공통 커스텀 훅
 │   ├── common/

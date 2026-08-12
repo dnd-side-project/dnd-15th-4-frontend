@@ -10,8 +10,7 @@
 | 컴포넌트          | `PascalCase`       | `DeleteButton`, `MeetCard`         |
 | 타입 / 인터페이스 | `PascalCase`       | `UserProfile`, `MeetDto`           |
 | 하드코딩 상수     | `UPPER_SNAKE_CASE` | `COLOR_WHITE = "#ffffff"`          |
-| 파일 (컴포넌트)   | `PascalCase.tsx`   | `DeleteButton.tsx`                 |
-| 파일 (공통 UI)    | `kebab-case.tsx`   | `button.tsx`, `option-menu.tsx`    |
+| 파일 (컴포넌트)   | `PascalCase.tsx`   | `DeleteButton.tsx`, `Button.tsx`   |
 | 파일 (훅)         | `camelCase.ts`     | `useOnlineStatus.ts`               |
 | 파일 (모듈/폴더)  | `kebab-case`       | `query-client.ts`, `user-profile/` |
 

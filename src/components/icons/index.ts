@@ -1,4 +1,5 @@
 export * from "./BaseIcon";
+export * from "./IcArrowBack";
 export * from "./IcExtension";
 export * from "./IcViewAgenda";
 export * from "./icon.types";
