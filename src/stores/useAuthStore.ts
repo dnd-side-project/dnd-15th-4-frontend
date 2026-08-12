@@ -9,7 +9,9 @@ interface AuthUser {
 interface AuthState {
   isAuthenticated: boolean;
   user: AuthUser | null;
-  login: () => void;
+  _hasHydrated: boolean;
+  setHasHydrated: (state: boolean) => void;
+  login: (userData: AuthUser) => void;
   logout: () => void;
 }
 
@@ -18,13 +20,22 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       isAuthenticated: false,
       user: null,
-      login: () =>
+      _hasHydrated: false,
+
+      setHasHydrated: (state) => set({ _hasHydrated: state }),
+
+      login: (userData) =>
         set({
           isAuthenticated: true,
-          user: { id: "mock-user-1", nickname: "퍼즐밋 유저" },
+          user: userData,
         }),
       logout: () => set({ isAuthenticated: false, user: null }),
     }),
-    { name: "puzzlemeet-auth" }
+    {
+      name: "puzzlemeet-auth",
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
+    }
   )
 );
