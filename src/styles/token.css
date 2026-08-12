@@ -7,9 +7,9 @@
   /* text */
   --color-text-title: #1f2124;
   --color-text-primary: #101112;
-  --color-text-secondary-1: #4b4b4b;
+  --color-text-secondary-1: #616161;
   --color-text-secondary-2: #858894;
-  --color-text-disable: #9da5b6;
+  --color-text-disable: #999999;
   --color-text-white: #ffffff;
 
   /* primary palette (Blue) */
@@ -59,6 +59,9 @@
   --color-point-dark-hover: #99976e;
   --color-point-dark-active: #737152;
   --color-point-darker: #595840;
+
+  /* kakao brand */
+  --color-kakao: #fee500;
 
   /* neutral */
   --white: #ffffff;
