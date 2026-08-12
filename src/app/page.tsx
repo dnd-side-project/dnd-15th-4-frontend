@@ -1,10 +1,40 @@
-const Home = () => {
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+import { KakaoLoginButton } from "@/components/common/KakaoLoginButton";
+import { useAuthStore } from "@/stores/useAuthStore";
+
+const LandingPage = () => {
+  const router = useRouter();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const _hasHydrated = useAuthStore((state) => state._hasHydrated);
+  const login = useAuthStore((state) => state.login);
+
+  useEffect(() => {
+    if (_hasHydrated && isAuthenticated) {
+      router.replace("/home");
+    }
+  }, [_hasHydrated, isAuthenticated, router]);
+
+  const handleLogin = () => {
+    login({ id: "mock-id", nickname: "퍼즐밋 유저" });
+    router.replace("/home");
+  };
+
+  if (!_hasHydrated || isAuthenticated) {
+    return null;
+  }
+
   return (
-    <main className="mt-20 flex flex-col items-center gap-4">
-      <h1 className="h1 text-sub1-dark">퍼즐밋</h1>
-      <p className="body2">모임을 퍼즐로 완성하는 약속 관리 서비스</p>
+    <main className="flex flex-1 flex-col items-center justify-end gap-6 px-4 pb-10">
+      <KakaoLoginButton onClick={handleLogin} />
+      <button type="button" className="body6 text-text-disable">
+        퍼즐밋이란?
+      </button>
     </main>
   );
 };
 
-export default Home;
+export default LandingPage;
