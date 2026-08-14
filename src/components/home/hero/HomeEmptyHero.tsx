@@ -10,7 +10,7 @@ export const HomeEmptyHero = () => (
       fill
       priority
       sizes="100vw"
-      className="no-drag object-container object-bottom"
+      className="no-drag object-contain object-bottom"
     />
 
     <div className="relative z-10 px-4 pt-11">
