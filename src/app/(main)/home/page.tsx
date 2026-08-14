@@ -1,12 +1,17 @@
 import { FloatingActionButton } from "@/components/home/FloatingActionButton";
 import { HomeHeroSection } from "@/components/home/hero/HomeHeroSection";
 import { HomeUpcomingSection } from "@/components/home/schedule/HomeUpcomingSection";
+import { MOCK_MEETINGS } from "@/mocks/mockMeetings";
 
 const HomePage = () => {
+  const upcomingMeetings = MOCK_MEETINGS;
+
   return (
-    <div className="relative flex flex-1 flex-col">
+    <div className="relative flex h-dvh flex-col overflow-hidden bg-white">
       <HomeHeroSection />
-      <HomeUpcomingSection />
+
+      <HomeUpcomingSection schedules={upcomingMeetings} />
+
       <FloatingActionButton />
     </div>
   );
