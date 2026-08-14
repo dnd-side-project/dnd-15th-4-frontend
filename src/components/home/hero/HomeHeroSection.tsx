@@ -5,7 +5,7 @@ import { ProfileMenu } from "@/components/home/ProfileMenu";
 
 export const HomeHeroSection = () => {
   return (
-    <section className="bg-primary-light-active relative h-[54dvh] max-h-125 min-h-100 w-full overflow-hidden">
+    <section className="bg-primary-light-active relative h-[54dvh] max-h-80 min-h-100 w-full overflow-hidden">
       <div className="absolute top-11 right-4 z-20">
         <ProfileMenu />
       </div>
