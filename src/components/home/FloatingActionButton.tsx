@@ -26,8 +26,13 @@ export const FloatingActionButton = () => {
       </Popover.Trigger>
 
       <Popover.Portal>
-        <Popover.Positioner side="top" align="end" sideOffset={8}>
-          <Popover.Popup className="rounded-16 divide-border-1 flex w-48.25 flex-col divide-y bg-white px-4.5 py-0 shadow-lg">
+        <Popover.Positioner
+          side="top"
+          align="end"
+          sideOffset={8}
+          className={"z-50"}
+        >
+          <Popover.Popup className="rounded-16 divide-border-1 flex w-48.25 flex-col divide-y overflow-hidden bg-white px-4.5 py-0 shadow-lg">
             {menuItems.map(({ label, href }) => (
               <Popover.Close
                 key={label}
