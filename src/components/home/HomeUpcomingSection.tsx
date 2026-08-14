@@ -1,7 +1,9 @@
 "use client";
 
-import { HomeUpcomingEmpty } from "@/components/home/schedule/HomeUpcomingEmpty";
-import { ScheduleCard } from "@/components/home/schedule/ScheduleCard";
+import Image from "next/image";
+
+import searchImage from "@/assets/images/home-empty-schedule.png";
+import { ScheduleCard } from "@/components/home/ScheduleCard";
 import type { MeetingData } from "@/types/meeting";
 
 interface HomeUpcomingSectionProps {
@@ -20,7 +22,14 @@ export const HomeUpcomingSection = ({
       </h2>
 
       {isEmpty ? (
-        <HomeUpcomingEmpty />
+        <div className="flex flex-1 flex-col items-center justify-center gap-3.5 opacity-46">
+          <Image src={searchImage} alt="" width={72} height={77} />
+          <p className="body2 text-text-secondary-1 text-center">
+            예정된 약속이 없습니다.
+            <br />
+            약속을 생성해 보세요!
+          </p>
+        </div>
       ) : (
         <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
           {schedules.map((meeting) => (

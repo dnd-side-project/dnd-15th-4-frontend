@@ -1,6 +1,6 @@
 import { FloatingActionButton } from "@/components/home/FloatingActionButton";
 import { HomeHeroSection } from "@/components/home/hero/HomeHeroSection";
-import { HomeUpcomingSection } from "@/components/home/schedule/HomeUpcomingSection";
+import { HomeUpcomingSection } from "@/components/home/HomeUpcomingSection";
 import { MOCK_MEETINGS } from "@/mocks/mockMeetings";
 
 const HomePage = () => {
