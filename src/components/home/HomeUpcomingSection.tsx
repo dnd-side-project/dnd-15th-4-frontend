@@ -32,8 +32,11 @@ export const HomeUpcomingSection = ({
         </div>
       ) : (
         <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
-          {schedules.map((meeting) => (
-            <ScheduleCard key={meeting.meetingId} meeting={meeting} />
+          {schedules.map((meeting, index) => (
+            <ScheduleCard
+              key={`${meeting.meetingId}-${index}`}
+              meeting={meeting}
+            />
           ))}
         </div>
       )}
