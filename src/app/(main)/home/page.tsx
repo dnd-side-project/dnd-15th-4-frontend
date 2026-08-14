@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FloatingActionButton } from "@/components/home/FloatingActionButton";
-import { HomeHeroSection } from "@/components/home/hero/HomeHeroSection";
+import { HomeHeroSection } from "@/components/home/HomeHeroSection";
 import { HomeUpcomingSection } from "@/components/home/HomeUpcomingSection";
 import { MOCK_MEETINGS } from "@/mocks/mockMeetings";
 import type { MeetingData } from "@/types/meeting";
