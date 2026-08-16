@@ -1,4 +1,5 @@
 export * from "./BaseIcon";
+export * from "./IcAlarm";
 export * from "./IcArrivalDot";
 export * from "./IcArrowBack";
 export * from "./IcArrowOutward";
