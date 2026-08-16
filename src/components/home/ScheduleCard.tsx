@@ -1,65 +1,20 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
-import {
-  CHARACTER_FALLBACK_IMAGE,
-  getCharacterImage,
-} from "@/constants/character-images";
-import type { MeetingData, Participant } from "@/types/meeting";
+import { AvatarStack } from "@/components/home/AvatarStack";
+import type { MeetingData } from "@/types/meeting";
 import { formatMeetingDateTime } from "@/utils/date";
 
 interface ScheduleCardProps {
   meeting: MeetingData;
 }
 
-const ParticipantAvatar = ({
-  participant,
-  zIndex,
-  hiddenCount,
-}: {
-  participant: Participant;
-  zIndex: number;
-  hiddenCount?: number;
-}) => {
-  const [hasError, setHasError] = useState(false);
-
-  return (
-    <div
-      style={{ zIndex }}
-      className="border-border-4 rounded-8 relative size-9 shrink-0 overflow-hidden border bg-white"
-    >
-      <Image
-        src={
-          hasError
-            ? CHARACTER_FALLBACK_IMAGE
-            : getCharacterImage(participant.profileImageNumber)
-        }
-        alt={participant.name}
-        fill
-        sizes="38px"
-        className="object-cover"
-        onError={() => setHasError(true)}
-      />
-
-      {hiddenCount ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/51 text-[14px] font-semibold text-white">
-          +{hiddenCount}
-        </div>
-      ) : null}
-    </div>
-  );
-};
-
 export const ScheduleCard = ({ meeting }: ScheduleCardProps) => {
   const router = useRouter();
   const { dateFormatted, timeFormatted, dDay } = formatMeetingDateTime(
     meeting.dateTime
   );
-  const visibleParticipants = meeting.participants.slice(0, 3);
-  const hiddenCount = meeting.participants.length - visibleParticipants.length;
 
   return (
     <button
@@ -68,25 +23,30 @@ export const ScheduleCard = ({ meeting }: ScheduleCardProps) => {
       className="rounded-20 relative flex w-full shrink-0 cursor-pointer items-center overflow-hidden bg-white p-5 text-left shadow-[0_2px_12px_#00000012] transition-transform active:scale-[0.99]"
     >
       <div className="relative z-10 flex min-w-0 flex-1 flex-col pb-1">
-        <h3 className="body1 text-text-primary truncate font-medium">
+        <h3 className="body1 text-text-primary font-medium wrap-break-word break-keep">
           {meeting.title}
         </h3>
 
-        <p className="body6 text-text-disable truncate pb-5 font-normal whitespace-nowrap">
-          {dateFormatted} | {timeFormatted} | {meeting.place}
-        </p>
+        <div className="body6 text-text-disable flex flex-wrap items-center overflow-hidden pb-5 font-normal">
+          <span>{dateFormatted}</span>
+
+          <span
+            aria-hidden
+            className="mx-1.5 h-2.5 w-px shrink-0 bg-[#D9D9D9]"
+          />
+
+          <span className="mr-3.25">{timeFormatted}</span>
+
+          <span className="-ml-1.75 inline-flex max-w-full min-w-0 items-center">
+            <span aria-hidden className="h-2.5 w-px shrink-0 bg-[#D9D9D9]" />
+            <span className="line-clamp-2 pl-1.5 wrap-break-word break-keep">
+              {meeting.place}
+            </span>
+          </span>
+        </div>
 
         <div className="mt-1 flex shrink-0 items-center">
-          <div className="flex -space-x-2">
-            {visibleParticipants.map((participant, index) => (
-              <ParticipantAvatar
-                key={participant.id}
-                participant={participant}
-                zIndex={10 - index}
-                hiddenCount={index === 0 ? hiddenCount : undefined}
-              />
-            ))}
-          </div>
+          <AvatarStack participants={meeting.participants} />
         </div>
       </div>
 
