@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { FloatingActionButton } from "@/components/home/FloatingActionButton";
 import { HomeHeroSection } from "@/components/home/HomeHeroSection";
 import { HomeUpcomingSection } from "@/components/home/HomeUpcomingSection";
-import { MOCK_MEETINGS } from "@/mocks/mockMeetings";
+import { useMeetingsQuery } from "@/hooks/meeting/useMeetings";
 import type { MeetingData } from "@/types/meeting";
 
 export default function HomePage() {
   const [isMounted, setIsMounted] = useState(false);
+  const { data: meetings = [] } = useMeetingsQuery();
 
   useEffect(() => {
     setIsMounted(true);
@@ -31,7 +32,7 @@ export default function HomePage() {
     d1.getMonth() === d2.getMonth() &&
     d1.getDate() === d2.getDate();
 
-  const validSchedules = [...MOCK_MEETINGS]
+  const validSchedules = [...meetings]
     .filter((meeting) => new Date(meeting.dateTime) > now)
     .sort(
       (a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()
