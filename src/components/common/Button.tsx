@@ -18,6 +18,8 @@ export const buttonVariants = cva(
         destructive:
           "bg-red-500/10 text-red-600 hover:bg-red-500/20 focus-visible:border-red-500/40 focus-visible:ring-red-500/20",
         link: "text-primary-normal underline-offset-4 hover:underline",
+        kakao:
+          "bg-[#FEE500] text-[#191919] hover:bg-[#FEE500]/90 active:bg-[#FEE500]/80",
       },
       size: {
         default:
@@ -25,6 +27,7 @@ export const buttonVariants = cva(
         xs: "h-6 gap-1 rounded-4 px-2 text-xs in-data-[slot=button-group]:rounded-8 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
         sm: "h-7 gap-1 rounded-4 px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-8 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        cta: "h-12 w-full gap-2 rounded-12 px-4 text-base font-semibold [&_svg:not([class*='size-'])]:size-5",
         icon: "size-8",
         "icon-xs":
           "size-6 rounded-4 in-data-[slot=button-group]:rounded-8 [&_svg:not([class*='size-'])]:size-3",

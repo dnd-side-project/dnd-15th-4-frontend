@@ -86,7 +86,6 @@ const ProgressTrack = ({
                 }
               />
             </div>
-
             <span className="body7 text-primary/71 absolute top-2 left-1/2 -translate-x-1/2 whitespace-nowrap">
               {label}
             </span>
