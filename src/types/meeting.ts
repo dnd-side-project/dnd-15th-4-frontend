@@ -17,3 +17,8 @@ export interface MeetingData {
 export interface MeetingListResponse {
   data: MeetingData[];
 }
+
+export interface UserLocation {
+  latitude: number;
+  longitude: number;
+}
