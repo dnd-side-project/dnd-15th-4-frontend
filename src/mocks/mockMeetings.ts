@@ -75,8 +75,8 @@ export const mockMeetingParticipants: MeetingParticipantsDto = {
       nickname: "이주빈",
       profileImageNumber: 1,
       currentLocation: {
-        latitude: 37.5445,
-        longitude: 127.0559,
+        latitude: 37.5283,
+        longitude: 126.932,
       },
       estimatedArrivalTime: 20,
       departureTime: getIsoStringMinutesAgo(1),
@@ -92,8 +92,8 @@ export const mockMeetingParticipants: MeetingParticipantsDto = {
       nickname: "조희우",
       profileImageNumber: 2,
       currentLocation: {
-        latitude: 37.5172,
-        longitude: 127.0473,
+        latitude: 37.5283,
+        longitude: 126.932,
       },
       estimatedArrivalTime: 118,
       departureTime: getIsoStringMinutesAgo(1),
@@ -109,8 +109,8 @@ export const mockMeetingParticipants: MeetingParticipantsDto = {
       nickname: "윤나경",
       profileImageNumber: 3,
       currentLocation: {
-        latitude: 37.2635,
-        longitude: 127.0447,
+        latitude: 37.5283,
+        longitude: 126.932,
       },
       estimatedArrivalTime: 118,
       departureTime: getIsoStringMinutesAgo(1),
@@ -126,8 +126,8 @@ export const mockMeetingParticipants: MeetingParticipantsDto = {
       nickname: "권소영",
       profileImageNumber: 4,
       currentLocation: {
-        latitude: 37.5403,
-        longitude: 127.07,
+        latitude: 37.5283,
+        longitude: 126.932,
       },
       estimatedArrivalTime: 118,
       departureTime: getIsoStringMinutesAgo(30),

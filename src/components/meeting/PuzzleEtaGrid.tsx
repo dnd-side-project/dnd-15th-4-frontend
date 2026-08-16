@@ -1,8 +1,12 @@
 import { CORNER_ROUNDING, PuzzleEtaCard } from "./PuzzleEtaCard";
 import type { PuzzleEtaCardPosition } from "./PuzzleEtaCard";
 import { getProfileImageUrl } from "@/constants/profileImages";
+import {
+  ARRIVAL_DISTANCE_THRESHOLD_METERS,
+  getDistanceInMeters,
+} from "@/lib/geo";
 import { cn } from "@/lib/utils";
-import type { MeetingParticipant } from "@/types/meeting";
+import type { MeetingLocation, MeetingParticipant } from "@/types/meeting";
 
 interface PuzzleCardStyle {
   position: PuzzleEtaCardPosition;
@@ -34,9 +38,13 @@ export const PUZZLE_GRID_SIZE = GRID_STYLES.length;
 
 export interface PuzzleEtaGridProps {
   participants: MeetingParticipant[];
+  meetingPlaceLocation: MeetingLocation;
 }
 
-export const PuzzleEtaGrid = ({ participants }: PuzzleEtaGridProps) => {
+export const PuzzleEtaGrid = ({
+  participants,
+  meetingPlaceLocation,
+}: PuzzleEtaGridProps) => {
   return (
     <div className="grid aspect-square w-full grid-cols-2 grid-rows-2">
       {GRID_STYLES.map((style, index) => {
@@ -51,6 +59,12 @@ export const PuzzleEtaGrid = ({ participants }: PuzzleEtaGridProps) => {
           );
         }
 
+        const isArrived =
+          getDistanceInMeters(
+            participant.currentLocation,
+            meetingPlaceLocation
+          ) <= ARRIVAL_DISTANCE_THRESHOLD_METERS;
+
         return (
           <PuzzleEtaCard
             key={participant.id}
@@ -60,6 +74,7 @@ export const PuzzleEtaGrid = ({ participants }: PuzzleEtaGridProps) => {
             image={getProfileImageUrl(participant.profileImageNumber)}
             nickname={participant.nickname}
             remainingMinutes={participant.estimatedArrivalTime}
+            isArrived={isArrived}
           />
         );
       })}

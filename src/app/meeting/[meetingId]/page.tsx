@@ -122,6 +122,10 @@ const MeetingDetailPage = () => {
       >
         <MeetingProgressSheet
           participants={participants}
+          meetingPlaceLocation={{
+            latitude: mockMeetingSummary.latitude,
+            longitude: mockMeetingSummary.longitude,
+          }}
           onParticipantFocus={handleParticipantFocus}
         />
       </BottomSheet>

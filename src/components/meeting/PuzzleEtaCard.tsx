@@ -1,5 +1,11 @@
+"use client";
+
 import Image from "next/image";
 
+import { ArrivalConfirmButton } from "./ArrivalConfirmButton";
+import artwork1 from "@/assets/images/artwork-1.png";
+import { IcAlarm } from "@/components/icons";
+import { useArrivalConfirmation } from "@/hooks/meeting/useArrivalConfirmation";
 import { cn } from "@/lib/utils";
 
 export const CORNER_ROUNDING = {
@@ -11,6 +17,14 @@ export const CORNER_ROUNDING = {
 
 export type PuzzleEtaCardPosition = keyof typeof CORNER_ROUNDING;
 
+// 카드 하나가 전체 정사각형 일러스트의 어느 조각을 보여줄지 결정
+const QUADRANT_OFFSET_CLASS: Record<PuzzleEtaCardPosition, string> = {
+  "top-left": "top-0 left-0",
+  "top-right": "top-0 -left-full",
+  "bottom-left": "-top-full left-0",
+  "bottom-right": "-top-full -left-full",
+};
+
 export interface PuzzleEtaCardProps {
   position: PuzzleEtaCardPosition;
   backgroundClassName: string;
@@ -18,6 +32,7 @@ export interface PuzzleEtaCardProps {
   image: string;
   nickname: string;
   remainingMinutes: number;
+  isArrived?: boolean;
 }
 
 export const PuzzleEtaCard = ({
@@ -27,36 +42,92 @@ export const PuzzleEtaCard = ({
   image,
   nickname,
   remainingMinutes,
+  isArrived = false,
 }: PuzzleEtaCardProps) => {
   const hours = Math.floor(remainingMinutes / 60);
   const minutes = remainingMinutes % 60;
 
+  const {
+    confirmationStep,
+    remainingSeconds,
+    isConfirmed,
+    handleStartConfirmation,
+    handleCancelConfirmation,
+  } = useArrivalConfirmation(isArrived);
+
+  const resolvedTextClassName = isConfirmed ? "text-primary" : textClassName;
+
   return (
     <div
       className={cn(
-        "flex size-full flex-col justify-between p-3",
+        "relative flex size-full flex-col justify-between overflow-hidden p-3",
         CORNER_ROUNDING[position],
-        backgroundClassName
+        isConfirmed ? "bg-black" : backgroundClassName
       )}
     >
-      <div className="items-top flex gap-2">
-        <div className="relative size-9 shrink-0 overflow-hidden rounded-[0.75rem] bg-white">
-          <Image src={image} alt={nickname} fill className="object-cover" />
+      {isConfirmed && (
+        <div
+          className={cn(
+            "absolute size-[200%]",
+            QUADRANT_OFFSET_CLASS[position]
+          )}
+        >
+          <Image src={artwork1} alt="" fill className="bg-white object-cover" />
         </div>
-        <p className={cn("body1", textClassName)}>{nickname}</p>
-      </div>
+      )}
 
-      <div className="flex items-end justify-end gap-2">
-        {hours > 0 && (
-          <div className="flex items-baseline">
-            <span className={cn("puzzle-eta", textClassName)}>{hours}</span>
-            <span className={cn("body6 ml-0.5", textClassName)}>시간</span>
+      <div className="relative z-10 flex size-full flex-col justify-between">
+        <div className="flex items-center gap-2">
+          <div className="relative size-8.5 shrink-0 overflow-hidden rounded-xl bg-white">
+            <Image src={image} alt={nickname} fill className="object-cover" />
+          </div>
+          <div className="flex flex-col items-start justify-center">
+            <p className={cn("body1", resolvedTextClassName)}>{nickname}</p>
+            <p
+              className={cn(
+                "body6 text-secondary-2",
+                !isConfirmed && "invisible"
+              )}
+            >
+              도착
+            </p>
+          </div>
+        </div>
+
+        {isArrived && !isConfirmed && (
+          <ArrivalConfirmButton
+            text={
+              confirmationStep === "confirming"
+                ? `취소 (${remainingSeconds})`
+                : "도착시 눌러주세요"
+            }
+            icon={
+              confirmationStep === "confirming" ? undefined : (
+                <IcAlarm size={18} className="text-white" />
+              )
+            }
+            onClick={
+              confirmationStep === "confirming"
+                ? handleCancelConfirmation
+                : handleStartConfirmation
+            }
+          />
+        )}
+
+        {!isArrived && (
+          <div className="flex items-end justify-end gap-2">
+            {hours > 0 && (
+              <div className="flex items-baseline">
+                <span className={cn("puzzle-eta", textClassName)}>{hours}</span>
+                <span className={cn("body6 ml-0.5", textClassName)}>시간</span>
+              </div>
+            )}
+            <div className="flex items-baseline">
+              <span className={cn("puzzle-eta", textClassName)}>{minutes}</span>
+              <span className={cn("body6 ml-0.5", textClassName)}>분</span>
+            </div>
           </div>
         )}
-        <div className="flex items-baseline">
-          <span className={cn("puzzle-eta", textClassName)}>{minutes}</span>
-          <span className={cn("body6 ml-0.5", textClassName)}>분</span>
-        </div>
       </div>
     </div>
   );
