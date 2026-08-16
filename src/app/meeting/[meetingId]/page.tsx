@@ -9,6 +9,7 @@ import type { MeetingMapFocusLocation } from "@/components/meeting/MeetingMap";
 import { MeetingProgressSheet } from "@/components/meeting/MeetingProgressSheet";
 import { MeetingSummaryCard } from "@/components/meeting/MeetingSummaryCard";
 import { ParticipantMarker } from "@/components/meeting/ParticipantMarker";
+import { CURRENT_PARTICIPANT_ID } from "@/constants/message";
 import { getRemainingTimeLabel, getTimeLabel } from "@/lib/date";
 import {
   mockMeetingParticipants,
@@ -31,6 +32,8 @@ const MeetingDetailPage = () => {
   );
   const [focusedLocation, setFocusedLocation] =
     useState<MeetingMapFocusLocation | null>(null);
+  const [isBubblePickerOpen, setIsBubblePickerOpen] = useState(false);
+  const [myMessage, setMyMessage] = useState<string | null>(null);
   const sheetPopupRef = useRef<HTMLDivElement>(null);
   const summaryCardRef = useRef<HTMLDivElement>(null);
 
@@ -57,6 +60,12 @@ const MeetingDetailPage = () => {
     });
   };
 
+  const participantsWithBubbles = participants.map((participant) =>
+    participant.id === CURRENT_PARTICIPANT_ID
+      ? { ...participant, speechBubbleMessage: myMessage ?? undefined }
+      : participant
+  );
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-black">
       <div className="absolute inset-x-0 top-0 h-full">
@@ -65,13 +74,20 @@ const MeetingDetailPage = () => {
           zoom={12}
           focusLocation={focusedLocation}
         >
-          {participants.map((participant) => (
+          {participantsWithBubbles.map((participant) => (
             <ParticipantMarker key={participant.id} participant={participant} />
           ))}
         </MeetingMap>
         <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-white from-[-3.01%] to-white/0 to-[20%]" />
+        {isBubblePickerOpen && (
+          <button
+            type="button"
+            aria-label="말풍선 목록 닫기"
+            onClick={() => setIsBubblePickerOpen(false)}
+            className="bg-sub2-normal/40 absolute inset-0"
+          />
+        )}
       </div>
-
       <MeetingSummaryCard
         ref={summaryCardRef}
         title={mockMeetingSummary.title}
@@ -80,9 +96,15 @@ const MeetingDetailPage = () => {
         remainingTime={getRemainingTimeLabel(mockMeetingSummary.dateTime)}
         className="absolute inset-x-4 top-3"
       />
-
-      <ChatFloatingButton className="absolute right-4.75 bottom-45 cursor-pointer" />
-
+      <ChatFloatingButton
+        isOpen={isBubblePickerOpen}
+        onOpenChange={setIsBubblePickerOpen}
+        onSelectMessage={(message) => {
+          setMyMessage(message);
+          setIsBubblePickerOpen(false);
+        }}
+        className="absolute right-4 bottom-45 cursor-pointer"
+      />
       <BottomSheet
         ref={sheetPopupRef}
         open={isSheetOpen}
@@ -95,6 +117,7 @@ const MeetingDetailPage = () => {
         onSnapPointChange={(point) => {
           if (typeof point !== "number") return;
           setSheetSnapPoint(point);
+          setIsBubblePickerOpen(false);
         }}
       >
         <MeetingProgressSheet

@@ -103,6 +103,7 @@
 
   /* shadow */
   --shadow-1: 0px 2px 14.2px 0px rgba(0, 0, 0, 0.18);
+  --shadow-2: 0 3px 7.6px 0 rgba(0, 0, 0, 0.11);
 }
 
 @layer components {
