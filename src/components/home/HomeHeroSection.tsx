@@ -182,7 +182,7 @@ const HomeHeroSectionEmpty = () => {
 export const HomeHeroSection = ({ meeting }: HomeHeroSectionProps) => {
   return (
     <section className="bg-primary-light-active relative h-[54dvh] max-h-80 min-h-100 w-full overflow-hidden">
-      <div className="absolute top-11 right-4 z-20">
+      <div className="absolute top-11 right-4 z-60">
         <ProfileMenu />
       </div>
 
