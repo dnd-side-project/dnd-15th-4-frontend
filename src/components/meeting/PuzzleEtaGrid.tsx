@@ -1,11 +1,11 @@
-import { CORNER_ROUNDING, PuzzleEtaCard } from "./PuzzleEtaCard";
+import { PuzzleEtaCard } from "./PuzzleEtaCard";
 import type { PuzzleEtaCardPosition } from "./PuzzleEtaCard";
+import { PuzzleEtaEmptyCard } from "./PuzzleEtaEmptyCard";
 import { getProfileImageUrl } from "@/constants/profileImages";
 import {
   ARRIVAL_DISTANCE_THRESHOLD_METERS,
   getDistanceInMeters,
 } from "@/lib/geo";
-import { cn } from "@/lib/utils";
 import type { MeetingLocation, MeetingParticipant } from "@/types/meeting";
 
 interface PuzzleCardStyle {
@@ -52,9 +52,10 @@ export const PuzzleEtaGrid = ({
 
         if (!participant) {
           return (
-            <div
+            <PuzzleEtaEmptyCard
               key={style.position}
-              className={cn("bg-black", CORNER_ROUNDING[style.position])}
+              position={style.position}
+              backgroundClassName={style.backgroundClassName}
             />
           );
         }
