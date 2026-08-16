@@ -21,7 +21,7 @@ export const formatMeetingDateTime = (dateTimeString: string) => {
 
   let dDay = "";
   if (diffDays === 0) {
-    dDay = "D-DAY";
+    dDay = "D-0";
   } else if (diffDays > 0) {
     dDay = `D-${diffDays}`;
   } else {
