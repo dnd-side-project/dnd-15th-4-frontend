@@ -22,7 +22,12 @@ export const ProfileMenu = () => {
         <IcProfile size={24} />
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Positioner side="bottom" align="end" sideOffset={8}>
+        <Popover.Positioner
+          side="bottom"
+          align="end"
+          sideOffset={8}
+          className="z-60"
+        >
           <Popover.Popup className="rounded-16 divide-border-1 flex w-48.25 flex-col divide-y bg-white px-4.5 py-0 shadow-lg">
             <div className="py-4">
               <p className="body2 text-text-primary truncate font-semibold">
