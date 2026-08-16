@@ -19,11 +19,11 @@ export const AllIcons: Story = {
     <div className="flex items-center gap-8">
       <div className="flex flex-col items-center gap-2">
         <IcKakao size={24} aria-label="카카오톡 로그인 버튼" />
-        <span className="body7 text-text-secondary-2">IcKakao</span>
+        <span className="body7 text-secondary-2">IcKakao</span>
       </div>
       <div className="flex flex-col items-center gap-2">
         <IcProfile size={24} aria-label="프로필 버튼" />
-        <span className="body7 text-text-secondary-2">IcProfile</span>
+        <span className="body7 text-secondary-2">IcProfile</span>
       </div>
       <div className="rounded-pill bg-sub2-normal flex flex-col items-center gap-2 p-3">
         <IcPlus
@@ -31,7 +31,7 @@ export const AllIcons: Story = {
           className="text-white"
           aria-label="플로팅 메뉴 버튼"
         />
-        <span className="body7 text-text-secondary-2">IcPlus</span>
+        <span className="body7 text-secondary-2">IcPlus</span>
       </div>
     </div>
   ),

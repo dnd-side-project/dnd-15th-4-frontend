@@ -40,12 +40,12 @@ export const AllVariants: Story = {
       <div className="bg-bg-gray flex flex-col gap-6 rounded-xl p-6">
         {colors.map((color) => (
           <div key={color.label} className="flex flex-col gap-3">
-            <h3 className="body4 text-text-primary">{color.label}</h3>
+            <h3 className="body4 text-primary">{color.label}</h3>
             <div className="border-border-1 flex items-center gap-6 rounded-lg border bg-white p-4">
               {PUZZLE_SHAPES.map((shape) => (
                 <div key={shape} className="flex flex-col items-center gap-2">
                   <IcPuzzlePiece shape={shape} className={color.className} />
-                  <span className="body7 text-text-disable">{shape}</span>
+                  <span className="body7 text-disable">{shape}</span>
                 </div>
               ))}
             </div>

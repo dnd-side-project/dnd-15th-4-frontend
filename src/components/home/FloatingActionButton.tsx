@@ -37,7 +37,7 @@ export const FloatingActionButton = () => {
               <Popover.Close
                 key={label}
                 onClick={() => handleNavigate(href)}
-                className="body2 text-text-primary hover:text-text-secondary cursor-pointer py-4 text-left transition-colors"
+                className="body2 text-primary hover:text-secondary-1 cursor-pointer py-4 text-left transition-colors"
               >
                 {label}
               </Popover.Close>

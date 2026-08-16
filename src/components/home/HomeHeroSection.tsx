@@ -60,7 +60,7 @@ const ProgressTrack = ({
           <IcArrivalDot />
         </div>
 
-        <span className="body7 text-text-primary/71 absolute top-2 left-1/2 -translate-x-1/2 whitespace-nowrap">
+        <span className="body7 text-primary/71 absolute top-2 left-1/2 -translate-x-1/2 whitespace-nowrap">
           도착
         </span>
       </div>
@@ -87,7 +87,7 @@ const ProgressTrack = ({
               />
             </div>
 
-            <span className="body7 text-text-primary/71 absolute top-2 left-1/2 -translate-x-1/2 whitespace-nowrap">
+            <span className="body7 text-primary/71 absolute top-2 left-1/2 -translate-x-1/2 whitespace-nowrap">
               {label}
             </span>
           </div>
@@ -120,7 +120,7 @@ const HomeHeroSectionActive = ({ meeting }: { meeting: MeetingData }) => {
 
   return (
     <div className="relative z-10 flex h-full flex-col px-4 pt-11 pb-6">
-      <h1 className="h1 text-text-primary">
+      <h1 className="h1 text-primary">
         {meeting.title}
         <br />
         약속이 진행중이에요
@@ -169,7 +169,7 @@ const HomeHeroSectionEmpty = () => {
       />
 
       <div className="relative z-10 px-4 pt-11">
-        <h1 className="h1 text-text-primary">
+        <h1 className="h1 text-primary">
           진행중인
           <br />
           약속이 없습니다

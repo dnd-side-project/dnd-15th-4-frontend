@@ -30,7 +30,7 @@ const LandingPage = () => {
   return (
     <main className="flex flex-1 flex-col items-center justify-end gap-6 px-4 pb-10">
       <KakaoLoginButton onClick={handleLogin} />
-      <button type="button" className="body6 text-text-disable">
+      <button type="button" className="body6 text-disable">
         퍼즐밋이란?
       </button>
     </main>

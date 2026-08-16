@@ -5,12 +5,11 @@
 
 @theme {
   /* text */
-  --color-text-title: #1f2124;
-  --color-text-primary: #101112;
-  --color-text-secondary-1: #616161;
-  --color-text-secondary-2: #858894;
-  --color-text-disable: #999999;
-  --color-text-white: #ffffff;
+  --color-title: #1f2124;
+  --color-primary: #101112;
+  --color-secondary-1: #4b4b4b;
+  --color-secondary-2: #858894;
+  --color-disable: #9da5b6;
 
   /* primary palette (Blue) */
   --color-primary-light: #ecf8ff;

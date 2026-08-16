@@ -17,7 +17,7 @@ export const ProfileMenu = () => {
     <Popover.Root>
       <Popover.Trigger
         aria-label="프로필 메뉴"
-        className="text-text-primary cursor-pointer"
+        className="text-primary cursor-pointer"
       >
         <IcProfile size={24} />
       </Popover.Trigger>
@@ -30,17 +30,15 @@ export const ProfileMenu = () => {
         >
           <Popover.Popup className="rounded-16 divide-border-1 flex w-48.25 flex-col divide-y bg-white px-4.5 py-0 shadow-lg">
             <div className="py-4">
-              <p className="body2 text-text-primary truncate font-semibold">
-                {id}
-              </p>
-              <p className="body2 text-text-primary truncate font-semibold">
+              <p className="body2 text-primary truncate font-semibold">{id}</p>
+              <p className="body2 text-primary truncate font-semibold">
                 {nickname}님
               </p>
             </div>
 
             <Popover.Close
               onClick={logout}
-              className="body2 text-text-primary hover:text-text-secondary cursor-pointer py-4 text-left transition-colors"
+              className="body2 text-primary hover:text-secondary-1 cursor-pointer py-4 text-left transition-colors"
             >
               로그아웃
             </Popover.Close>
