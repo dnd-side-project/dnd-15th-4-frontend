@@ -1,0 +1,50 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { Popover } from "@base-ui/react/popover";
+import { IcPlus } from "@/components/icons";
+
+const menuItems = [
+  { label: "약속방 만들기", href: "#" },
+  { label: "초대 코드로 참여하기", href: "#" },
+];
+
+export const FloatingActionButton = () => {
+  const router = useRouter();
+
+  const handleNavigate = (href: string) => {
+    router.push(href);
+  };
+
+  return (
+    <Popover.Root>
+      <Popover.Trigger
+        aria-label="약속 생성 및 참여"
+        className="bg-sub2-normal rounded-pill size-15.5rem absolute right-4 bottom-12 flex cursor-pointer items-center justify-center shadow-lg"
+      >
+        <IcPlus size={62} className="text-white" />
+      </Popover.Trigger>
+
+      <Popover.Portal>
+        <Popover.Positioner
+          side="top"
+          align="end"
+          sideOffset={8}
+          className={"z-50"}
+        >
+          <Popover.Popup className="rounded-16 divide-border-1 flex w-48.25 flex-col divide-y overflow-hidden bg-white px-4.5 py-0 shadow-lg">
+            {menuItems.map(({ label, href }) => (
+              <Popover.Close
+                key={label}
+                onClick={() => handleNavigate(href)}
+                className="body2 text-primary hover:text-secondary-1 cursor-pointer py-4 text-left transition-colors"
+              >
+                {label}
+              </Popover.Close>
+            ))}
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
+  );
+};

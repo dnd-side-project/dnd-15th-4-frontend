@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { IcExtension, IcViewAgenda } from "@/components/icons";
-import { Toggle } from "./Toggle";
+import { Toggle } from "@/components/common/Toggle";
 
 const meta = {
-  title: "Common/Toggle",
+  title: "UI/Toggle",
   component: Toggle,
   parameters: {
     layout: "centered",
@@ -120,11 +120,11 @@ export const AllVariants: Story = {
     <div className="flex items-center gap-8">
       <div className="flex flex-col items-center gap-2">
         <Toggle variant="pill" defaultChecked aria-label="알약형 토글" />
-        <span className="body7 text-text-secondary-2">Pill</span>
+        <span className="body7 text-secondary-2">Pill</span>
       </div>
       <div className="flex flex-col items-center gap-2">
         <Toggle variant="radio" defaultChecked aria-label="라디오형 토글" />
-        <span className="body7 text-text-secondary-2">Radio</span>
+        <span className="body7 text-secondary-2">Radio</span>
       </div>
       <div className="flex flex-col items-center gap-2">
         <Toggle
@@ -134,7 +134,7 @@ export const AllVariants: Story = {
           iconOn={<IcViewAgenda size={14} />}
           aria-label="아이콘형 토글"
         />
-        <span className="body7 text-text-secondary-2">Icon</span>
+        <span className="body7 text-secondary-2">Icon</span>
       </div>
     </div>
   ),

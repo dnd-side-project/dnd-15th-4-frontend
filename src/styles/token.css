@@ -59,8 +59,11 @@
   --color-point-dark-active: #737152;
   --color-point-darker: #595840;
 
+  /* kakao brand */
+  --color-kakao: #fee500;
+
   /* neutral */
-  --color-white: #ffffff;
+  --white: #ffffff;
   --color-gray-1: #e9e9ea;
   --color-gray-2: #dedefe;
   --color-gray-3: #bbbcbd;
@@ -69,7 +72,7 @@
   --color-gray-6: #1e1e22;
   --color-gray-7: #1c1d20;
   --color-gray-8: #161719;
-  --color-black: #000000;
+  --black: #000000;
 
   /* bg */
   --color-bg-gray: #f6f7f9;
@@ -78,7 +81,6 @@
   /* border */
   --color-border-1: #e9e9ea;
   --color-border-2: #bbbcbd;
-  --color-border-3: #3dbaff;
   --color-border-4: #291d11;
 
   /* surface */

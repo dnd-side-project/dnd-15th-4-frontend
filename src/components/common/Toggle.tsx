@@ -43,13 +43,13 @@ export const Toggle = ({
       >
         <span
           data-slot="toggle-icon-off"
-          className="rounded-pill text-border-2 group-data-[unchecked]/toggle:bg-surface-6 flex size-9 items-center justify-center transition-colors group-data-[unchecked]/toggle:text-white"
+          className="rounded-pill text-border-2 group-data-unchecked/toggle:bg-surface-6 flex size-9 items-center justify-center transition-colors group-data-unchecked/toggle:text-white"
         >
           {iconOff}
         </span>
         <span
           data-slot="toggle-icon-on"
-          className="rounded-pill text-border-2 group-data-[checked]/toggle:bg-surface-6 flex size-9 items-center justify-center transition-colors group-data-[checked]/toggle:text-white"
+          className="rounded-pill text-border-2 group-data-checked/toggle:bg-surface-6 flex size-9 items-center justify-center transition-colors group-data-checked/toggle:text-white"
         >
           {iconOn}
         </span>
@@ -68,8 +68,8 @@ export const Toggle = ({
         className={cn(
           "block rounded-pill transition-transform",
           variant === "radio"
-            ? "size-3.5 scale-0 bg-primary-normal data-[checked]:scale-100"
-            : "size-6 bg-white data-[checked]:translate-x-7 data-[checked]:bg-point-normal"
+            ? "size-3.5 scale-0 bg-primary-normal data-checked:scale-100"
+            : "size-6 bg-white data-checked:translate-x-7 data-checked:bg-point-normal"
         )}
       />
     </SwitchPrimitive.Root>
