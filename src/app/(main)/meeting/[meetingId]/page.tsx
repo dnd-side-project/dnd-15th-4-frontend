@@ -10,7 +10,7 @@ import { MeetingProgressSheet } from "@/components/meeting/MeetingProgressSheet"
 import { MeetingSummaryCard } from "@/components/meeting/MeetingSummaryCard";
 import { ParticipantMarker } from "@/components/meeting/ParticipantMarker";
 import { CURRENT_PARTICIPANT_ID } from "@/constants/message";
-import { getRemainingTimeLabel, getTimeLabel } from "@/lib/date";
+import { getRemainingTimeLabel, getTimeLabel } from "@/utils/date";
 import {
   mockMeetingParticipants,
   mockMeetingSummary,

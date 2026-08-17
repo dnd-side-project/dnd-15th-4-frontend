@@ -1,4 +1,4 @@
-import { getIsoStringMinutesAgo } from "@/lib/date";
+import { getIsoStringMinutesAgo } from "@/utils/date";
 import type {
   MeetingData,
   MeetingParticipantsDto,

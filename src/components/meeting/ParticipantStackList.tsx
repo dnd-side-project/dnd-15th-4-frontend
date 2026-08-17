@@ -2,8 +2,8 @@ import { ParticipantStackItem } from "./ParticipantStackItem";
 import { getProfileImageUrl } from "@/constants/profileImages";
 import {
   ARRIVAL_DISTANCE_THRESHOLD_METERS,
-  getDistanceInMeters,
-} from "@/lib/geo";
+  getMeetingDistanceInMeters,
+} from "@/utils/geo";
 import type { MeetingLocation, MeetingParticipant } from "@/types/meeting";
 
 export interface ParticipantStackListProps {
@@ -24,7 +24,7 @@ export const ParticipantStackList = ({
     >
       {participants.map((participant, index) => {
         const isArrived =
-          getDistanceInMeters(
+          getMeetingDistanceInMeters(
             participant.currentLocation,
             meetingPlaceLocation
           ) <= ARRIVAL_DISTANCE_THRESHOLD_METERS;

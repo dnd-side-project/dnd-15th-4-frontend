@@ -3,7 +3,7 @@
 import { PUZZLE_GRID_SIZE, PuzzleEtaGrid } from "./PuzzleEtaGrid";
 import { PuzzleSetIndicator } from "./PuzzleSetIndicator";
 import { useCarouselPage } from "@/hooks/common/useCarouselPage";
-import { chunkArray } from "@/lib/array";
+import { chunkArray } from "@/utils/array";
 import type { MeetingLocation, MeetingParticipant } from "@/types/meeting";
 
 export interface PuzzleEtaCarouselProps {
