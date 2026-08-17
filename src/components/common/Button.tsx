@@ -10,11 +10,11 @@ export const buttonVariants = cva(
       variant: {
         default: "bg-primary-normal text-white hover:bg-primary-normal-hover",
         outline:
-          "border-border-1 bg-bg-normal hover:bg-surface-1 hover:text-text-primary aria-expanded:bg-surface-1 aria-expanded:text-text-primary",
+          "border-border-1 bg-bg-normal hover:bg-surface-1 hover:text-primary aria-expanded:bg-surface-1 aria-expanded:text-primary",
         secondary:
-          "bg-sub1-light text-text-primary hover:bg-sub1-light-hover aria-expanded:bg-sub1-light aria-expanded:text-text-primary",
+          "bg-sub1-light text-primary hover:bg-sub1-light-hover aria-expanded:bg-sub1-light aria-expanded:text-primary",
         ghost:
-          "hover:bg-surface-1 hover:text-text-primary aria-expanded:bg-surface-1 aria-expanded:text-text-primary",
+          "hover:bg-surface-1 hover:text-primary aria-expanded:bg-surface-1 aria-expanded:text-primary",
         destructive:
           "bg-red-500/10 text-red-600 hover:bg-red-500/20 focus-visible:border-red-500/40 focus-visible:ring-red-500/20",
         link: "text-primary-normal underline-offset-4 hover:underline",
