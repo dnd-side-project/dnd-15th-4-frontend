@@ -44,9 +44,9 @@ export const PuzzleEtaEmptyCard = ({
         />
       </div>
       <p className={cn("body6 text-center", TEXT_COLOR_CLASS[position])}>
-        약속이 종료되면
+        도착하면
         <br />
-        공개돼요
+        퍼즐이 공개돼요
       </p>
     </div>
   );
