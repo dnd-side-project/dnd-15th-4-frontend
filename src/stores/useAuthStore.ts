@@ -33,8 +33,8 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "puzzlemeet-auth",
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
+      onRehydrateStorage: () => () => {
+        useAuthStore.getState().setHasHydrated(true);
       },
     }
   )
