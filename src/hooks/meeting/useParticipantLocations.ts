@@ -10,8 +10,8 @@ export const useParticipantLocationsQuery = (
   participantIds: number[]
 ) =>
   useQuery({
-    queryKey: meetingKeys.participantLocations(meetingId),
-    queryFn: () => fetchParticipantLocations(participantIds),
+    queryKey: meetingKeys.participantLocations(meetingId, participantIds),
+    queryFn: () => fetchParticipantLocations(meetingId, participantIds),
     refetchInterval: 5000,
     enabled: participantIds.length > 0,
   });

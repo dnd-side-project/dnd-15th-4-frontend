@@ -11,9 +11,10 @@ export interface ParticipantLocationDto extends UserLocation {
  */
 
 export const fetchParticipantLocations = async (
+  meetingId: number,
   participantIds: number[]
 ): Promise<ParticipantLocationDto[]> =>
   participantIds.flatMap((userId) => {
-    const location = MOCK_PARTICIPANT_LOCATIONS[userId];
+    const location = MOCK_PARTICIPANT_LOCATIONS[meetingId]?.[userId];
     return location ? [{ userId, ...location.currentLocation }] : [];
   });

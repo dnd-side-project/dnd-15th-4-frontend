@@ -23,12 +23,14 @@ interface HomeHeroSectionProps {
 }
 
 interface ProgressTrackProps {
+  meetingId: number;
   participants: Participant[];
   destination: UserLocation;
   locationsByUserId: Map<number, UserLocation>;
 }
 
 const ProgressTrack = ({
+  meetingId,
   participants,
   destination,
   locationsByUserId,
@@ -38,7 +40,8 @@ const ProgressTrack = ({
     if (!currentLocation) return [];
 
     const totalDistance =
-      MOCK_PARTICIPANT_LOCATIONS[participant.id]?.totalDistance ?? 1000;
+      MOCK_PARTICIPANT_LOCATIONS[meetingId]?.[participant.id]?.totalDistance ??
+      1000;
     const { percent, isArrived } = calculateParticipantProgress(
       currentLocation,
       destination,
@@ -146,6 +149,7 @@ const HomeHeroSectionActive = ({ meeting }: { meeting: MeetingData }) => {
 
       <div className="mt-auto">
         <ProgressTrack
+          meetingId={meeting.meetingId}
           participants={meeting.participants}
           destination={destination}
           locationsByUserId={locationsByUserId}
