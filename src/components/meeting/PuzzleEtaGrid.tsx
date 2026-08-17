@@ -34,8 +34,6 @@ const GRID_STYLES: PuzzleCardStyle[] = [
   },
 ];
 
-export const PUZZLE_GRID_SIZE = GRID_STYLES.length;
-
 export interface PuzzleEtaGridProps {
   participants: MeetingParticipant[];
   meetingPlaceLocation: MeetingLocation;
@@ -48,7 +46,10 @@ export const PuzzleEtaGrid = ({
   return (
     <div className="grid aspect-square w-full grid-cols-2 grid-rows-2">
       {GRID_STYLES.map((style, index) => {
-        const participant = participants[index];
+        const puzzleNumber = index + 1;
+        const participant = participants.find(
+          (candidate) => candidate.puzzlePosition.number === puzzleNumber
+        );
 
         if (!participant) {
           return (

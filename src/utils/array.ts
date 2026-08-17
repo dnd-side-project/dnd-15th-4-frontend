@@ -1,11 +1,18 @@
-// 배열을 size 개수만큼씩 잘라 2차원 배열로 반환
-export const chunkArray = <T>(items: T[], size: number): T[][] => {
-  if (size <= 0) return [items];
+// key 기준으로 묶어 key 오름차순으로 정렬된 2차원 배열로 반환
+export const groupBy = <T>(items: T[], getKey: (item: T) => number): T[][] => {
+  const groups = new Map<number, T[]>();
 
-  const chunks: T[][] = [];
-  for (let index = 0; index < items.length; index += size) {
-    chunks.push(items.slice(index, index + size));
+  for (const item of items) {
+    const key = getKey(item);
+    const group = groups.get(key);
+    if (group) {
+      group.push(item);
+    } else {
+      groups.set(key, [item]);
+    }
   }
 
-  return chunks;
+  return [...groups.entries()]
+    .sort(([a], [b]) => a - b)
+    .map(([, group]) => group);
 };

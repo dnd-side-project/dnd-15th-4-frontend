@@ -1,9 +1,9 @@
 "use client";
 
-import { PUZZLE_GRID_SIZE, PuzzleEtaGrid } from "./PuzzleEtaGrid";
+import { PuzzleEtaGrid } from "./PuzzleEtaGrid";
 import { PuzzleSetIndicator } from "./PuzzleSetIndicator";
 import { useCarouselPage } from "@/hooks/common/useCarouselPage";
-import { chunkArray } from "@/utils/array";
+import { groupBy } from "@/utils/array";
 import type { MeetingLocation, MeetingParticipant } from "@/types/meeting";
 
 export interface PuzzleEtaCarouselProps {
@@ -15,7 +15,10 @@ export const PuzzleEtaCarousel = ({
   participants,
   meetingPlaceLocation,
 }: PuzzleEtaCarouselProps) => {
-  const pages = chunkArray(participants, PUZZLE_GRID_SIZE);
+  const pages = groupBy(
+    participants,
+    (participant) => participant.puzzlePosition.set
+  );
   const { containerRef, currentPage, handleScroll } = useCarouselPage(
     pages.length
   );
