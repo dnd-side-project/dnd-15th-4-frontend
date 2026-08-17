@@ -25,28 +25,14 @@ export default function HomePage() {
     );
   }
 
-  const now = new Date();
+  const heroMeeting: MeetingData | null =
+    meetings.find((meeting) => meeting.status === "IN_PROGRESS") ?? null;
 
-  const isSameDay = (d1: Date, d2: Date) =>
-    d1.getFullYear() === d2.getFullYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate();
-
-  const validSchedules = [...meetings]
-    .filter((meeting) => new Date(meeting.dateTime) > now)
+  const upcomingMeetings = meetings
+    .filter((meeting) => meeting.status === "WAITING")
     .sort(
       (a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()
     );
-
-  const todaySchedules = validSchedules.filter((meeting) =>
-    isSameDay(new Date(meeting.dateTime), now)
-  );
-
-  const heroMeeting: MeetingData | null = todaySchedules[0] ?? null;
-
-  const upcomingMeetings = validSchedules.filter(
-    (meeting) => meeting.meetingId !== heroMeeting?.meetingId
-  );
 
   return (
     <div className="relative flex h-dvh flex-col overflow-hidden bg-white">

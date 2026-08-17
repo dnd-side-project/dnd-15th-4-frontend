@@ -8,8 +8,9 @@ const mockMeeting: MeetingData = {
   latitude: 37.4979,
   longitude: 127.0276,
   title: "강남역 모임 약속",
-  dateTime: "2026-08-20T19:00:00",
+  dateTime: "2026-08-20T19:00:00+09:00",
   place: "강남역 11번 출구",
+  status: "WAITING",
   participants: [
     { id: 1, name: "김철수", profileImageNumber: 1 },
     { id: 2, name: "이영희", profileImageNumber: 2 },

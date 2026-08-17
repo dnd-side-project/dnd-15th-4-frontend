@@ -4,6 +4,8 @@ export interface Participant {
   profileImageNumber: number;
 }
 
+export type MeetingStatus = "WAITING" | "IN_PROGRESS" | "COMPLETED";
+
 export interface MeetingData {
   meetingId: number;
   title: string;
@@ -12,6 +14,7 @@ export interface MeetingData {
   latitude: number;
   longitude: number;
   participants: Participant[];
+  status: MeetingStatus;
 }
 
 export interface MeetingListResponse {
