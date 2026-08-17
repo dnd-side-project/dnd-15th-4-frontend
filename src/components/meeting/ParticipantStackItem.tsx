@@ -46,7 +46,7 @@ export const ParticipantStackItem = ({
         </div>
         <div className="flex flex-col">
           <p className="body1 text-primary">{nickname}</p>
-          {isConfirmed && <p className="body6 text-primary-dark-hover">도착</p>}
+          {isConfirmed && <p className="body6 text-secondary-2">도착</p>}
         </div>
       </div>
 
