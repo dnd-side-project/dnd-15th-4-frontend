@@ -34,7 +34,9 @@ export const useAuthStore = create<AuthState>()(
     {
       name: "puzzlemeet-auth",
       onRehydrateStorage: () => () => {
-        useAuthStore.getState().setHasHydrated(true);
+        queueMicrotask(() => {
+          useAuthStore.getState().setHasHydrated(true);
+        });
       },
     }
   )
