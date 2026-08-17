@@ -1,7 +1,7 @@
 import { PuzzleEtaCard } from "./PuzzleEtaCard";
 import type { PuzzleEtaCardPosition } from "./PuzzleEtaCard";
 import { PuzzleEtaEmptyCard } from "./PuzzleEtaEmptyCard";
-import { getProfileImageUrl } from "@/constants/profileImages";
+import { getCharacterImage } from "@/constants/character-images";
 import {
   ARRIVAL_DISTANCE_THRESHOLD_METERS,
   getMeetingDistanceInMeters,
@@ -72,7 +72,7 @@ export const PuzzleEtaGrid = ({
             position={style.position}
             backgroundClassName={style.backgroundClassName}
             textClassName={style.textClassName}
-            image={getProfileImageUrl(participant.profileImageNumber)}
+            image={getCharacterImage(participant.profileImageNumber)}
             nickname={participant.nickname}
             remainingMinutes={participant.estimatedArrivalTime}
             isArrived={isArrived}

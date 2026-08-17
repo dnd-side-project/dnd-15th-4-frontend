@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import { AdvancedMarker } from "@vis.gl/react-google-maps";
 
-import { getProfileImageUrl } from "@/constants/profileImages";
+import { getCharacterImage } from "@/constants/character-images";
 import type { MeetingParticipant } from "@/types/meeting";
 
 export interface ParticipantMarkerProps {
@@ -28,7 +28,7 @@ export const ParticipantMarker = ({ participant }: ParticipantMarkerProps) => {
         )}
         <div className="border-border-4 rounded-16 shadow-1 size-13.5 overflow-hidden border-2 bg-white">
           <Image
-            src={getProfileImageUrl(profileImageNumber)}
+            src={getCharacterImage(profileImageNumber)}
             alt={nickname}
             width={54}
             height={54}

@@ -1,10 +1,11 @@
 import Image from "next/image";
+import type { StaticImageData } from "next/image";
 
 import { IcArrowOutward } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 export interface ParticipantStatusAvatarProps {
-  image: string;
+  image: StaticImageData;
   nickname: string;
   minutesAgoLabel?: string;
   onClick?: () => void;

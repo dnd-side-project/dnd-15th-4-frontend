@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import type { StaticImageData } from "next/image";
 
 import { ArrivalConfirmButton } from "./ArrivalConfirmButton";
 import artwork1 from "@/assets/images/artwork-1.png";
@@ -29,7 +30,7 @@ export interface PuzzleEtaCardProps {
   position: PuzzleEtaCardPosition;
   backgroundClassName: string;
   textClassName?: string;
-  image: string;
+  image: StaticImageData;
   nickname: string;
   remainingMinutes: number;
   isArrived?: boolean;

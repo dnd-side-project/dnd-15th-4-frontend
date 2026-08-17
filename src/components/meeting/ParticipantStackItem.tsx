@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { StaticImageData } from "next/image";
 
 import { ArrivalConfirmButton } from "./ArrivalConfirmButton";
 import { IcAlarm } from "@/components/icons";
@@ -6,7 +7,7 @@ import { useArrivalConfirmation } from "@/hooks/meeting/useArrivalConfirmation";
 import { cn } from "@/lib/utils";
 
 export interface ParticipantStackItemProps {
-  image: string;
+  image: StaticImageData;
   nickname: string;
   remainingMinutes: number;
   isHighlighted?: boolean;

@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 
 import { ParticipantStatusAvatar } from "./ParticipantStatusAvatar";
-import { getProfileImageUrl } from "@/constants/profileImages";
+import { getCharacterImage } from "@/constants/character-images";
 import { cn } from "@/lib/utils";
 import type { MeetingParticipant } from "@/types/meeting";
 
@@ -42,7 +42,7 @@ export const ParticipantStatusRow = ({
             <span className="bg-border-1 h-9 w-px shrink-0" aria-hidden />
           )}
           <ParticipantStatusAvatar
-            image={getProfileImageUrl(participant.profileImageNumber)}
+            image={getCharacterImage(participant.profileImageNumber)}
             nickname={participant.nickname}
             minutesAgoLabel={getMinutesAgoLabel(participant)}
             onClick={() => onParticipantFocus?.(participant)}

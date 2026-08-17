@@ -1,5 +1,5 @@
 import { ParticipantStackItem } from "./ParticipantStackItem";
-import { getProfileImageUrl } from "@/constants/profileImages";
+import { getCharacterImage } from "@/constants/character-images";
 import {
   ARRIVAL_DISTANCE_THRESHOLD_METERS,
   getMeetingDistanceInMeters,
@@ -35,7 +35,7 @@ export const ParticipantStackList = ({
             className="flex w-full flex-col items-start"
           >
             <ParticipantStackItem
-              image={getProfileImageUrl(participant.profileImageNumber)}
+              image={getCharacterImage(participant.profileImageNumber)}
               nickname={participant.nickname}
               remainingMinutes={participant.estimatedArrivalTime}
               isHighlighted={index === 0}
