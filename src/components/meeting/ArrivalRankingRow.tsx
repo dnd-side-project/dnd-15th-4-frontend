@@ -11,14 +11,14 @@ const getArrivalBadge = (ranking: MeetingRankingItem) => {
   if (ranking.late) {
     return { label: "지각했어요", className: "bg-red/12 text-red border-red" };
   }
-  if (ranking.earlyArrivalMinutes != null) {
+  if (ranking.earlyArrivalMinutes) {
     return {
       label: `${ranking.earlyArrivalMinutes}분 일찍 도착`,
       className: "bg-primary-light text-primary-dark border-primary-normal",
     };
   }
   return {
-    label: "정시 도착",
+    label: "정각에 도착했어요",
     className: "bg-primary-light text-primary-dark border-primary-normal",
   };
 };
@@ -68,7 +68,7 @@ export const ArrivalRankingRow = ({
       </div>
       <span
         className={cn(
-          "rounded-8 body7 border px-2.5 py-1 w-27.75 h-7.5 flex items-center justify-center",
+          "rounded-8 body7 border px-2.5 py-1 px-4 h-7.5 flex items-center justify-center",
           badge.className
         )}
       >
