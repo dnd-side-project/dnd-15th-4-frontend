@@ -18,7 +18,7 @@ const getArrivalBadge = (ranking: MeetingRankingItem) => {
     };
   }
   return {
-    label: "정각에 도착했어요",
+    label: "도착했어요",
     className: "bg-primary-light text-primary-dark border-primary-normal",
   };
 };
