@@ -79,10 +79,10 @@ export const PuzzleResultSection = ({
         currentPage={centeredIndex}
         className={cn("mt-6", puzzleGroups.length <= 1 && "invisible")}
         activeDotClassName={
-          isAllFailed ? "bg-white w-2.75" : "bg-point-dark-active w-2.75"
+          isAllFailed ? "bg-surface-0 w-2.75" : "bg-point-dark-active w-2.75"
         }
         inactiveDotClassName={
-          isAllFailed ? "bg-white/30" : "bg-point-normal-active"
+          isAllFailed ? "bg-sub2-light-active" : "bg-point-normal-active"
         }
       />
     </div>
