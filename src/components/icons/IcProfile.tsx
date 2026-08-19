@@ -1,5 +1,5 @@
 import { BaseIcon } from "./BaseIcon";
-import type { IconProps } from "./icon.types";
+import type { IconProps } from "./Icon.types";
 
 export const IcProfile = (props: IconProps) => (
   <BaseIcon {...props}>
