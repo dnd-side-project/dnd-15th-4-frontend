@@ -1,5 +1,6 @@
 "use client";
 
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { BottomSheet } from "@/components/common/BottomSheet";
@@ -25,6 +26,8 @@ const SHEET_EXPANDED_HEIGHT = 9999;
 const MAP_FOCUS_TOP_PADDING = 16;
 
 const MeetingDetailPage = () => {
+  const router = useRouter();
+  const { meetingId } = useParams<{ meetingId: string }>();
   const { participants } = mockMeetingParticipants;
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [sheetSnapPoint, setSheetSnapPoint] = useState<number>(
@@ -40,6 +43,20 @@ const MeetingDetailPage = () => {
   useEffect(() => {
     setIsSheetOpen(true);
   }, []);
+
+  useEffect(() => {
+    const remainingMs =
+      new Date(mockMeetingSummary.dateTime).getTime() - Date.now();
+
+    const timerId = setTimeout(
+      () => {
+        router.replace(`/meeting/${meetingId}/completed`);
+      },
+      Math.max(0, remainingMs)
+    );
+
+    return () => clearTimeout(timerId);
+  }, [meetingId, router]);
 
   const handleParticipantFocus = (participant: MeetingParticipant) => {
     const sheetTop = sheetPopupRef.current?.getBoundingClientRect().top;

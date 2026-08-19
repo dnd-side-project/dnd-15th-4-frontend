@@ -5,6 +5,7 @@ export * from "./IcArrowBack";
 export * from "./IcArrowOutward";
 export * from "./IcExtension";
 export * from "./IcExtensionFilled";
+export * from "./IcHome";
 export * from "./IcKakao";
 export * from "./IcMessengerFill";
 export * from "./IcMoreVert";
