@@ -365,8 +365,8 @@ export const MOCK_MEETING_RESULT: MeetingResultResponse = {
       nickname: "이주빈",
       profileImageUrl: "/character-1.png",
       arrived: true,
-      arrivedAt: "2026-08-19T18:50:00",
-      earlyArrivalMinutes: 10,
+      arrivedAt: "2026-08-19T18:57:00",
+      earlyArrivalMinutes: 3,
       late: false,
     },
     {
