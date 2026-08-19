@@ -1,5 +1,9 @@
-import Image from "next/image";
+"use client";
 
+import Image from "next/image";
+import { useState } from "react";
+
+import { ImageDetailModal } from "./ImageDetailModal";
 import { IcInfo } from "@/components/icons";
 import type { CompletedPuzzleFeedItem } from "@/types/meeting";
 
@@ -10,6 +14,9 @@ interface MeetingPuzzleFeedPanelProps {
 export const MeetingPuzzleFeedPanel = ({
   puzzleFeed,
 }: MeetingPuzzleFeedPanelProps) => {
+  const [selectedFeedItem, setSelectedFeedItem] =
+    useState<CompletedPuzzleFeedItem | null>(null);
+
   return (
     <div className="mb-12 flex w-full flex-col">
       <div className="bg-sub1-light-hover rounded-8 mx-4 flex items-center gap-1.75 px-2.25 py-2.75">
@@ -20,8 +27,10 @@ export const MeetingPuzzleFeedPanel = ({
       </div>
       <div className="mt-3 grid grid-cols-3 gap-x-1 gap-y-2">
         {puzzleFeed.map((feedItem, index) => (
-          <div
+          <button
             key={`${feedItem.uploaderId}-${index}`}
+            type="button"
+            onClick={() => setSelectedFeedItem(feedItem)}
             className="bg-sub2-light relative aspect-square overflow-hidden"
           >
             <Image
@@ -30,9 +39,20 @@ export const MeetingPuzzleFeedPanel = ({
               fill
               className="object-cover"
             />
-          </div>
+          </button>
         ))}
       </div>
+
+      {selectedFeedItem && (
+        <ImageDetailModal
+          open
+          onOpenChange={(open) => !open && setSelectedFeedItem(null)}
+          imageUrl={selectedFeedItem.imageUrl}
+          imageAlt={`${selectedFeedItem.uploaderNickname}님이 등록한 사진`}
+          uploaderNickname={selectedFeedItem.uploaderNickname}
+          uploaderProfileImageUrl={selectedFeedItem.uploaderProfileImageUrl}
+        />
+      )}
     </div>
   );
 };
