@@ -322,6 +322,54 @@ export const MOCK_MEETING_RESULT: MeetingResultResponse = {
       uploaderNickname: "이소정",
       uploaderProfileImageUrl: "/character-1.png",
     },
+    {
+      imageUrl: "/artwork-1.png",
+      uploaderId: 1,
+      uploaderNickname: "이소정",
+      uploaderProfileImageUrl: "/character-1.png",
+    },
+    {
+      imageUrl: "/artwork-1.png",
+      uploaderId: 1,
+      uploaderNickname: "이소정",
+      uploaderProfileImageUrl: "/character-1.png",
+    },
+    {
+      imageUrl: "/artwork-1.png",
+      uploaderId: 1,
+      uploaderNickname: "이소정",
+      uploaderProfileImageUrl: "/character-1.png",
+    },
+    {
+      imageUrl: "/artwork-1.png",
+      uploaderId: 1,
+      uploaderNickname: "이소정",
+      uploaderProfileImageUrl: "/character-1.png",
+    },
+    {
+      imageUrl: "/artwork-1.png",
+      uploaderId: 1,
+      uploaderNickname: "이소정",
+      uploaderProfileImageUrl: "/character-1.png",
+    },
+    {
+      imageUrl: "/artwork-1.png",
+      uploaderId: 1,
+      uploaderNickname: "이소정",
+      uploaderProfileImageUrl: "/character-1.png",
+    },
+    {
+      imageUrl: "/artwork-1.png",
+      uploaderId: 1,
+      uploaderNickname: "이소정",
+      uploaderProfileImageUrl: "/character-1.png",
+    },
+    {
+      imageUrl: "/artwork-1.png",
+      uploaderId: 1,
+      uploaderNickname: "이소정",
+      uploaderProfileImageUrl: "/character-1.png",
+    },
   ],
   rankings: [
     {

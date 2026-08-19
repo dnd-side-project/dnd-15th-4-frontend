@@ -6,6 +6,7 @@ export * from "./IcArrowOutward";
 export * from "./IcExtension";
 export * from "./IcExtensionFilled";
 export * from "./IcHome";
+export * from "./IcInfo";
 export * from "./IcKakao";
 export * from "./IcMedalBronze";
 export * from "./IcMedalGold";
