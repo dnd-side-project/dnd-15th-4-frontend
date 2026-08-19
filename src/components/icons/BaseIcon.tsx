@@ -1,4 +1,4 @@
-import type { IconProps } from "./icon.types";
+import type { IconProps } from "./Icon.types";
 
 interface BaseIconProps extends IconProps {
   children: React.ReactNode;

@@ -1,5 +1,5 @@
 import { BaseIcon } from "./BaseIcon";
-import type { IconProps } from "./icon.types";
+import type { IconProps } from "./Icon.types";
 
 export const IcPlus = (props: IconProps) => (
   <BaseIcon viewBox="0 0 62 62" {...props}>
