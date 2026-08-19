@@ -16,6 +16,10 @@ interface ImageDetailModalProps {
 
 const shareImageFile = async (imageUrl: string) => {
   const response = await fetch(imageUrl);
+  if (!response.ok) {
+    throw new Error("이미지를 불러오지 못했습니다.");
+  }
+
   const blob = await response.blob();
   const fileName = imageUrl.split("/").pop() ?? "image";
   const file = new File([blob], fileName, { type: blob.type });
@@ -37,7 +41,10 @@ export const ImageDetailModal = ({
   uploaderProfileImageUrl,
 }: ImageDetailModalProps) => {
   const handleShareClick = () => {
-    shareImageFile(imageUrl).catch(() => {});
+    shareImageFile(imageUrl).catch((error: unknown) => {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      window.open(imageUrl, "_blank", "noopener,noreferrer");
+    });
   };
 
   return (
