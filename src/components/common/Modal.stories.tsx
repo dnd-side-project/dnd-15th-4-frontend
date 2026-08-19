@@ -37,6 +37,9 @@ const ModalPreview = ({ children, ...props }: ComponentProps<typeof Modal>) => {
 };
 
 export const Default: Story = {
+  args: {
+    title: "예시 모달",
+  },
   render: (args) => (
     <ModalPreview {...args} className="gap-3 px-5 py-8">
       <p className="h3 text-primary">모달 콘텐츠</p>
@@ -48,6 +51,9 @@ export const Default: Story = {
 };
 
 export const WithImage: Story = {
+  args: {
+    title: "이미지 예시 모달",
+  },
   render: (args) => (
     <ModalPreview {...args} className="gap-4 px-5 pt-9 pb-8">
       <div className="rounded-20 bg-sub2-light aspect-square w-full max-w-66.25" />

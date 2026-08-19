@@ -44,6 +44,7 @@ export const ImageDetailModal = ({
     <Modal
       open={open}
       onOpenChange={onOpenChange}
+      title="퍼즐 이미지 상세보기"
       className="max-w-90.25 gap-5.25 px-5 pt-8.75 pb-8"
     >
       <div className="rounded-20 bg-surface-1 relative aspect-square w-full max-w-66.25 overflow-hidden">

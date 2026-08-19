@@ -5,12 +5,19 @@ import { IcClose } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 export interface ModalProps extends Omit<Dialog.Root.Props, "children"> {
+  title: string;
   children?: ReactNode;
   className?: string;
   ref?: Ref<HTMLDivElement>;
 }
 
-export const Modal = ({ children, className, ref, ...props }: ModalProps) => {
+export const Modal = ({
+  title,
+  children,
+  className,
+  ref,
+  ...props
+}: ModalProps) => {
   return (
     <Dialog.Root {...props}>
       <Dialog.Portal>
@@ -29,6 +36,7 @@ export const Modal = ({ children, className, ref, ...props }: ModalProps) => {
               className
             )}
           >
+            <Dialog.Title className="sr-only">{title}</Dialog.Title>
             {children}
           </Dialog.Popup>
         </Dialog.Viewport>
