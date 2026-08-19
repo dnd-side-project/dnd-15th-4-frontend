@@ -25,6 +25,25 @@ const SHEET_EXPANDED_HEIGHT = 9999;
 
 const MAP_FOCUS_TOP_PADDING = 16;
 
+const MAX_TIMEOUT_MS = 2_147_483_647;
+
+const scheduleAt = (targetTime: number, callback: () => void) => {
+  let timerId: ReturnType<typeof setTimeout>;
+
+  const tick = () => {
+    const remainingMs = targetTime - Date.now();
+
+    timerId =
+      remainingMs <= MAX_TIMEOUT_MS
+        ? setTimeout(callback, Math.max(0, remainingMs))
+        : setTimeout(tick, MAX_TIMEOUT_MS);
+  };
+
+  tick();
+
+  return () => clearTimeout(timerId);
+};
+
 const MeetingDetailPage = () => {
   const router = useRouter();
   const { meetingId } = useParams<{ meetingId: string }>();
@@ -45,17 +64,11 @@ const MeetingDetailPage = () => {
   }, []);
 
   useEffect(() => {
-    const remainingMs =
-      new Date(mockMeetingSummary.dateTime).getTime() - Date.now();
+    const targetTime = new Date(mockMeetingSummary.dateTime).getTime();
 
-    const timerId = setTimeout(
-      () => {
-        router.replace(`/meeting/${meetingId}/completed`);
-      },
-      Math.max(0, remainingMs)
-    );
-
-    return () => clearTimeout(timerId);
+    return scheduleAt(targetTime, () => {
+      router.replace(`/meeting/${meetingId}/completed`);
+    });
   }, [meetingId, router]);
 
   const handleParticipantFocus = (participant: MeetingParticipant) => {
