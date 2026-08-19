@@ -1,5 +1,6 @@
 "use client";
 
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { BottomSheet } from "@/components/common/BottomSheet";
@@ -24,7 +25,28 @@ const SHEET_EXPANDED_HEIGHT = 9999;
 
 const MAP_FOCUS_TOP_PADDING = 16;
 
+const MAX_TIMEOUT_MS = 2_147_483_647;
+
+const scheduleAt = (targetTime: number, callback: () => void) => {
+  let timerId: ReturnType<typeof setTimeout>;
+
+  const tick = () => {
+    const remainingMs = targetTime - Date.now();
+
+    timerId =
+      remainingMs <= MAX_TIMEOUT_MS
+        ? setTimeout(callback, Math.max(0, remainingMs))
+        : setTimeout(tick, MAX_TIMEOUT_MS);
+  };
+
+  tick();
+
+  return () => clearTimeout(timerId);
+};
+
 const MeetingDetailPage = () => {
+  const router = useRouter();
+  const { meetingId } = useParams<{ meetingId: string }>();
   const { participants } = mockMeetingParticipants;
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [sheetSnapPoint, setSheetSnapPoint] = useState<number>(
@@ -40,6 +62,14 @@ const MeetingDetailPage = () => {
   useEffect(() => {
     setIsSheetOpen(true);
   }, []);
+
+  useEffect(() => {
+    const targetTime = new Date(mockMeetingSummary.dateTime).getTime();
+
+    return scheduleAt(targetTime, () => {
+      router.replace(`/meeting/${meetingId}/completed`);
+    });
+  }, [meetingId, router]);
 
   const handleParticipantFocus = (participant: MeetingParticipant) => {
     const sheetTop = sheetPopupRef.current?.getBoundingClientRect().top;

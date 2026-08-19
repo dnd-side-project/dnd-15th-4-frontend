@@ -69,3 +69,48 @@ export interface MeetingSummary {
   status: MeetingStatus;
   participants: MeetingSummaryParticipant[];
 }
+
+export interface MeetingRankingItem {
+  userId: number;
+  nickname: string;
+  profileImageUrl: string;
+  arrived: boolean;
+  arrivedAt: string | null;
+  earlyArrivalMinutes: number | null;
+  late: boolean;
+}
+
+export interface CompletedPuzzleFeedItem {
+  imageUrl: string;
+  uploaderId: number;
+  uploaderNickname: string;
+  uploaderProfileImageUrl: string;
+}
+
+export interface PuzzleGroupParticipant {
+  userId: number | null;
+  nickname: string | null;
+  profileImageUrl: string | null;
+  departed: boolean;
+  departedAt: string | null;
+  arrived: boolean;
+  latitude: number | null;
+  longitude: number | null;
+  locationUpdatedAt: string | null;
+  pieceIndex: number;
+  revealed: boolean;
+}
+
+export interface MeetingPuzzleGroup {
+  puzzleGroupId: number;
+  puzzleImageUrl: string;
+  pageNumber: number;
+  members: PuzzleGroupParticipant[];
+}
+
+export interface MeetingResultResponse {
+  puzzleFeed: CompletedPuzzleFeedItem[];
+  puzzleGroups?: MeetingPuzzleGroup[];
+  rankings: MeetingRankingItem[];
+  myDepartedAt: string | null;
+}
