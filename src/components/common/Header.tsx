@@ -1,3 +1,5 @@
+"use client";
+
 import { IcArrowBack } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
