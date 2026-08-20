@@ -23,15 +23,14 @@ import { useCapacitySelection } from "@/hooks/meeting/create/useCapacitySelectio
 import { useCreateMeetingMutation } from "@/hooks/meeting/create/useCreateMeeting";
 import { useDateTimeSelection } from "@/hooks/meeting/create/useDateTimeSelection";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
-import { urlToFile } from "@/utils/file";
 import { useAuthStore } from "@/stores/useAuthStore";
-
 import type {
   MeetingCreateRequest,
   MeetingImageSelection,
 } from "@/types/meeting";
 import type { SelectedPlace } from "@/types/place";
 import { formatDateTimeForApi } from "@/utils/date";
+import { urlToFile } from "@/utils/file";
 
 export default function CreateMeetingPage() {
   const router = useRouter();
