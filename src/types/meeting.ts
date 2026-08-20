@@ -114,3 +114,8 @@ export interface MeetingResultResponse {
   rankings: MeetingRankingItem[];
   myDepartedAt: string | null;
 }
+
+export interface MeetingImageSelection {
+  type: "user" | "default";
+  src: string;
+}
