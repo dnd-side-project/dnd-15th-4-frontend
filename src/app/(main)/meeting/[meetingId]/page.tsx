@@ -4,12 +4,12 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { BottomSheet } from "@/components/common/BottomSheet";
-import { ChatFloatingButton } from "@/components/meeting/ChatFloatingButton";
-import { MeetingMap } from "@/components/meeting/MeetingMap";
-import type { MeetingMapFocusLocation } from "@/components/meeting/MeetingMap";
-import { MeetingProgressSheet } from "@/components/meeting/MeetingProgressSheet";
-import { MeetingSummaryCard } from "@/components/meeting/MeetingSummaryCard";
-import { ParticipantMarker } from "@/components/meeting/ParticipantMarker";
+import { ChatFloatingButton } from "@/components/meeting/progress/ChatFloatingButton";
+import { MeetingMap } from "@/components/meeting/progress/MeetingMap";
+import type { MeetingMapFocusLocation } from "@/components/meeting/progress/MeetingMap";
+import { MeetingProgressSheet } from "@/components/meeting/progress/MeetingProgressSheet";
+import { MeetingSummaryCard } from "@/components/meeting/progress/MeetingSummaryCard";
+import { ParticipantMarker } from "@/components/meeting/progress/ParticipantMarker";
 import { CURRENT_PARTICIPANT_ID } from "@/constants/message";
 import { getRemainingTimeLabel, getTimeLabel } from "@/utils/date";
 import {

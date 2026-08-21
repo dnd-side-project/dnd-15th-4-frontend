@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { PlaceSearchTrigger } from "./PlaceSearchTrigger";
 
 const meta = {
-  title: "Components/Meeting/PlaceSearchTrigger",
+  title: "Meeting/Create/PlaceSearchTrigger",
   component: PlaceSearchTrigger,
   parameters: {
     layout: "padded",

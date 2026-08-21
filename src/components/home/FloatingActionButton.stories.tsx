@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { FloatingActionButton } from "@/components/home";
 
 const meta: Meta<typeof FloatingActionButton> = {
-  title: "Components/Common/FloatingActionButton",
+  title: "Home/FloatingActionButton",
   component: FloatingActionButton,
   tags: ["autodocs"],
   parameters: {

@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export interface PuzzleSetIndicatorProps {
+export interface DotIndicatorProps {
   pageCount: number;
   currentPage: number;
   className?: string;
@@ -8,13 +8,13 @@ export interface PuzzleSetIndicatorProps {
   inactiveDotClassName?: string;
 }
 
-export const PuzzleSetIndicator = ({
+export const DotIndicator = ({
   pageCount,
   currentPage,
   className,
   activeDotClassName = "bg-surface-6 w-2.75",
   inactiveDotClassName = "bg-sub2-light-hover",
-}: PuzzleSetIndicatorProps) => {
+}: DotIndicatorProps) => {
   return (
     <div className={cn("flex items-center justify-center gap-1.75", className)}>
       {Array.from({ length: pageCount }).map((_, index) => (

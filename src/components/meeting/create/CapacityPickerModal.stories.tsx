@@ -4,7 +4,7 @@ import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { CapacityPickerModal } from "./CapacityPickerModal";
 
 const meta = {
-  title: "Components/Meeting/CapacityPickerModal",
+  title: "Meeting/Create/CapacityPickerModal",
   component: CapacityPickerModal,
   parameters: {
     layout: "fullscreen",

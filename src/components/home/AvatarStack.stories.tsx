@@ -11,7 +11,7 @@ const mockParticipants = [
 ];
 
 const meta: Meta<typeof AvatarStack> = {
-  title: "Components/Home/AvatarStack",
+  title: "Home/AvatarStack",
   component: AvatarStack,
   tags: ["autodocs"],
   parameters: {

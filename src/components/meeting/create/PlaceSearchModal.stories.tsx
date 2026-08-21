@@ -141,7 +141,7 @@ const DummyPlaceSearchModal = ({
 };
 
 const meta = {
-  title: "Components/Meeting/PlaceSearchModal",
+  title: "Meeting/Create/PlaceSearchModal",
   component: DummyPlaceSearchModal,
   parameters: {
     layout: "fullscreen",

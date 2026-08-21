@@ -5,7 +5,7 @@ import { ImageUploadBox } from "./ImageUploadBox";
 import type { MeetingImageSelection } from "@/types/meeting";
 
 const meta = {
-  title: "Components/Meeting/ImageUploadBox",
+  title: "Meeting/Create/ImageUploadBox",
   component: ImageUploadBox,
   parameters: {
     layout: "centered",

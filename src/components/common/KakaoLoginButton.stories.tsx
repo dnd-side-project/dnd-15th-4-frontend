@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { KakaoLoginButton } from "@/components/common/KakaoLoginButton";
 
 const meta = {
-  title: "UI/KakaoLoginButton",
+  title: "Common/KakaoLoginButton",
   component: KakaoLoginButton,
   parameters: {
     layout: "padded",

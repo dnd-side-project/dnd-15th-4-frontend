@@ -38,7 +38,7 @@ const SAMPLE_IMAGE =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
 
 const meta = {
-  title: "Components/Meeting/ImageCropModal",
+  title: "Meeting/Create/ImageCropModal",
   component: ImageCropModal,
   parameters: {
     layout: "fullscreen",

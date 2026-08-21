@@ -4,7 +4,7 @@ import { expect, fn, userEvent, within } from "storybook/test";
 import { CapacityField } from "./CapacityField";
 
 const meta = {
-  title: "Components/Meeting/CapacityField",
+  title: "Meeting/Create/CapacityField",
   component: CapacityField,
   parameters: {
     layout: "padded",

@@ -5,7 +5,7 @@ import { ProfileMenu } from "@/components/home";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 const meta: Meta<typeof ProfileMenu> = {
-  title: "Components/Common/ProfileMenu",
+  title: "Common/ProfileMenu",
   component: ProfileMenu,
   tags: ["autodocs"],
   decorators: [

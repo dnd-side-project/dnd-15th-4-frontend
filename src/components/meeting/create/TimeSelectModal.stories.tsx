@@ -18,7 +18,7 @@ const MOCK_MEETINGS: MeetingData[] = [
 ];
 
 const meta = {
-  title: "Components/Meeting/TimeSelectModal",
+  title: "Meeting/Create/TimeSelectModal",
   component: TimeSelectModal,
   parameters: {
     layout: "fullscreen",

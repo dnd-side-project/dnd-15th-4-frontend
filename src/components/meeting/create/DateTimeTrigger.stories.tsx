@@ -4,7 +4,7 @@ import { fn } from "storybook/test";
 import { DateTimeTrigger } from "./DateTimeTrigger";
 
 const meta = {
-  title: "Common/DateTimeField",
+  title: "Meeting/Create/DateTimeField",
   component: DateTimeTrigger,
   parameters: {
     layout: "padded",

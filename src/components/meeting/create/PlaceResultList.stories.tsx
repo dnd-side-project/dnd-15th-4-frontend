@@ -31,7 +31,7 @@ const MOCK_RESULTS: PlaceDto[] = [
 ];
 
 const meta = {
-  title: "Components/Meeting/PlaceResultList",
+  title: "Meeting/Create/PlaceResultList",
   component: PlaceResultList,
   parameters: {
     layout: "padded",

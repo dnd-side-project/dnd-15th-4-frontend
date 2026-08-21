@@ -4,7 +4,7 @@ import { IcExtension, IcViewAgenda } from "@/components/icons";
 import { Toggle } from "@/components/common/Toggle";
 
 const meta = {
-  title: "UI/Toggle",
+  title: "Common/Toggle",
   component: Toggle,
   parameters: {
     layout: "centered",

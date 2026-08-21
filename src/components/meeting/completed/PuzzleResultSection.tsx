@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 
-import { Header } from "./Header";
+import { IconActionHeader } from "@/components/common/IconActionHeader";
 import { PuzzleResultCarousel } from "./PuzzleResultCarousel";
-import { PuzzleSetIndicator } from "./PuzzleSetIndicator";
+import { DotIndicator } from "@/components/common/DotIndicator";
 import { IcHome } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import type { MeetingPuzzleGroup } from "@/types/meeting";
@@ -38,7 +38,7 @@ export const PuzzleResultSection = ({
         isAllFailed ? "bg-sub2-normal" : "bg-point-normal"
       )}
     >
-      <Header
+      <IconActionHeader
         icon={
           <IcHome
             size={24}
@@ -74,7 +74,7 @@ export const PuzzleResultSection = ({
           </>
         )}
       </p>
-      <PuzzleSetIndicator
+      <DotIndicator
         pageCount={Math.max(puzzleGroups.length, 1)}
         currentPage={centeredIndex}
         className={cn("mt-6", puzzleGroups.length <= 1 && "invisible")}
