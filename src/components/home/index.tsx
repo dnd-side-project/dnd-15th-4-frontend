@@ -3,4 +3,3 @@ export * from "./FloatingActionButton";
 export * from "./HomeHeroSection";
 export * from "./HomeUpcomingSection";
 export * from "./ProfileMenu";
-export * from "./ScheduleCard";

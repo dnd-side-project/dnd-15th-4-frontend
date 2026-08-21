@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/common/Button";
 import { IcArrowBack } from "@/components/icons";
-import { ScheduleCard } from "@/components/home/ScheduleCard";
+import { ScheduleCard } from "@/components/common/ScheduleCard";
 import { cn } from "@/lib/utils";
 import type { MeetingData } from "@/types/meeting";
 import {
