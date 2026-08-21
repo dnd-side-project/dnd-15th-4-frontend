@@ -31,18 +31,15 @@ export const DateSelectModal = ({
 }: DateSelectModalProps) => {
   const today = new Date();
 
-  const baseDate = initialDate ?? today;
-  const [selectedDate, setSelectedDate] = useState<Date | null>(
-    initialDate ?? null
-  );
-  const [viewYear, setViewYear] = useState(baseDate.getFullYear());
-  const [viewMonth, setViewMonth] = useState(baseDate.getMonth());
+  const [selectedDate, setSelectedDate] = useState<Date>(initialDate ?? today);
+
+  const [viewYear, setViewYear] = useState(selectedDate.getFullYear());
+  const [viewMonth, setViewMonth] = useState(selectedDate.getMonth());
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
   const weeks = getMonthWeeks(viewYear, viewMonth);
-  const meetingsOnSelectedDate = selectedDate
-    ? getMeetingsOnDate(meetings, selectedDate)
-    : [];
+
+  const meetingsOnSelectedDate = getMeetingsOnDate(meetings, selectedDate);
 
   const goToPrevMonth = () => {
     const prev = new Date(viewYear, viewMonth - 1, 1);
@@ -68,7 +65,7 @@ export const DateSelectModal = ({
   };
 
   const handleConfirm = () => {
-    onConfirm(selectedDate ?? today);
+    onConfirm(selectedDate);
   };
 
   return (
@@ -158,9 +155,8 @@ export const DateSelectModal = ({
 
                   const hasMeeting =
                     getMeetingsOnDate(meetings, date).length > 0;
-                  const isSelected = selectedDate
-                    ? isSameDay(date, selectedDate)
-                    : false;
+
+                  const isSelected = isSameDay(date, selectedDate);
                   const isToday = isSameDay(date, today);
                   const disabled = isPastDay(date, today);
 
