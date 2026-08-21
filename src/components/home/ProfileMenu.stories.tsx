@@ -36,7 +36,7 @@ const withAuthState = (
 
 export const LoggedIn: Story = {
   render: withAuthState({
-    user: { id: "mock-id", nickname: "퍼즐밋 유저" },
+    user: { id: 1, nickname: "퍼즐밋 유저", profileImageUrl: null },
     _hasHydrated: true,
   }),
 };
