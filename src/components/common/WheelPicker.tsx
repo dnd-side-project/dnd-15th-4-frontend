@@ -27,14 +27,11 @@ export const WheelPicker = ({
 }: WheelPickerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
   const lastCommittedIndexRef = useRef(initialIndex);
   const initialIndexRef = useRef(initialIndex);
 
   const [selectedIndex, setSelectedIndex] = useState(initialIndex);
-
-  useEffect(() => {
-    onChangeRef.current = onChange;
-  }, [onChange]);
 
   useEffect(() => {
     containerRef.current?.scrollTo({
