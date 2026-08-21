@@ -1,4 +1,5 @@
 import { BaseIcon } from "./BaseIcon";
+
 import type { IconProps } from "./icon.types";
 
 export const IcSearch = (props: IconProps) => (
