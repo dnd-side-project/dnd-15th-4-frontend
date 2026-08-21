@@ -1,14 +1,23 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, fn, waitFor, within } from "storybook/test";
+import { expect, fn, screen, waitFor, within } from "storybook/test";
 
 import { TimeSelectModal } from "./TimeSelectModal";
 import type { MeetingData } from "@/types/meeting";
+import { MIN_LEAD_TIME_MINUTES } from "@/utils/date";
+
+const TOMORROW = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
 const MOCK_MEETINGS: MeetingData[] = [
   {
     meetingId: 1,
     title: "성수동 약속",
-    dateTime: "2026-08-21T18:00:00+09:00",
+    dateTime: new Date(
+      TOMORROW.getFullYear(),
+      TOMORROW.getMonth(),
+      TOMORROW.getDate(),
+      18,
+      0
+    ).toISOString(),
     place: "성수 상상플래닛",
     latitude: 37.5445,
     longitude: 127.0557,
@@ -24,7 +33,7 @@ const meta = {
     layout: "fullscreen",
   },
   args: {
-    date: new Date(2026, 7, 21),
+    date: TOMORROW,
     meetings: MOCK_MEETINGS,
     onConfirm: fn(),
     onClose: fn(),
@@ -49,7 +58,7 @@ export const ConfirmWithoutConflict: Story = {
     await confirmButton.click();
 
     await waitFor(() => expect(args.onConfirm).toHaveBeenCalledWith(10, 0));
-    expect(canvas.queryByRole("alertdialog")).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   },
 };
 
@@ -64,7 +73,7 @@ export const BlocksDuplicateTime: Story = {
 
     await confirmButton.click();
 
-    const alertDialog = await canvas.findByRole("alertdialog");
+    const alertDialog = await screen.findByRole("dialog");
     expect(alertDialog).toBeInTheDocument();
     expect(args.onConfirm).not.toHaveBeenCalled();
 
@@ -74,7 +83,48 @@ export const BlocksDuplicateTime: Story = {
     await dismissButton.click();
 
     await waitFor(() =>
-      expect(canvas.queryByRole("alertdialog")).not.toBeInTheDocument()
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
     );
+  },
+};
+
+export const BlocksPastDateTime: Story = {
+  args: {
+    date: new Date(Date.now() - 24 * 60 * 60 * 1000),
+    initialHour: 10,
+    initialMinute: 0,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const confirmButton = await canvas.findByRole("button", { name: "확인" });
+
+    await confirmButton.click();
+
+    const alertDialog = await screen.findByRole("dialog");
+    expect(alertDialog).toHaveTextContent("이미 지난 날짜와 시간이에요");
+    expect(args.onConfirm).not.toHaveBeenCalled();
+  },
+};
+
+export const BlocksTooSoonDateTime: Story = {
+  args: (() => {
+    const inTenMinutes = new Date(Date.now() + 10 * 60 * 1000);
+    return {
+      date: inTenMinutes,
+      initialHour: inTenMinutes.getHours(),
+      initialMinute: inTenMinutes.getMinutes(),
+    };
+  })(),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const confirmButton = await canvas.findByRole("button", { name: "확인" });
+
+    await confirmButton.click();
+
+    const alertDialog = await screen.findByRole("dialog");
+    expect(alertDialog).toHaveTextContent(
+      `최소 ${MIN_LEAD_TIME_MINUTES}분 이후로`
+    );
+    expect(args.onConfirm).not.toHaveBeenCalled();
   },
 };
