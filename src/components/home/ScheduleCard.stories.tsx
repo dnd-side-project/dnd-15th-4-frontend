@@ -19,7 +19,7 @@ const mockMeeting: MeetingData = {
 };
 
 const meta: Meta<typeof ScheduleCard> = {
-  title: "Components/Home/ScheduleCard",
+  title: "Home/ScheduleCard",
   component: ScheduleCard,
   tags: ["autodocs"],
   parameters: {

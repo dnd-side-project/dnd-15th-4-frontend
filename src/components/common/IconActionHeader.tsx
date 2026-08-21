@@ -21,24 +21,16 @@ export const IconActionHeader = ({
     <div
       className={cn("flex w-full items-center p-4 justify-between", className)}
     >
-      {icon &&
-        (onIconClick && iconAriaLabel ? (
-          <button
-            type="button"
-            onClick={onIconClick}
-            aria-label={iconAriaLabel}
-            className="text-primary flex size-6 items-center justify-center"
-          >
-            {icon}
-          </button>
-        ) : (
-          <span
-            aria-hidden
-            className="text-primary flex size-6 items-center justify-center"
-          >
-            {icon}
-          </span>
-        ))}
+      {icon && (
+        <button
+          type="button"
+          onClick={onIconClick}
+          aria-label={iconAriaLabel}
+          className="text-primary flex size-6 items-center justify-center"
+        >
+          {icon}
+        </button>
+      )}
       {detailText && (
         <button
           type="button"

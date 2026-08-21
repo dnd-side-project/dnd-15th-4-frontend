@@ -9,10 +9,8 @@ import type { MeetingData } from "@/types/meeting";
 import {
   formatMeetingDateTime,
   hasTimeConflict,
-  MIN_LEAD_TIME_MINUTES,
   to12Hour,
   to24Hour,
-  validateSelectedDateTime,
   type MeridiemPeriod,
 } from "@/utils/date";
 
@@ -44,29 +42,13 @@ export const TimeSelectModal = ({
   const [period, setPeriod] = useState<MeridiemPeriod>(initial.period);
   const [hour12, setHour12] = useState(initial.hour12);
   const [minute, setMinute] = useState(initialMinute ?? 0);
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [showConflictWarning, setShowConflictWarning] = useState(false);
 
   const handleConfirm = () => {
     const hour24 = to24Hour(period, hour12);
 
-    const validation = validateSelectedDateTime(date, hour24, minute);
-    if (validation === "past") {
-      setAlertMessage("이미 지난 날짜와 시간이에요.\n다시 선택해주세요.");
-      return;
-    }
-    if (validation === "too-soon") {
-      setAlertMessage(
-        `지금으로부터 최소 ${MIN_LEAD_TIME_MINUTES}분 이후로\n선택해주세요.`
-      );
-      return;
-    }
-
     if (hasTimeConflict(meetings, date, hour24, minute)) {
-      setAlertMessage(
-        `이미 같은 시간에 등록된 약속이 있어요.\n${formatMeetingDateTime(date.toISOString()).dateFormatted} ${
-          to12Hour(to24Hour(period, hour12)).period
-        } ${hour12}:${String(minute).padStart(2, "0")}`
-      );
+      setShowConflictWarning(true);
       return;
     }
 
@@ -123,10 +105,12 @@ export const TimeSelectModal = ({
         </Button>
       </div>
 
-      {alertMessage && (
+      {showConflictWarning && (
         <AlertModal
-          message={alertMessage}
-          onConfirm={() => setAlertMessage(null)}
+          message={`이미 같은 시간에 등록된 약속이 있어요.\n${formatMeetingDateTime(date.toISOString()).dateFormatted} ${
+            to12Hour(to24Hour(period, hour12)).period
+          } ${hour12}:${String(minute).padStart(2, "0")}`}
+          onConfirm={() => setShowConflictWarning(false)}
         />
       )}
     </div>

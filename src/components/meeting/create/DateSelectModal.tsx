@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/common/Button";
 import { IcArrowBack } from "@/components/icons";
-import { ScheduleCard } from "@/components/common/ScheduleCard";
+import { ScheduleCard } from "@/components/home/ScheduleCard";
 import { cn } from "@/lib/utils";
 import type { MeetingData } from "@/types/meeting";
 import {
@@ -31,15 +31,18 @@ export const DateSelectModal = ({
 }: DateSelectModalProps) => {
   const today = new Date();
 
-  const [selectedDate, setSelectedDate] = useState<Date>(initialDate ?? today);
-
-  const [viewYear, setViewYear] = useState(selectedDate.getFullYear());
-  const [viewMonth, setViewMonth] = useState(selectedDate.getMonth());
+  const baseDate = initialDate ?? today;
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    initialDate ?? null
+  );
+  const [viewYear, setViewYear] = useState(baseDate.getFullYear());
+  const [viewMonth, setViewMonth] = useState(baseDate.getMonth());
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
   const weeks = getMonthWeeks(viewYear, viewMonth);
-
-  const meetingsOnSelectedDate = getMeetingsOnDate(meetings, selectedDate);
+  const meetingsOnSelectedDate = selectedDate
+    ? getMeetingsOnDate(meetings, selectedDate)
+    : [];
 
   const goToPrevMonth = () => {
     const prev = new Date(viewYear, viewMonth - 1, 1);
@@ -65,7 +68,7 @@ export const DateSelectModal = ({
   };
 
   const handleConfirm = () => {
-    onConfirm(selectedDate);
+    onConfirm(selectedDate ?? today);
   };
 
   return (
@@ -155,8 +158,9 @@ export const DateSelectModal = ({
 
                   const hasMeeting =
                     getMeetingsOnDate(meetings, date).length > 0;
-
-                  const isSelected = isSameDay(date, selectedDate);
+                  const isSelected = selectedDate
+                    ? isSameDay(date, selectedDate)
+                    : false;
                   const isToday = isSameDay(date, today);
                   const disabled = isPastDay(date, today);
 
