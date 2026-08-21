@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { ScheduleCard } from "@/components/home";
+import { ScheduleCard } from "./ScheduleCard";
 import type { MeetingData } from "@/types/meeting";
 
 const mockMeeting: MeetingData = {
