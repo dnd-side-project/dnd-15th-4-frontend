@@ -9,6 +9,7 @@ export * from "./IcExtension";
 export * from "./IcExtensionFilled";
 export * from "./IcHome";
 export * from "./IcCamera";
+export * from "./IcCopy";
 export * from "./IcFlip";
 export * from "./IcInfo";
 export * from "./IcKakao";
