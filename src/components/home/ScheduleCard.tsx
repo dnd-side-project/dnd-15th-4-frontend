@@ -8,9 +8,13 @@ import { formatMeetingDateTime } from "@/utils/date";
 
 interface ScheduleCardProps {
   meeting: MeetingData;
+  participantLimit?: number;
 }
 
-export const ScheduleCard = ({ meeting }: ScheduleCardProps) => {
+export const ScheduleCard = ({
+  meeting,
+  participantLimit,
+}: ScheduleCardProps) => {
   const router = useRouter();
   const { dateFormatted, timeFormatted, dDay } = formatMeetingDateTime(
     meeting.dateTime
@@ -45,9 +49,15 @@ export const ScheduleCard = ({ meeting }: ScheduleCardProps) => {
           </span>
         </div>
 
-        <div className="mt-1 flex shrink-0 items-center">
-          <AvatarStack participants={meeting.participants} />
-        </div>
+        {participantLimit == undefined ? (
+          <div className="mt-1 flex shrink-0 items-center">
+            <AvatarStack participants={meeting.participants} />
+          </div>
+        ) : (
+          <p className="body1 text-sub1-normal mt-2.5 font-medium">
+            {participantLimit}인 약속
+          </p>
+        )}
       </div>
 
       <span
