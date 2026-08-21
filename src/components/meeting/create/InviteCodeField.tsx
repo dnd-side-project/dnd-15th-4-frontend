@@ -7,20 +7,20 @@ import { cn } from "@/lib/utils";
 
 export interface InviteCodeFieldProps {
   label?: string;
-  inviteCode: string;
+  inviteLink: string;
 }
 
 const TOAST_DURATION_MS = 2000;
 
 export const InviteCodeField = ({
   label = "초대 코드",
-  inviteCode,
+  inviteLink,
 }: InviteCodeFieldProps) => {
   const [showToast, setShowToast] = useState(false);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(inviteCode);
+      await navigator.clipboard.writeText(inviteLink);
       setShowToast(true);
       setTimeout(() => setShowToast(false), TOAST_DURATION_MS);
     } catch {
@@ -32,7 +32,7 @@ export const InviteCodeField = ({
     <div className="relative flex w-full flex-col gap-3">
       {label && <label className="h4 text-primary font-bold">{label}</label>}
       <div className="border-border-1 rounded-16 flex w-full items-center justify-between border px-4 py-4.5">
-        <span className="body3 text-primary truncate">{inviteCode}</span>
+        <span className="body3 text-primary truncate">{inviteLink}</span>
         <button
           type="button"
           onClick={handleCopy}

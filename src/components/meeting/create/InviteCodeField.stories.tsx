@@ -17,7 +17,7 @@ const meta = {
     ),
   ],
   args: {
-    inviteCode: "aB3dEfGh",
+    inviteLink: "https://puzzlemeet.kr/invite/123",
   },
   tags: ["autodocs"],
 } satisfies Meta<typeof InviteCodeField>;
@@ -42,7 +42,11 @@ export const CopyShowsToast: Story = {
 
     await copyButton.click();
 
-    await waitFor(() => expect(writeTextSpy).toHaveBeenCalledWith("aB3dEfGh"));
+    await waitFor(() =>
+      expect(writeTextSpy).toHaveBeenCalledWith(
+        "https://puzzlemeet.kr/invite/123"
+      )
+    );
     await waitFor(() =>
       expect(canvas.getByRole("status")).toHaveTextContent(
         "초대 코드가 복사되었어요"

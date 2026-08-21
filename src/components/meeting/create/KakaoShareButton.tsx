@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { IcKakao } from "@/components/icons";
+import { loadKakaoSdk } from "@/lib/kakao";
 
 export interface KakaoShareButtonProps {
   title: string;
@@ -17,16 +18,20 @@ export const KakaoShareButton = ({
 }: KakaoShareButtonProps) => {
   const [error, setError] = useState<string | null>(null);
 
-  // todo: 카카오톡 메시지 SDK가 MVP에서 밀려남에 따라 현재 카카오톡 공유는 연동하지 않고 링크 복사로 임시 구현합니다.
   const handleShare = async () => {
     setError(null);
-    try {
-      await navigator.clipboard.writeText(
-        `${title}\n${description}\n${linkUrl}`
-      );
-    } catch {
-      setError("링크 복사에 실패했어요. 잠시 후 다시 시도해주세요.");
+    const kakao = await loadKakaoSdk();
+
+    if (!kakao) {
+      setError("카카오톡 공유를 사용할 수 없어요. 잠시 후 다시 시도해주세요.");
+      return;
     }
+
+    kakao.Share.sendDefault({
+      objectType: "text",
+      text: `${title}\n${description}`,
+      link: { mobileWebUrl: linkUrl, webUrl: linkUrl },
+    });
   };
 
   return (
