@@ -3,12 +3,22 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { ScheduleCard } from "./ScheduleCard";
 import type { MeetingData } from "@/types/meeting";
 
+const NOW = new Date();
+const YESTERDAY = new Date(Date.now() - 24 * 60 * 60 * 1000);
+const TOMORROW = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
 const mockMeeting: MeetingData = {
   meetingId: 1,
   latitude: 37.4979,
   longitude: 127.0276,
   title: "강남역 모임 약속",
-  dateTime: "2026-08-20T19:00:00+09:00",
+  dateTime: new Date(
+    TOMORROW.getFullYear(),
+    TOMORROW.getMonth(),
+    TOMORROW.getDate(),
+    18,
+    0
+  ).toISOString(),
   place: "강남역 11번 출구",
   status: "WAITING",
   participants: [
@@ -45,6 +55,26 @@ export const Default: Story = {
   },
 };
 
+export const TodayMeeting: Story = {
+  args: {
+    meeting: {
+      ...mockMeeting,
+      title: "오늘 진행되는 약속",
+      dateTime: NOW.toISOString(),
+    },
+  },
+};
+
+export const PastMeeting: Story = {
+  args: {
+    meeting: {
+      ...mockMeeting,
+      title: "과거에 종료된 약속 (필터링 대상)",
+      dateTime: YESTERDAY.toISOString(),
+    },
+  },
+};
+
 export const LongTextOverflow: Story = {
   args: {
     meeting: {
@@ -69,11 +99,9 @@ export const ManyParticipants: Story = {
   },
 };
 
-export const TodayMeeting: Story = {
+export const WithParticipantLimit: Story = {
   args: {
-    meeting: {
-      ...mockMeeting,
-      dateTime: new Date().toISOString(),
-    },
+    meeting: mockMeeting,
+    participantLimit: 4,
   },
 };
