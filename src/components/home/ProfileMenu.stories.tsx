@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useEffect } from "react";
 
-import { ProfileMenu } from "@/components/home";
+import { ProfileMenu } from "./ProfileMenu";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 const meta: Meta<typeof ProfileMenu> = {

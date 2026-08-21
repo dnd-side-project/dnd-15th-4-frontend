@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { HomeUpcomingSection } from "@/components/home";
+import { HomeUpcomingSection } from "./HomeUpcomingSection";
 import type { MeetingData } from "@/types/meeting";
 
 const mockSchedules: MeetingData[] = [

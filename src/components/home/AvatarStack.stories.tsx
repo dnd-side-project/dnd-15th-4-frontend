@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { AvatarStack } from "@/components/home";
+import { AvatarStack } from "./AvatarStack";
 
 const mockParticipants = [
   { id: 1, name: "소정", profileImageNumber: 3 },
