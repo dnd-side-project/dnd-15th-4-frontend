@@ -8,10 +8,21 @@ import { Header } from "@/components/common/Header";
 import { Input } from "@/components/common/Input";
 import { InfoBanner } from "@/components/common/InfoBanner";
 import { ToggleField } from "@/components/common/ToggleField";
+import { CapacityField } from "@/components/meeting/CapacityField";
+import { CapacityPickerModal } from "@/components/meeting/CapacityPickerModal";
+import { DateTimeTrigger } from "@/components/meeting/DateTimeTrigger";
+import { DateSelectModal } from "@/components/meeting/DateSelectModal";
 import { ImageCropModal } from "@/components/meeting/ImageCropModal";
 import { ImageUploadBox } from "@/components/meeting/ImageUploadBox";
+import { PlaceSearchModal } from "@/components/meeting/PlaceSearchModal";
+import { PlaceSearchTrigger } from "@/components/meeting/PlaceSearchTrigger";
+import { TimeSelectModal } from "@/components/meeting/TimeSelectModal";
 import { getRandomBrandImage } from "@/constants/branding-images";
+import { MOCK_MEETINGS } from "@/mocks/mockMeetings";
+import { useCapacitySelection } from "@/hooks/meeting/useCapacitySelection";
+import { useDateTimeSelection } from "@/hooks/meeting/useDateTimeSelection";
 import type { MeetingImageSelection } from "@/types/meeting";
+import type { SelectedPlace } from "@/types/place";
 
 export default function CreateMeetingPage() {
   const router = useRouter();
@@ -22,9 +33,10 @@ export default function CreateMeetingPage() {
   const [nicknameParticipation, setNicknameParticipation] = useState(false);
   const [nickname, setNickname] = useState("");
   const [title, setTitle] = useState("");
-  const [dateTime, setDateTime] = useState("");
-  const [place, setPlace] = useState("");
-  const [capacity, setCapacity] = useState("");
+  const dateTimeSelection = useDateTimeSelection();
+  const [place, setPlace] = useState<SelectedPlace | null>(null);
+  const [isPlaceSearchOpen, setIsPlaceSearchOpen] = useState(false);
+  const capacitySelection = useCapacitySelection();
   const [memo, setMemo] = useState("");
   const [notifyLocation, setNotifyLocation] = useState(false);
   const [notifyFriendArrival, setNotifyFriendArrival] = useState(false);
@@ -106,23 +118,23 @@ export default function CreateMeetingPage() {
               maxLength={12}
               placeholder="약속 이름을 입력하세요"
             />
-            <Input
+            <DateTimeTrigger
               label="날짜 / 시간"
-              value={dateTime}
-              onChange={(event) => setDateTime(event.target.value)}
+              value={dateTimeSelection.dateTime}
               placeholder="약속 날짜와 시간을 설정하세요"
+              onClick={dateTimeSelection.open}
             />
-            <Input
+            <PlaceSearchTrigger
               label="장소"
-              value={place}
-              onChange={(event) => setPlace(event.target.value)}
+              place={place}
               placeholder="장소, 지역, 주소를 검색하세요"
+              onClick={() => setIsPlaceSearchOpen(true)}
             />
-            <Input
+            <CapacityField
               label="참여 인원"
-              value={capacity}
-              onChange={(event) => setCapacity(event.target.value)}
+              value={capacitySelection.capacity}
               placeholder="참여 인원을 설정하세요"
+              onClick={capacitySelection.open}
             />
             <Input
               label="메모"
@@ -180,6 +192,46 @@ export default function CreateMeetingPage() {
           imageSrc={pendingCropImage}
           onCancel={handleCropCancel}
           onConfirm={handleCropConfirm}
+        />
+      )}
+
+      {isPlaceSearchOpen && (
+        <PlaceSearchModal
+          onClose={() => setIsPlaceSearchOpen(false)}
+          onSelect={(selected) => {
+            setPlace(selected);
+            setIsPlaceSearchOpen(false);
+          }}
+        />
+      )}
+
+      {capacitySelection.isOpen && (
+        <CapacityPickerModal
+          value={capacitySelection.capacity ?? 4}
+          onConfirm={capacitySelection.handleConfirm}
+          onClose={capacitySelection.close}
+        />
+      )}
+
+      {dateTimeSelection.step === "date" && (
+        <DateSelectModal
+          initialDate={
+            dateTimeSelection.pendingDate ?? dateTimeSelection.dateTime
+          }
+          meetings={MOCK_MEETINGS}
+          onConfirm={dateTimeSelection.handleDateConfirm}
+          onClose={dateTimeSelection.close}
+        />
+      )}
+
+      {dateTimeSelection.step === "time" && dateTimeSelection.pendingDate && (
+        <TimeSelectModal
+          date={dateTimeSelection.pendingDate}
+          meetings={MOCK_MEETINGS}
+          initialHour={dateTimeSelection.dateTime?.getHours()}
+          initialMinute={dateTimeSelection.dateTime?.getMinutes()}
+          onConfirm={dateTimeSelection.handleTimeConfirm}
+          onClose={dateTimeSelection.close}
         />
       )}
     </div>
