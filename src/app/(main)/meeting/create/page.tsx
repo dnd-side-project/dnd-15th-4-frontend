@@ -3,39 +3,29 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { AlertModal } from "@/components/common/AlertModal";
 import { Button } from "@/components/common/Button";
 import { Header } from "@/components/common/Header";
 import { Input } from "@/components/common/Input";
 import { InfoBanner } from "@/components/common/InfoBanner";
 import { ToggleField } from "@/components/common/ToggleField";
-import { CapacityField } from "@/components/meeting/create/CapacityField";
-import { CapacityPickerModal } from "@/components/meeting/create/CapacityPickerModal";
-import { DateTimeTrigger } from "@/components/meeting/create/DateTimeTrigger";
-import { DateSelectModal } from "@/components/meeting/create/DateSelectModal";
-import { ImageCropModal } from "@/components/meeting/create/ImageCropModal";
-import { ImageUploadBox } from "@/components/meeting/create/ImageUploadBox";
-import { PlaceSearchModal } from "@/components/meeting/create/PlaceSearchModal";
-import { PlaceSearchTrigger } from "@/components/meeting/create/PlaceSearchTrigger";
-import { TimeSelectModal } from "@/components/meeting/create/TimeSelectModal";
+import { CapacityField } from "@/components/meeting/CapacityField";
+import { CapacityPickerModal } from "@/components/meeting/CapacityPickerModal";
+import { DateTimeTrigger } from "@/components/meeting/DateTimeTrigger";
+import { DateSelectModal } from "@/components/meeting/DateSelectModal";
+import { ImageCropModal } from "@/components/meeting/ImageCropModal";
+import { ImageUploadBox } from "@/components/meeting/ImageUploadBox";
+import { PlaceSearchModal } from "@/components/meeting/PlaceSearchModal";
+import { PlaceSearchTrigger } from "@/components/meeting/PlaceSearchTrigger";
+import { TimeSelectModal } from "@/components/meeting/TimeSelectModal";
 import { getRandomBrandImage } from "@/constants/branding-images";
-import { useCapacitySelection } from "@/hooks/meeting/create/useCapacitySelection";
-import { useCreateMeetingMutation } from "@/hooks/meeting/create/useCreateMeeting";
-import { useDateTimeSelection } from "@/hooks/meeting/create/useDateTimeSelection";
-import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
-import { useAuthStore } from "@/stores/useAuthStore";
-import type {
-  MeetingCreateRequest,
-  MeetingImageSelection,
-} from "@/types/meeting";
+import { MOCK_MEETINGS } from "@/mocks/mockMeetings";
+import { useCapacitySelection } from "@/hooks/meeting/useCapacitySelection";
+import { useDateTimeSelection } from "@/hooks/meeting/useDateTimeSelection";
+import type { MeetingImageSelection } from "@/types/meeting";
 import type { SelectedPlace } from "@/types/place";
-import { formatDateTimeForApi } from "@/utils/date";
-import { urlToFile } from "@/utils/file";
 
 export default function CreateMeetingPage() {
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
-  const userName = user?.nickname || "";
 
   const [selectedImage, setSelectedImage] =
     useState<MeetingImageSelection | null>(null);
@@ -51,9 +41,6 @@ export default function CreateMeetingPage() {
   const [notifyLocation, setNotifyLocation] = useState(false);
   const [notifyFriendArrival, setNotifyFriendArrival] = useState(false);
   const [notifySpeechBubble, setNotifySpeechBubble] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const createMeetingMutation = useCreateMeetingMutation();
-  const { data: existingMeetings = [] } = useMeetingsQuery();
 
   const replaceSelectedImage = (next: MeetingImageSelection | null) => {
     setSelectedImage((prev) => {
@@ -83,43 +70,7 @@ export default function CreateMeetingPage() {
     );
   };
 
-  const canSubmit =
-    title.trim().length > 0 &&
-    dateTimeSelection.dateTime !== null &&
-    place !== null &&
-    selectedImage !== null;
-
-  const handleSubmit = async () => {
-    if (!canSubmit || !dateTimeSelection.dateTime || !place || !selectedImage)
-      return;
-
-    const request: MeetingCreateRequest = {
-      title: title.trim(),
-      dateTime: formatDateTimeForApi(dateTimeSelection.dateTime),
-      destination: place.placeName,
-      latitude: place.latitude,
-      longitude: place.longitude,
-      memo: memo.trim() || null,
-      nickname:
-        nicknameParticipation && nickname.trim() ? nickname.trim() : userName,
-    };
-
-    const image = await urlToFile(selectedImage.src, "meeting-image.jpg");
-
-    createMeetingMutation.mutate(
-      { request, image },
-      {
-        onSuccess: ({ meetingId }) => {
-          const query = capacitySelection.capacity
-            ? `?capacity=${capacitySelection.capacity}`
-            : "";
-          router.push(`/meeting/${meetingId}/success${query}`);
-        },
-        onError: () =>
-          setSubmitError("약속방 생성에 실패했어요. 다시 시도해주세요."),
-      }
-    );
-  };
+  const canSubmit = title.trim().length > 0;
 
   return (
     <div className="relative min-h-dvh bg-white">
@@ -225,24 +176,16 @@ export default function CreateMeetingPage() {
         <Button
           type="button"
           size="cta"
-          disabled={!canSubmit || createMeetingMutation.isPending}
-          onClick={handleSubmit}
+          disabled={!canSubmit}
           className={
             canSubmit
               ? "bg-sub2-normal hover:bg-sub2-normal-hover"
               : "bg-disable"
           }
         >
-          {createMeetingMutation.isPending ? "만드는 중..." : "약속방 만들기"}
+          약속방 만들기
         </Button>
       </div>
-
-      {submitError && (
-        <AlertModal
-          message={submitError}
-          onConfirm={() => setSubmitError(null)}
-        />
-      )}
 
       {pendingCropImage && (
         <ImageCropModal
@@ -275,7 +218,7 @@ export default function CreateMeetingPage() {
           initialDate={
             dateTimeSelection.pendingDate ?? dateTimeSelection.dateTime
           }
-          meetings={existingMeetings}
+          meetings={MOCK_MEETINGS}
           onConfirm={dateTimeSelection.handleDateConfirm}
           onClose={dateTimeSelection.close}
         />
@@ -284,7 +227,7 @@ export default function CreateMeetingPage() {
       {dateTimeSelection.step === "time" && dateTimeSelection.pendingDate && (
         <TimeSelectModal
           date={dateTimeSelection.pendingDate}
-          meetings={existingMeetings}
+          meetings={MOCK_MEETINGS}
           initialHour={dateTimeSelection.dateTime?.getHours()}
           initialMinute={dateTimeSelection.dateTime?.getMinutes()}
           onConfirm={dateTimeSelection.handleTimeConfirm}
