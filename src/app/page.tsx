@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { AuthLoadingScreen } from "@/components/common/AuthLoadingScreen";
-import { KakaoLoginButton } from "@/components/common/KakaoLoginButton";
+import { KakaoLoginButton } from "@/components/home/KakaoLoginButton";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
