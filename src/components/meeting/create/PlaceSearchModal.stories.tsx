@@ -1,9 +1,10 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import type { PlaceDto, SelectedPlace } from "@/types/place";
-import { PlaceResultList, type PlaceResultStatus } from "./PlaceResultList";
 import { IcArrowBack, IcClose, IcSearch } from "@/components/icons";
+import type { PlaceDto, SelectedPlace } from "@/types/place";
+
+import { PlaceResultList, type PlaceResultStatus } from "./PlaceResultList";
 
 const MOCK_PLACES: PlaceDto[] = [
   {
@@ -33,20 +34,20 @@ const MOCK_PLACES: PlaceDto[] = [
 ];
 
 interface DummyModalProps {
-  initialHistory?: string[];
+  initialFavorites?: string[];
   initialKeyword?: string;
   onClose?: () => void;
   onSelect?: (place: SelectedPlace) => void;
 }
 
 const DummyPlaceSearchModal = ({
-  initialHistory = [],
+  initialFavorites = [],
   initialKeyword = "",
   onClose = () => {},
   onSelect = () => {},
 }: DummyModalProps) => {
   const [keyword, setKeyword] = useState(initialKeyword);
-  const [history, setHistory] = useState<string[]>(initialHistory);
+  const [favorites, setFavorites] = useState<string[]>(initialFavorites);
 
   const filteredResults = keyword.trim()
     ? MOCK_PLACES.filter(
@@ -61,8 +62,8 @@ const DummyPlaceSearchModal = ({
     keyword.trim().length === 0 ? "idle" : "success";
 
   const handleSelect = (place: PlaceDto) => {
-    if (!history.includes(place.placeName)) {
-      setHistory((prev) => [place.placeName, ...prev]);
+    if (!favorites.includes(place.placeName)) {
+      setFavorites((prev) => [place.placeName, ...prev]);
     }
     onSelect({
       placeName: place.placeName,
@@ -101,10 +102,10 @@ const DummyPlaceSearchModal = ({
           )}
         </div>
 
-        {history.length > 0 && (
+        {favorites.length > 0 && (
           <div className="flex h-9.5 items-center gap-5">
             <div className="flex flex-1 items-center gap-2 overflow-x-auto">
-              {history.map((item) => (
+              {favorites.map((item) => (
                 <button
                   key={item}
                   type="button"
@@ -117,18 +118,18 @@ const DummyPlaceSearchModal = ({
               ))}
             </div>
             <div className="bg-border-2 h-3.5 w-px shrink-0" />
-            <button
-              type="button"
-              onClick={() => setHistory([])}
-              className="body3 text-disable shrink-0"
-            >
+            <button type="button" className="body3 text-disable shrink-0">
               편집
             </button>
           </div>
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4">
+      <div
+        className={`flex-1 overflow-y-auto px-6 ${
+          favorites.length === 0 ? "mt-6" : ""
+        }`}
+      >
         <PlaceResultList
           status={status}
           results={filteredResults}
@@ -161,28 +162,28 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    initialHistory: [],
+    initialFavorites: [],
     initialKeyword: "",
   },
 };
 
-export const WithHistory: Story = {
+export const WithFavorites: Story = {
   args: {
-    initialHistory: ["강남역", "홍대입구", "성수동 맛집"],
+    initialFavorites: ["강남역", "홍대입구", "성수동 맛집"],
     initialKeyword: "",
   },
 };
 
 export const WithSearchResults: Story = {
   args: {
-    initialHistory: [],
+    initialFavorites: [],
     initialKeyword: "강남",
   },
 };
 
-export const WithHistoryAndResults: Story = {
+export const WithFavoritesAndResults: Story = {
   args: {
-    initialHistory: ["강남역", "판교", "성수"],
+    initialFavorites: ["강남역", "판교", "성수"],
     initialKeyword: "강남",
   },
 };
