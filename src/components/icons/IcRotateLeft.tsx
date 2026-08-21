@@ -1,5 +1,5 @@
 import { BaseIcon } from "./BaseIcon";
-import type { IconProps } from "./Icon.types";
+import type { IconProps } from "./icon.types";
 
 export const IcRotateLeft = (props: IconProps) => (
   <BaseIcon viewBox="0 0 24 24" {...props}>

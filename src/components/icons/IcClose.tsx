@@ -1,6 +1,6 @@
 import { BaseIcon } from "./BaseIcon";
 
-import type { IconProps } from "./Icon.types";
+import type { IconProps } from "./icon.types";
 
 export const IcClose = (props: IconProps) => (
   <BaseIcon {...props}>

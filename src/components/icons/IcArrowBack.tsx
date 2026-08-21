@@ -1,5 +1,5 @@
 import { BaseIcon } from "./BaseIcon";
-import type { IconProps } from "./Icon.types";
+import type { IconProps } from "./icon.types";
 
 export const IcArrowBack = (props: IconProps) => (
   <BaseIcon {...props}>

@@ -1,6 +1,6 @@
 // todo: 커스텀으로 수정 필요
 import { BaseIcon } from "./BaseIcon";
-import type { IconProps } from "./Icon.types";
+import type { IconProps } from "./icon.types";
 
 export const IcPin = (props: IconProps) => (
   <BaseIcon {...props}>

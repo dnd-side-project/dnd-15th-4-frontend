@@ -26,4 +26,4 @@ export * from "./IcPuzzlePiece";
 export * from "./IcRotateLeft";
 export * from "./IcViewAgenda";
 export * from "./IcViewAgendaFilled";
-export * from "./Icon.types";
+export * from "./icon.types";
