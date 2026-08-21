@@ -1,5 +1,4 @@
 import { BaseIcon } from "./BaseIcon";
-
 import type { IconProps } from "./icon.types";
 
 export const IcRotateLeft = (props: IconProps) => (
