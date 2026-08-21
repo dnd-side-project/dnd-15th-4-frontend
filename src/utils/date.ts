@@ -20,6 +20,88 @@ export const getRemainingTimeLabel = (dateTime: string): string => {
   return hours > 0 ? `${hours}시간 ${minutes}분` : `${minutes}분`;
 };
 
+import type { MeetingData } from "@/types/meeting";
+
+export const isSameDay = (a: Date, b: Date): boolean =>
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate();
+
+export const isPastDay = (date: Date, today = new Date()): boolean => {
+  const startOfToday = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+  const startOfDate = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate()
+  );
+  return startOfDate.getTime() < startOfToday.getTime();
+};
+
+export const getMonthWeeks = (
+  year: number,
+  month: number
+): (Date | null)[][] => {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const startWeekday = new Date(year, month, 1).getDay();
+
+  const cells: (Date | null)[] = [];
+  for (let i = 0; i < startWeekday; i++) cells.push(null);
+  for (let day = 1; day <= daysInMonth; day++)
+    cells.push(new Date(year, month, day));
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  const weeks: (Date | null)[][] = [];
+  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
+  return weeks;
+};
+
+export type MeridiemPeriod = "오전" | "오후";
+
+export const to12Hour = (
+  hour24: number
+): { period: MeridiemPeriod; hour12: number } => {
+  const period: MeridiemPeriod = hour24 < 12 ? "오전" : "오후";
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return { period, hour12 };
+};
+
+export const to24Hour = (period: MeridiemPeriod, hour12: number): number => {
+  if (period === "오전") return hour12 === 12 ? 0 : hour12;
+  return hour12 === 12 ? 12 : hour12 + 12;
+};
+
+export const formatDateTimeTrigger = (date: Date): string => {
+  const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"][date.getDay()];
+  const { period, hour12 } = to12Hour(date.getHours());
+  const minute = String(date.getMinutes()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}.${month}.${day} (${dayOfWeek}) ${period} ${hour12}:${minute}`;
+};
+
+export const getMeetingsOnDate = (
+  meetings: MeetingData[],
+  date: Date
+): MeetingData[] =>
+  meetings.filter((meeting) => isSameDay(new Date(meeting.dateTime), date));
+
+export const hasTimeConflict = (
+  meetings: MeetingData[],
+  date: Date,
+  hour: number,
+  minute: number
+): boolean =>
+  getMeetingsOnDate(meetings, date).some((meeting) => {
+    const meetingDate = new Date(meeting.dateTime);
+    return (
+      meetingDate.getHours() === hour && meetingDate.getMinutes() === minute
+    );
+  });
+
 export const formatMeetingDateTime = (dateTimeString: string) => {
   const date = new Date(dateTimeString);
 
