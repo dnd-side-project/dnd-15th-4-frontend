@@ -8,6 +8,7 @@ import heroProcessImage from "@/assets/images/home-process-hero.png";
 import { AvatarStack } from "@/components/home/AvatarStack";
 import { ProfileMenu } from "@/components/home/ProfileMenu";
 import { IcArrivalDot, IcPuzzlePiece } from "@/components/icons";
+import { useParticipantLocationsQuery } from "@/hooks/meeting/shared/useParticipantLocations";
 import { MOCK_PARTICIPANT_LOCATIONS } from "@/mocks/mockParticipantLocations";
 import type { MeetingData, Participant, UserLocation } from "@/types/meeting";
 import { formatMeetingDateTime } from "@/utils/date";
