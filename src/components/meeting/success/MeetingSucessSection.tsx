@@ -24,6 +24,7 @@ export const MeetingSucessSectoin = () => {
     ? formatMeetingDateTime(meeting.dateTime)
     : { dateFormatted: "", timeFormatted: "" };
 
+  // todo: 현재 초대 링크는 임시 구현으로 진행중으로 이동되도록 되어있어 수정이 필요
   const inviteLink =
     typeof window !== "undefined"
       ? `${window.location.origin}/meeting/${meetingId}`
