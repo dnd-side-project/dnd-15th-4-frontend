@@ -137,3 +137,7 @@ export interface MeetingCreateRequest {
 export interface MeetingCreateResponse {
   meetingId: number;
 }
+
+export interface MeetingInviteCodeResponse {
+  inviteCode: string;
+}

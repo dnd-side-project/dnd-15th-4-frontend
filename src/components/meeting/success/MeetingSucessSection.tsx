@@ -1,14 +1,15 @@
 "use client";
 
 import { useParams, useSearchParams } from "next/navigation";
-import { useState } from "react";
 
-import { IcCopy } from "@/components/icons";
 import { formatMeetingDateTime } from "@/utils/date";
+import { InviteCodeField } from "@/components/meeting/create/InviteCodeField";
 import { KakaoShareButton } from "@/components/meeting/create/KakaoShareButton";
 import { ScheduleCard } from "@/components/common/ScheduleCard";
-import { Toast } from "@/components/common/Toast";
-import { useMeetingQuery } from "@/hooks/meeting/create/useCreateMeeting";
+import {
+  useInviteCodeQuery,
+  useMeetingQuery,
+} from "@/hooks/meeting/create/useCreateMeeting";
 
 export const MeetingSucessSectoin = () => {
   const params = useParams<{ meetingId: string }>();
@@ -16,25 +17,18 @@ export const MeetingSucessSectoin = () => {
   const meetingId = Number(params.meetingId) || 0;
   const capacityParam = searchParams.get("capacity");
   const capacity = capacityParam ? Number(capacityParam) : undefined;
-  const [showToast, setShowToast] = useState(false);
 
   const { data: meeting, isLoading, isError } = useMeetingQuery(meetingId);
+  const {
+    data: inviteCode,
+    isLoading: isInviteCodeLoading,
+    isError: isInviteCodeError,
+    refetch: refetchInviteCode,
+  } = useInviteCodeQuery(meetingId);
 
   const { dateFormatted, timeFormatted } = meeting
     ? formatMeetingDateTime(meeting.dateTime)
     : { dateFormatted: "", timeFormatted: "" };
-
-  // todo: 현재 초대 링크는 임시 구현으로 진행중으로 이동되도록 되어있어 수정이 필요
-  const inviteLink =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/meeting/${meetingId}`
-      : "";
-
-  const handleCopyLink = async () => {
-    await navigator.clipboard.writeText(inviteLink);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 2000);
-  };
 
   return (
     <div className="flex min-h-0 flex-1 flex-col justify-between overflow-hidden px-4 py-6">
@@ -55,31 +49,47 @@ export const MeetingSucessSectoin = () => {
           </div>
         )}
 
-        <div className="flex flex-col gap-3">
-          <h2 className="h4 text-primary font-bold">초대 코드</h2>
-          <div className="border-border-1 rounded-16 relative flex items-center border px-4 py-4.5">
-            <p className="body3 text-primary truncate pr-8">{inviteLink}</p>
-            <button
-              type="button"
-              onClick={handleCopyLink}
-              aria-label="초대 링크 복사"
-              className="text-disable pointer-events-auto absolute right-4"
-            >
-              <IcCopy size={17} />
-            </button>
+        {isInviteCodeLoading && (
+          <div className="flex flex-col gap-3">
+            <h2 className="h4 text-primary font-bold">초대 코드</h2>
+            <div className="border-border-1 rounded-16 flex w-full items-center border px-4 py-4.5">
+              <div className="bg-surface-1 rounded-4 h-5 w-32 animate-pulse" />
+            </div>
           </div>
-        </div>
+        )}
+
+        {isInviteCodeError && (
+          <div className="flex flex-col gap-3">
+            <h2 className="h4 text-primary font-bold">초대 코드</h2>
+            <div className="border-border-1 rounded-16 flex w-full flex-col items-center gap-2 border px-4 py-4.5">
+              <p className="body6 text-disable">
+                초대 코드를 불러오지 못했어요
+              </p>
+              <button
+                type="button"
+                onClick={() => refetchInviteCode()}
+                className="body6 text-sub1-dark-hover font-medium"
+              >
+                다시 시도
+              </button>
+            </div>
+          </div>
+        )}
+
+        {inviteCode && <InviteCodeField inviteCode={inviteCode} />}
       </div>
 
       <div className="shrink-0 pt-4">
-        <KakaoShareButton
-          title={meeting?.title || "약속"}
-          description={dateFormatted ? `${dateFormatted} ${timeFormatted}` : ""}
-          linkUrl={inviteLink}
-        />
+        {inviteCode && (
+          <KakaoShareButton
+            title={meeting?.title || "약속"}
+            description={
+              dateFormatted ? `${dateFormatted} ${timeFormatted}` : ""
+            }
+            linkUrl={inviteCode}
+          />
+        )}
       </div>
-
-      {showToast && <Toast message="초대 링크가 복사되었습니다!" />}
     </div>
   );
 };

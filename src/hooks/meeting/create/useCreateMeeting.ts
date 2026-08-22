@@ -2,7 +2,11 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { createMeeting, fetchMeetings } from "@/apis/meeting/meetings";
+import {
+  createMeeting,
+  fetchInviteCode,
+  fetchMeetings,
+} from "@/apis/meeting/meetings";
 import { meetingKeys } from "@/apis/meeting/keys";
 import type { MeetingCreateRequest, MeetingData } from "@/types/meeting";
 
@@ -47,6 +51,16 @@ export const useMeetingQuery = (meetingId: number) =>
         throw new Error("약속 정보를 찾을 수 없어요.");
       }
       return meeting;
+    },
+    enabled: meetingId > 0,
+  });
+
+export const useInviteCodeQuery = (meetingId: number) =>
+  useQuery({
+    queryKey: meetingKeys.inviteCode(meetingId),
+    queryFn: async () => {
+      const { inviteCode } = await fetchInviteCode(meetingId);
+      return inviteCode;
     },
     enabled: meetingId > 0,
   });

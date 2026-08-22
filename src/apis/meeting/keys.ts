@@ -4,6 +4,8 @@ export const meetingKeys = {
   list: () => [...meetingKeys.lists()] as const,
   details: () => [...meetingKeys.all, "detail"] as const,
   detail: (meetingId: number) => [...meetingKeys.details(), meetingId] as const,
+  inviteCode: (meetingId: number) =>
+    [...meetingKeys.detail(meetingId), "invite-code"] as const,
   participantLocations: (meetingId: number, participantIds: number[]) =>
     [
       ...meetingKeys.all,
