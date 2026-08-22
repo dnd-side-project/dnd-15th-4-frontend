@@ -82,7 +82,7 @@ const PuzzlesPage = () => {
       <Header
         title="모은 퍼즐"
         onBack={() => router.back()}
-        rightActionLabel="취소"
+        rightActionLabel="전체보기"
         onRightActionClick={() => setFilterDate(null)}
         className="bg-bg-normal sticky top-0 z-10"
       />
