@@ -1,3 +1,5 @@
+import type { MeetingRankingItem } from "@/types/meeting";
+
 export interface NotificationSettings {
   locationPermission: boolean;
   friendArrival: boolean;
@@ -13,4 +15,13 @@ export interface User {
   favoritePlaceCount: number;
   kakaoId?: string;
   notificationSettings: NotificationSettings;
+}
+
+export interface CollectedPuzzle {
+  meetingId: number;
+  title: string;
+  meetingAt: string;
+  destination: string;
+  puzzleImageUrls: string[];
+  rankings: MeetingRankingItem[];
 }

@@ -29,8 +29,12 @@ const MeetingCompletedPage = () => {
         <ImageDetailModal
           open
           onOpenChange={(open) => !open && setSelectedPuzzleGroup(null)}
-          imageUrl={selectedPuzzleGroup.puzzleImageUrl}
-          imageAlt={`퍼즐 세트 ${selectedPuzzleGroup.pageNumber}`}
+          images={[
+            {
+              imageUrl: selectedPuzzleGroup.puzzleImageUrl,
+              alt: `퍼즐 세트 ${selectedPuzzleGroup.pageNumber}`,
+            },
+          ]}
         />
       )}
     </div>

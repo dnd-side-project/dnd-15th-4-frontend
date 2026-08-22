@@ -11,7 +11,8 @@ import {
 export interface AvatarStackItem {
   id: number;
   name: string;
-  profileImageNumber: number;
+  profileImageNumber?: number;
+  profileImageUrl?: string;
 }
 
 interface StackAvatarProps {
@@ -19,6 +20,14 @@ interface StackAvatarProps {
   zIndex: number;
   hiddenCount?: number;
 }
+
+const resolveAvatarImage = (item: AvatarStackItem) => {
+  if (item.profileImageUrl) return item.profileImageUrl;
+  if (item.profileImageNumber !== undefined) {
+    return getCharacterImage(item.profileImageNumber);
+  }
+  return CHARACTER_FALLBACK_IMAGE;
+};
 
 const StackAvatar = ({ item, zIndex, hiddenCount }: StackAvatarProps) => {
   const [hasError, setHasError] = useState(false);
@@ -29,11 +38,7 @@ const StackAvatar = ({ item, zIndex, hiddenCount }: StackAvatarProps) => {
       className="border-border-4 rounded-8 relative size-9 shrink-0 overflow-hidden border bg-white"
     >
       <Image
-        src={
-          hasError
-            ? CHARACTER_FALLBACK_IMAGE
-            : getCharacterImage(item.profileImageNumber)
-        }
+        src={hasError ? CHARACTER_FALLBACK_IMAGE : resolveAvatarImage(item)}
         alt={item.name}
         fill
         sizes="38px"
@@ -42,7 +47,7 @@ const StackAvatar = ({ item, zIndex, hiddenCount }: StackAvatarProps) => {
       />
 
       {hiddenCount ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/51 text-[14px] font-semibold text-white">
+        <div className="body6 absolute inset-0 flex items-center justify-center bg-black/51 text-white">
           +{hiddenCount}
         </div>
       ) : null}
@@ -63,7 +68,7 @@ export const AvatarStack = ({
   const hiddenCount = participants.length - visibleParticipants.length;
 
   return (
-    <div className="flex -space-x-2">
+    <div className="flex -space-x-4.25">
       {visibleParticipants.map((item, index) => (
         <StackAvatar
           key={item.id}

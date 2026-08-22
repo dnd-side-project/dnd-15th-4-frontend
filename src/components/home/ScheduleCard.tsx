@@ -20,7 +20,7 @@ export const ScheduleCard = ({ meeting }: ScheduleCardProps) => {
     <button
       type="button"
       onClick={() => router.push(`#`)}
-      className="rounded-20 relative flex w-full shrink-0 cursor-pointer items-center overflow-hidden bg-white p-5 text-left shadow-[0_2px_12px_#00000012] transition-transform active:scale-[0.99]"
+      className="rounded-20 shadow-3 relative flex w-full shrink-0 cursor-pointer items-center overflow-hidden bg-white p-5 text-left transition-transform active:scale-[0.99]"
     >
       <div className="relative z-10 flex min-w-0 flex-1 flex-col pb-1">
         <h3 className="body1 text-primary font-medium wrap-break-word break-keep">
@@ -32,13 +32,13 @@ export const ScheduleCard = ({ meeting }: ScheduleCardProps) => {
 
           <span
             aria-hidden
-            className="mx-1.5 h-2.5 w-px shrink-0 bg-[#D9D9D9]"
+            className="bg-divider-3 mx-1.5 h-2.5 w-px shrink-0"
           />
 
           <span className="mr-3.25">{timeFormatted}</span>
 
           <span className="-ml-1.75 inline-flex max-w-full min-w-0 items-center">
-            <span aria-hidden className="h-2.5 w-px shrink-0 bg-[#D9D9D9]" />
+            <span aria-hidden className="bg-divider-3 h-2.5 w-px shrink-0" />
             <span className="line-clamp-2 pl-1.5 wrap-break-word break-keep">
               {meeting.place}
             </span>

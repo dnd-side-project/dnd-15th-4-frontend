@@ -1,8 +1,17 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-export const useCarouselPage = (pageCount: number) => {
+export const useCarouselPage = (pageCount: number, initialPage = 0) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || initialPage === 0 || container.clientWidth === 0) {
+      return;
+    }
+
+    container.scrollLeft = container.clientWidth * initialPage;
+  }, [initialPage]);
 
   const handleScroll = useCallback(() => {
     const container = containerRef.current;

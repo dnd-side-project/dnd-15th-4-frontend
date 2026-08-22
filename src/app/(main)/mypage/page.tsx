@@ -8,7 +8,7 @@ import { SummaryRow } from "@/components/common/SummaryRow";
 import { getCharacterImage } from "@/constants/character-images";
 import { AccountSection } from "@/components/mypage/AccountSection";
 import { NotificationSettingsSection } from "@/components/mypage/NotificationSettingsSection";
-import { MOCK_USER } from "@/mocks/MockUser";
+import { MOCK_USER } from "@/mocks/mockUser";
 
 const MyPage = () => {
   const router = useRouter();

@@ -15,7 +15,7 @@ const MenuButton = ({ label, className }: MenuButtonProps) => (
 );
 
 interface AccountSectionProps {
-  kakaoId: string;
+  kakaoId?: string;
 }
 
 export const AccountSection = ({ kakaoId }: AccountSectionProps) => (
