@@ -1,17 +1,18 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface AuthUser {
-  id: string;
-  nickname: string;
-}
+import type { UserDto } from "@/types/auth";
 
 interface AuthState {
   isAuthenticated: boolean;
-  user: AuthUser | null;
+  user: UserDto | null;
+  accessToken: string | null;
   _hasHydrated: boolean;
+  _hasBootstrapped: boolean;
   setHasHydrated: (state: boolean) => void;
-  login: (userData: AuthUser) => void;
+  setHasBootstrapped: (state: boolean) => void;
+  setAccessToken: (accessToken: string | null) => void;
+  login: (user: UserDto, accessToken: string) => void;
   logout: () => void;
 }
 
@@ -20,19 +21,29 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       isAuthenticated: false,
       user: null,
+      accessToken: null,
       _hasHydrated: false,
+      _hasBootstrapped: false,
 
       setHasHydrated: (state) => set({ _hasHydrated: state }),
+      setHasBootstrapped: (state) => set({ _hasBootstrapped: state }),
+      setAccessToken: (accessToken) => set({ accessToken }),
 
-      login: (userData) =>
+      login: (user, accessToken) =>
         set({
           isAuthenticated: true,
-          user: userData,
+          user,
+          accessToken,
         }),
-      logout: () => set({ isAuthenticated: false, user: null }),
+      logout: () =>
+        set({ isAuthenticated: false, user: null, accessToken: null }),
     }),
     {
       name: "puzzlemeet-auth",
+      partialize: (state) => ({
+        isAuthenticated: state.isAuthenticated,
+        user: state.user,
+      }),
       onRehydrateStorage: () => () => {
         queueMicrotask(() => {
           useAuthStore.getState().setHasHydrated(true);

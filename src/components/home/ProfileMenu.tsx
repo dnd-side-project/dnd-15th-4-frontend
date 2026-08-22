@@ -3,12 +3,13 @@
 import { Popover } from "@base-ui/react/popover";
 
 import { IcProfile } from "@/components/icons";
+import { useLogout } from "@/hooks/auth/useLogout";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 export const ProfileMenu = () => {
   const user = useAuthStore((state) => state.user);
-  const logout = useAuthStore((state) => state.logout);
   const _hasHydrated = useAuthStore((state) => state._hasHydrated);
+  const logout = useLogout();
 
   const id = _hasHydrated ? user?.id : "";
   const nickname = _hasHydrated ? user?.nickname : "";

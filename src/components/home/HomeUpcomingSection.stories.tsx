@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { HomeUpcomingSection } from "@/components/home";
+import { HomeUpcomingSection } from "./HomeUpcomingSection";
 import type { MeetingData } from "@/types/meeting";
 
 const mockSchedules: MeetingData[] = [
@@ -30,7 +30,7 @@ const mockSchedules: MeetingData[] = [
 ];
 
 const meta: Meta<typeof HomeUpcomingSection> = {
-  title: "Components/Home/HomeUpcomingSection",
+  title: "Home/HomeUpcomingSection",
   component: HomeUpcomingSection,
   tags: ["autodocs"],
   parameters: {
