@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 
-import { ImageDetailModal } from "@/components/meeting/ImageDetailModal";
-import { MeetingResultTabSection } from "@/components/meeting/MeetingResultTabSection";
-import { PuzzleResultSection } from "@/components/meeting/PuzzleResultSection";
+import { ImageDetailModal } from "@/components/meeting/completed/ImageDetailModal";
+import { MeetingResultTabSection } from "@/components/meeting/completed/MeetingResultTabSection";
+import { PuzzleResultSection } from "@/components/meeting/completed/PuzzleResultSection";
 import { MOCK_MEETING_RESULT } from "@/mocks/mockMeetings";
 import type { MeetingPuzzleGroup } from "@/types/meeting";
 

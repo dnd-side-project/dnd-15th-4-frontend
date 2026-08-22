@@ -3,10 +3,10 @@
 import Image from "next/image";
 import type { StaticImageData } from "next/image";
 
-import { ArrivalConfirmButton } from "./ArrivalConfirmButton";
+import { PillButton } from "@/components/common/PillButton";
 import artwork1 from "@/assets/images/artwork-1.png";
 import { IcAlarm } from "@/components/icons";
-import { useArrivalConfirmation } from "@/hooks/meeting/useArrivalConfirmation";
+import { useArrivalConfirmation } from "@/hooks/meeting/progress/useArrivalConfirmation";
 import { cn } from "@/lib/utils";
 
 export const CORNER_ROUNDING = {
@@ -96,7 +96,7 @@ export const PuzzleEtaCard = ({
         </div>
 
         {isArrived && !isConfirmed && (
-          <ArrivalConfirmButton
+          <PillButton
             text={
               confirmationStep === "confirming"
                 ? `취소 (${remainingSeconds})`

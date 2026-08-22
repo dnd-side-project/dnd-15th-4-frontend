@@ -1,4 +1,4 @@
-import { SpeechBubble } from "./SpeechBubble";
+import { SpeechBubble } from "@/components/common/SpeechBubble";
 import { IcMessengerFill } from "@/components/icons";
 import { SPEECH_BUBBLE_MESSAGES } from "@/constants/message";
 import { cn } from "@/lib/utils";

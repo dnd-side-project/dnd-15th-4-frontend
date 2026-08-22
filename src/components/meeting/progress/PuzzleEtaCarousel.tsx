@@ -1,7 +1,7 @@
 "use client";
 
 import { PuzzleEtaGrid } from "./PuzzleEtaGrid";
-import { PuzzleSetIndicator } from "./PuzzleSetIndicator";
+import { DotIndicator } from "@/components/common/DotIndicator";
 import { useCarouselPage } from "@/hooks/common/useCarouselPage";
 import { groupBy } from "@/utils/array";
 import type { MeetingLocation, MeetingParticipant } from "@/types/meeting";
@@ -41,7 +41,7 @@ export const PuzzleEtaCarousel = ({
       </div>
 
       {pages.length > 1 && (
-        <PuzzleSetIndicator
+        <DotIndicator
           pageCount={pages.length}
           currentPage={currentPage}
           className="absolute inset-x-0 top-full mt-4"
