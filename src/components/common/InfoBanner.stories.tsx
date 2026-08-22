@@ -29,6 +29,6 @@ export const Default: Story = {
 
 export const LongText: Story = {
   args: {
-    text: "닉네임 비활성시에 카카오 계정에 등록된 이름으로 참여합니다: 텍스트가 길 겨우의 컴포넌트입니다.",
+    text: "닉네임 비활성시에 카카오 계정에 등록된 이름으로 참여합니다: 텍스트가 길 경우의 컴포넌트입니다.",
   },
 };
