@@ -41,7 +41,11 @@ const MyPage = () => {
             value: `${MOCK_USER.collectedPuzzleCount}개`,
             onClick: () => router.push("/mypage/puzzles"),
           },
-          { label: "즐겨찾기", value: `${MOCK_USER.favoritePlaceCount}개` },
+          {
+            label: "내 검색어",
+            value: `${MOCK_USER.favoritePlaceCount}개`,
+            onClick: () => router.push("/mypage/favorites"),
+          },
         ]}
       />
       <NotificationSettingsSection

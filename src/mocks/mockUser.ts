@@ -1,4 +1,5 @@
 import type { User, CollectedPuzzle } from "@/types/user";
+import type { PlaceDto } from "@/types/place";
 
 export const MOCK_USER: User = {
   id: 1,
@@ -60,5 +61,32 @@ export const MOCK_PUZZLES: CollectedPuzzle[] = [
         late: false,
       },
     ],
+  },
+];
+
+export const MOCK_FAVORITE_PLACES: PlaceDto[] = [
+  {
+    placeId: "27483921",
+    placeName: "사당역 4번 출구",
+    addressName: "서울 동작구 사당동",
+    roadAddressName: "서울 동작구 동작대로 3",
+    latitude: 37.476559,
+    longitude: 126.981762,
+  },
+  {
+    placeId: "17561621",
+    placeName: "강남역 11번 출구",
+    addressName: "서울 강남구 역삼동",
+    roadAddressName: "서울 강남구 강남대로 396",
+    latitude: 37.498004,
+    longitude: 127.02761,
+  },
+  {
+    placeId: "13457521",
+    placeName: "여의도 한강공원",
+    addressName: "서울 영등포구 여의동",
+    roadAddressName: "서울 영등포구 여의동로 330",
+    latitude: 37.528354,
+    longitude: 126.933642,
   },
 ];
