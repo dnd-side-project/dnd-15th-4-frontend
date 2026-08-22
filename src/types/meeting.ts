@@ -4,7 +4,11 @@ export interface Participant {
   profileImageNumber: number;
 }
 
-export type MeetingStatus = "WAITING" | "IN_PROGRESS" | "COMPLETED";
+export type MeetingStatus =
+  | "WAITING"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "CANCELED";
 
 export interface MeetingData {
   meetingId: number;
@@ -113,4 +117,9 @@ export interface MeetingResultResponse {
   puzzleGroups?: MeetingPuzzleGroup[];
   rankings: MeetingRankingItem[];
   myDepartedAt: string | null;
+}
+
+export interface MeetingImageSelection {
+  type: "user" | "default";
+  src: string;
 }
