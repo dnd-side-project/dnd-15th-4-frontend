@@ -4,22 +4,20 @@ import { useState } from "react";
 
 import { BottomSheet } from "@/components/common/BottomSheet";
 import { MonthCalendar } from "@/components/common/MonthCalendar";
-import { isSameDay } from "@/utils/date";
-import type { CollectedPuzzle } from "@/types/user";
 
-export interface PuzzleDateFilterModalProps {
+export interface DateFilterModalProps {
   initialDate?: Date | null;
-  puzzles: CollectedPuzzle[];
+  hasEventOnDate?: (date: Date) => boolean;
   onSelectDate: (date: Date) => void;
   onClose: () => void;
 }
 
-export const PuzzleDateFilterModal = ({
+export const DateFilterModal = ({
   initialDate,
-  puzzles,
+  hasEventOnDate,
   onSelectDate,
   onClose,
-}: PuzzleDateFilterModalProps) => {
+}: DateFilterModalProps) => {
   const today = new Date();
 
   const [selectedDate, setSelectedDate] = useState<Date>(initialDate ?? today);
@@ -60,11 +58,7 @@ export const PuzzleDateFilterModal = ({
           onSelectDate={handleSelectDate}
           onPrevMonth={goToPrevMonth}
           onNextMonth={goToNextMonth}
-          hasEventOnDate={(date) =>
-            puzzles.some((puzzle) =>
-              isSameDay(new Date(puzzle.meetingAt), date)
-            )
-          }
+          hasEventOnDate={hasEventOnDate}
         />
       </div>
     </BottomSheet>

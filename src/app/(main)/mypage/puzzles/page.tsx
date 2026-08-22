@@ -4,15 +4,11 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { Header } from "@/components/common/Header";
-import {
-  SortToggleButton,
-  type SortOrder,
-} from "@/components/mypage/SortToggleButton";
-import { PuzzleDateFilterModal } from "@/components/mypage/PuzzleDateFilterModal";
+import { DateFilterModal } from "@/components/common/DateFilterModal";
+import { MyPageListHeader } from "@/components/mypage/MyPageListHeader";
 import { PuzzleMeetingDetailModal } from "@/components/mypage/PuzzleMeetingDetailModal";
+import { useDateFilter } from "@/hooks/mypage/useDateFilter";
 import { MOCK_PUZZLES } from "@/mocks/mockUser";
-import { IcCalendarMonth } from "@/components/icons";
 import { isSameDay } from "@/utils/date";
 import type { CollectedPuzzle } from "@/types/user";
 
@@ -31,28 +27,19 @@ interface SelectedPuzzle {
 
 const PuzzlesPage = () => {
   const router = useRouter();
-  const [sortOrder, setSortOrder] = useState<SortOrder>("latest");
   const [selectedPuzzle, setSelectedPuzzle] = useState<SelectedPuzzle | null>(
     null
   );
-  const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
-  const [filterDate, setFilterDate] = useState<Date | null>(null);
 
-  const handleToggleSortOrder = () => {
-    setSortOrder((prev) => (prev === "latest" ? "oldest" : "latest"));
-  };
-
-  const sortedPuzzles = useMemo(() => {
-    const direction = sortOrder === "latest" ? -1 : 1;
-    return MOCK_PUZZLES.filter(
-      (puzzle) =>
-        !filterDate || isSameDay(new Date(puzzle.meetingAt), filterDate)
-    ).sort(
-      (a, b) =>
-        direction *
-        (new Date(a.meetingAt).getTime() - new Date(b.meetingAt).getTime())
-    );
-  }, [sortOrder, filterDate]);
+  const {
+    sortOrder,
+    handleToggleSortOrder,
+    filterDate,
+    setFilterDate,
+    isDateFilterOpen,
+    setIsDateFilterOpen,
+    filteredItems: sortedPuzzles,
+  } = useDateFilter(MOCK_PUZZLES, (puzzle) => puzzle.meetingAt);
 
   const puzzleImages: PuzzleImage[] = useMemo(
     () =>
@@ -79,25 +66,15 @@ const PuzzlesPage = () => {
 
   return (
     <div className="h-screen scrollbar-none overflow-y-auto pb-12">
-      <Header
+      <MyPageListHeader
         title="모은 퍼즐"
         onBack={() => router.back()}
-        rightActionLabel="전체보기"
-        onRightActionClick={() => setFilterDate(null)}
-        className="bg-bg-normal sticky top-0 z-10"
+        resultCount={puzzleImages.length}
+        sortOrder={sortOrder}
+        onToggleSort={handleToggleSortOrder}
+        onCalendarClick={() => setIsDateFilterOpen(true)}
+        onResetFilter={() => setFilterDate(null)}
       />
-      <div className="mt-5.5 mb-4 flex justify-between px-4">
-        <div className="flex items-center gap-2">
-          <p className="body8 text-disable">결과 {puzzleImages.length}개</p>
-          <SortToggleButton
-            sortOrder={sortOrder}
-            onToggle={handleToggleSortOrder}
-          />
-        </div>
-        <button type="button" onClick={() => setIsDateFilterOpen(true)}>
-          <IcCalendarMonth size={24} />
-        </button>
-      </div>
       <div className="grid grid-cols-3 gap-x-1 gap-y-2">
         {puzzleImages.map((puzzleImage) => (
           <button
@@ -127,9 +104,13 @@ const PuzzlesPage = () => {
       )}
 
       {isDateFilterOpen && (
-        <PuzzleDateFilterModal
+        <DateFilterModal
           initialDate={filterDate}
-          puzzles={MOCK_PUZZLES}
+          hasEventOnDate={(date) =>
+            MOCK_PUZZLES.some((puzzle) =>
+              isSameDay(new Date(puzzle.meetingAt), date)
+            )
+          }
           onSelectDate={setFilterDate}
           onClose={() => setIsDateFilterOpen(false)}
         />

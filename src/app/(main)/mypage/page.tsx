@@ -34,6 +34,7 @@ const MyPage = () => {
           {
             label: "지난 약속",
             value: `${MOCK_USER.previousAppointmentCount}개`,
+            onClick: () => router.push("/mypage/meetings"),
           },
           {
             label: "모은 퍼즐",
