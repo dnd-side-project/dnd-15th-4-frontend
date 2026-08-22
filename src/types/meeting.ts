@@ -123,3 +123,21 @@ export interface MeetingImageSelection {
   type: "user" | "default";
   src: string;
 }
+
+export interface MeetingCreateRequest {
+  title: string;
+  dateTime: string;
+  destination: string;
+  latitude: number;
+  longitude: number;
+  memo?: string | null;
+  nickname?: string | null;
+}
+
+export interface MeetingCreateResponse {
+  meetingId: number;
+}
+
+export interface MeetingInviteCodeResponse {
+  inviteCode: string;
+}

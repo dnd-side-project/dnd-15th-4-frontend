@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { FloatingActionButton } from "@/components/home/FloatingActionButton";
 import { HomeHeroSection } from "@/components/home/HomeHeroSection";
 import { HomeUpcomingSection } from "@/components/home/HomeUpcomingSection";
-import { useMeetingsQuery } from "@/hooks/meeting/useMeetings";
+import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
 import type { MeetingData } from "@/types/meeting";
+import { isActiveOrUpcomingMeeting } from "@/utils/date";
 
 export default function HomePage() {
   const [isMounted, setIsMounted] = useState(false);
@@ -25,10 +26,14 @@ export default function HomePage() {
     );
   }
 
-  const heroMeeting: MeetingData | null =
-    meetings.find((meeting) => meeting.status === "IN_PROGRESS") ?? null;
+  const visibleMeetings = meetings.filter((meeting) =>
+    isActiveOrUpcomingMeeting(meeting)
+  );
 
-  const upcomingMeetings = meetings
+  const heroMeeting: MeetingData | null =
+    visibleMeetings.find((meeting) => meeting.status === "IN_PROGRESS") ?? null;
+
+  const upcomingMeetings = visibleMeetings
     .filter((meeting) => meeting.status === "WAITING")
     .sort(
       (a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()

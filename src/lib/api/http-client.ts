@@ -1,4 +1,7 @@
 import { HttpError } from "@/lib/api/http-error";
+import { useAuthStore } from "@/stores/useAuthStore";
+import type { ApiResult } from "@/types/api";
+import type { ReissueResponseDto } from "@/types/auth";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
@@ -43,11 +46,14 @@ async function request<T>(
   { params, body, headers, ...init }: RequestOptions = {}
 ): Promise<T> {
   const isJsonBody = body !== undefined && !(body instanceof FormData);
+  const accessToken = useAuthStore.getState().accessToken;
 
   const response = await fetch(buildUrl(path, params), {
     ...init,
+    credentials: "include",
     headers: {
       ...(isJsonBody && { "Content-Type": "application/json" }),
+      ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
       ...headers,
     },
     body: isJsonBody ? JSON.stringify(body) : (body as BodyInit | undefined),
@@ -66,19 +72,61 @@ async function request<T>(
   return data as T;
 }
 
+let reissuePromise: Promise<boolean> | null = null;
+
+const tryReissue = (): Promise<boolean> => {
+  if (!reissuePromise) {
+    reissuePromise = request<ApiResult<ReissueResponseDto>>(
+      "/api/v1/auth/reissue",
+      { method: "POST" }
+    )
+      .then((result) => {
+        useAuthStore.getState().setAccessToken(result.data.accessToken);
+        return true;
+      })
+      .catch(() => {
+        useAuthStore.getState().logout();
+        return false;
+      })
+      .finally(() => {
+        reissuePromise = null;
+      });
+  }
+  return reissuePromise;
+};
+
+async function requestWithAuthRetry<T>(
+  path: string,
+  options?: RequestOptions
+): Promise<T> {
+  try {
+    return await request<T>(path, options);
+  } catch (error) {
+    const isExpiredToken =
+      error instanceof HttpError &&
+      error.status === 401 &&
+      useAuthStore.getState().accessToken !== null;
+
+    if (isExpiredToken && (await tryReissue())) {
+      return request<T>(path, options);
+    }
+    throw error;
+  }
+}
+
 export const api = {
   get: <T>(path: string, options?: Omit<RequestOptions, "body">) =>
-    request<T>(path, { ...options, method: "GET" }),
+    requestWithAuthRetry<T>(path, { ...options, method: "GET" }),
 
   post: <T>(path: string, body?: unknown, options?: RequestOptions) =>
-    request<T>(path, { ...options, method: "POST", body }),
+    requestWithAuthRetry<T>(path, { ...options, method: "POST", body }),
 
   put: <T>(path: string, body?: unknown, options?: RequestOptions) =>
-    request<T>(path, { ...options, method: "PUT", body }),
+    requestWithAuthRetry<T>(path, { ...options, method: "PUT", body }),
 
   patch: <T>(path: string, body?: unknown, options?: RequestOptions) =>
-    request<T>(path, { ...options, method: "PATCH", body }),
+    requestWithAuthRetry<T>(path, { ...options, method: "PATCH", body }),
 
   delete: <T>(path: string, options?: Omit<RequestOptions, "body">) =>
-    request<T>(path, { ...options, method: "DELETE" }),
+    requestWithAuthRetry<T>(path, { ...options, method: "DELETE" }),
 };
