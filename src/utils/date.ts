@@ -102,8 +102,23 @@ export const hasTimeConflict = (
     );
   });
 
+export const formatDateTimeForApi = (date: Date): string => {
+  const pad = (value: number) => String(value).padStart(2, "0");
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  const seconds = pad(date.getSeconds());
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+};
+
 export const formatMeetingDateTime = (dateTimeString: string) => {
   const date = new Date(dateTimeString);
+
+  if (Number.isNaN(date.getTime())) {
+    return { dateFormatted: "-", timeFormatted: "-", dDay: "" };
+  }
 
   const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"][date.getDay()];
 

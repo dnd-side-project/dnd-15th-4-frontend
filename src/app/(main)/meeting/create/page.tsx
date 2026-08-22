@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { AlertModal } from "@/components/common/AlertModal";
 import { Button } from "@/components/common/Button";
 import { Header } from "@/components/common/Header";
 import { Input } from "@/components/common/Input";
@@ -20,12 +21,22 @@ import { TimeSelectModal } from "@/components/meeting/create/TimeSelectModal";
 import { getRandomBrandImage } from "@/constants/branding-images";
 import { MOCK_MEETINGS } from "@/mocks/mockMeetings";
 import { useCapacitySelection } from "@/hooks/meeting/create/useCapacitySelection";
+import { useCreateMeetingMutation } from "@/hooks/meeting/create/useCreateMeeting";
 import { useDateTimeSelection } from "@/hooks/meeting/create/useDateTimeSelection";
-import type { MeetingImageSelection } from "@/types/meeting";
+import { urlToFile } from "@/utils/file";
+import { useAuthStore } from "@/stores/useAuthStore";
+
+import type {
+  MeetingCreateRequest,
+  MeetingImageSelection,
+} from "@/types/meeting";
 import type { SelectedPlace } from "@/types/place";
+import { formatDateTimeForApi } from "@/utils/date";
 
 export default function CreateMeetingPage() {
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
+  const userName = user?.nickname || "";
 
   const [selectedImage, setSelectedImage] =
     useState<MeetingImageSelection | null>(null);
@@ -41,6 +52,8 @@ export default function CreateMeetingPage() {
   const [notifyLocation, setNotifyLocation] = useState(false);
   const [notifyFriendArrival, setNotifyFriendArrival] = useState(false);
   const [notifySpeechBubble, setNotifySpeechBubble] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const createMeetingMutation = useCreateMeetingMutation();
 
   const replaceSelectedImage = (next: MeetingImageSelection | null) => {
     setSelectedImage((prev) => {
@@ -70,7 +83,42 @@ export default function CreateMeetingPage() {
     );
   };
 
-  const canSubmit = title.trim().length > 0;
+  const canSubmit =
+    title.trim().length > 0 &&
+    dateTimeSelection.dateTime !== null &&
+    place !== null;
+
+  const handleSubmit = async () => {
+    if (!canSubmit || !dateTimeSelection.dateTime || !place) return;
+
+    const request: MeetingCreateRequest = {
+      title: title.trim(),
+      dateTime: formatDateTimeForApi(dateTimeSelection.dateTime),
+      destination: place.placeName,
+      latitude: place.latitude,
+      longitude: place.longitude,
+      memo: memo.trim() || null,
+      nickname: nicknameParticipation ? nickname.trim() : userName,
+    };
+
+    const image = selectedImage
+      ? await urlToFile(selectedImage.src, "meeting-image.jpg")
+      : undefined;
+
+    createMeetingMutation.mutate(
+      { request, image },
+      {
+        onSuccess: ({ meetingId }) => {
+          const query = capacitySelection.capacity
+            ? `?capacity=${capacitySelection.capacity}`
+            : "";
+          router.push(`/meeting/${meetingId}/success${query}`);
+        },
+        onError: () =>
+          setSubmitError("약속방 생성에 실패했어요. 다시 시도해주세요."),
+      }
+    );
+  };
 
   return (
     <div className="relative min-h-dvh bg-white">
@@ -176,16 +224,24 @@ export default function CreateMeetingPage() {
         <Button
           type="button"
           size="cta"
-          disabled={!canSubmit}
+          disabled={!canSubmit || createMeetingMutation.isPending}
+          onClick={handleSubmit}
           className={
             canSubmit
               ? "bg-sub2-normal hover:bg-sub2-normal-hover"
               : "bg-disable"
           }
         >
-          약속방 만들기
+          {createMeetingMutation.isPending ? "만드는 중..." : "약속방 만들기"}
         </Button>
       </div>
+
+      {submitError && (
+        <AlertModal
+          message={submitError}
+          onConfirm={() => setSubmitError(null)}
+        />
+      )}
 
       {pendingCropImage && (
         <ImageCropModal
