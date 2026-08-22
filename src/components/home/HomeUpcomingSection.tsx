@@ -3,7 +3,7 @@
 import Image from "next/image";
 
 import searchImage from "@/assets/images/home-empty-schedule.png";
-import { ScheduleCard } from "@/components/home/ScheduleCard";
+import { ScheduleCard } from "@/components/common/ScheduleCard";
 import type { MeetingData } from "@/types/meeting";
 
 interface HomeUpcomingSectionProps {
