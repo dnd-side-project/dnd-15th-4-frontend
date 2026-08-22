@@ -3,28 +3,31 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { KakaoLoginButton } from "@/components/common/KakaoLoginButton";
+import { AuthLoadingScreen } from "@/components/common/AuthLoadingScreen";
+import { KakaoLoginButton } from "@/components/home/KakaoLoginButton";
 import { useAuthStore } from "@/stores/useAuthStore";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
 const LandingPage = () => {
   const router = useRouter();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const _hasHydrated = useAuthStore((state) => state._hasHydrated);
-  const login = useAuthStore((state) => state.login);
+  const _hasBootstrapped = useAuthStore((state) => state._hasBootstrapped);
+  const isReady = _hasHydrated && _hasBootstrapped;
 
   useEffect(() => {
-    if (_hasHydrated && isAuthenticated) {
+    if (isReady && isAuthenticated) {
       router.replace("/home");
     }
-  }, [_hasHydrated, isAuthenticated, router]);
+  }, [isReady, isAuthenticated, router]);
 
   const handleLogin = () => {
-    login({ id: "mock-id", nickname: "퍼즐밋 유저" });
-    router.replace("/home");
+    window.location.href = `${API_BASE_URL}/api/v1/auth/kakao/authorize`;
   };
 
-  if (!_hasHydrated || isAuthenticated) {
-    return null;
+  if (!isReady || isAuthenticated) {
+    return <AuthLoadingScreen />;
   }
 
   return (

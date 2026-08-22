@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useEffect } from "react";
 
-import { ProfileMenu } from "@/components/home";
+import { ProfileMenu } from "./ProfileMenu";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 const meta: Meta<typeof ProfileMenu> = {
-  title: "Components/Common/ProfileMenu",
+  title: "Common/ProfileMenu",
   component: ProfileMenu,
   tags: ["autodocs"],
   decorators: [
@@ -36,7 +36,7 @@ const withAuthState = (
 
 export const LoggedIn: Story = {
   render: withAuthState({
-    user: { id: "mock-id", nickname: "퍼즐밋 유저" },
+    user: { id: 1, nickname: "퍼즐밋 유저", profileImageUrl: null },
     _hasHydrated: true,
   }),
 };

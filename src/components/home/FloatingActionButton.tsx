@@ -5,7 +5,7 @@ import { Popover } from "@base-ui/react/popover";
 import { IcPlus } from "@/components/icons";
 
 const menuItems = [
-  { label: "약속방 만들기", href: "#" },
+  { label: "약속방 만들기", href: "/meeting/create" },
   { label: "초대 코드로 참여하기", href: "#" },
 ];
 
