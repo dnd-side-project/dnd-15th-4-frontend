@@ -13,13 +13,18 @@ export const Input = ({
   containerClassName,
   className,
   value,
+  id,
   ...props
 }: InputProps) => {
-  const length = typeof value === "string" ? value.length : 0;
-  const hasValue = Boolean(value);
+  const generatedId = React.useId();
+  const inputId = id ?? generatedId;
+  const displayValue = value === undefined || value === null ? "" : `${value}`;
+  const length = displayValue.length;
+  const hasValue = length > 0;
 
   return (
     <InputLayout
+      id={inputId}
       label={label}
       hasValue={hasValue}
       maxLength={maxLength}
@@ -27,6 +32,7 @@ export const Input = ({
       containerClassName={containerClassName}
     >
       <input
+        id={inputId}
         className={cn(
           "body3 text-primary placeholder:text-disable w-full bg-transparent outline-none",
           className
