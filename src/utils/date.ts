@@ -102,6 +102,33 @@ export const hasTimeConflict = (
     );
   });
 
+export const isActiveOrUpcomingMeeting = (
+  meeting: MeetingData,
+  now = new Date()
+): boolean =>
+  meeting.status === "IN_PROGRESS" ||
+  (meeting.status === "WAITING" &&
+    new Date(meeting.dateTime).getTime() > now.getTime());
+
+export const MIN_LEAD_TIME_MINUTES = 30;
+
+export type DateTimeValidationResult = "valid" | "past" | "too-soon";
+
+export const validateSelectedDateTime = (
+  date: Date,
+  hour: number,
+  minute: number,
+  now = new Date()
+): DateTimeValidationResult => {
+  const target = new Date(date);
+  target.setHours(hour, minute, 0, 0);
+
+  if (target.getTime() < now.getTime()) return "past";
+  if (target.getTime() < now.getTime() + MIN_LEAD_TIME_MINUTES * 60_000)
+    return "too-soon";
+  return "valid";
+};
+
 export const formatDateTimeForApi = (date: Date): string => {
   const pad = (value: number) => String(value).padStart(2, "0");
   const year = date.getFullYear();
