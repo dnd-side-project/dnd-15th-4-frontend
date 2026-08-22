@@ -13,14 +13,14 @@ export const fetchMeetings = async (): Promise<MeetingData[]> => {
 
 export const createMeeting = async (
   request: MeetingCreateRequest,
-  image?: File
+  image: File
 ): Promise<MeetingCreateResponse> => {
   const formData = new FormData();
   formData.append(
     "request",
     new Blob([JSON.stringify(request)], { type: "application/json" })
   );
-  if (image) formData.append("image", image);
+  formData.append("image", image);
 
   const result = await api.post<ApiResult<MeetingCreateResponse>>(
     "/api/v1/meetings",

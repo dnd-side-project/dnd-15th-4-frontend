@@ -8,7 +8,7 @@ import type { MeetingCreateRequest, MeetingData } from "@/types/meeting";
 
 export interface CreateMeetingVariables {
   request: MeetingCreateRequest;
-  image?: File;
+  image: File;
 }
 
 export const useCreateMeetingMutation = () => {

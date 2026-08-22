@@ -87,10 +87,12 @@ export default function CreateMeetingPage() {
   const canSubmit =
     title.trim().length > 0 &&
     dateTimeSelection.dateTime !== null &&
-    place !== null;
+    place !== null &&
+    selectedImage !== null;
 
   const handleSubmit = async () => {
-    if (!canSubmit || !dateTimeSelection.dateTime || !place) return;
+    if (!canSubmit || !dateTimeSelection.dateTime || !place || !selectedImage)
+      return;
 
     const request: MeetingCreateRequest = {
       title: title.trim(),
@@ -103,9 +105,7 @@ export default function CreateMeetingPage() {
         nicknameParticipation && nickname.trim() ? nickname.trim() : userName,
     };
 
-    const image = selectedImage
-      ? await urlToFile(selectedImage.src, "meeting-image.jpg")
-      : undefined;
+    const image = await urlToFile(selectedImage.src, "meeting-image.jpg");
 
     createMeetingMutation.mutate(
       { request, image },
