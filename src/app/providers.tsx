@@ -4,9 +4,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState, type ReactNode } from "react";
 
+import { useAuthBootstrap } from "@/hooks/auth/useAuthBootstrap";
+
 interface ProvidersProps {
   children: ReactNode;
 }
+
+const AuthBootstrap = () => {
+  useAuthBootstrap();
+  return null;
+};
 
 export const Providers = ({ children }: ProvidersProps) => {
   const [queryClient] = useState(
@@ -24,6 +31,7 @@ export const Providers = ({ children }: ProvidersProps) => {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AuthBootstrap />
       {children}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
