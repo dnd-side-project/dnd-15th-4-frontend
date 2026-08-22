@@ -40,13 +40,6 @@ export const WithDefaultImage: Story = {
   },
 };
 
-export const RequiredError: Story = {
-  args: {
-    selectedImage: null,
-    errorMessage: "이미지를 선택해 주세요",
-  },
-};
-
 export const Interactive: Story = {
   render: () => {
     const [selectedImage, setSelectedImage] =
