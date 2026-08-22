@@ -9,9 +9,11 @@ import {
   SortToggleButton,
   type SortOrder,
 } from "@/components/mypage/SortToggleButton";
+import { PuzzleDateFilterModal } from "@/components/mypage/PuzzleDateFilterModal";
 import { PuzzleMeetingDetailModal } from "@/components/mypage/PuzzleMeetingDetailModal";
 import { MOCK_PUZZLES } from "@/mocks/mockUser";
 import { IcCalendarMonth } from "@/components/icons";
+import { isSameDay } from "@/utils/date";
 import type { CollectedPuzzle } from "@/types/user";
 
 interface PuzzleImage {
@@ -33,6 +35,8 @@ const PuzzlesPage = () => {
   const [selectedPuzzle, setSelectedPuzzle] = useState<SelectedPuzzle | null>(
     null
   );
+  const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
+  const [filterDate, setFilterDate] = useState<Date | null>(null);
 
   const handleToggleSortOrder = () => {
     setSortOrder((prev) => (prev === "latest" ? "oldest" : "latest"));
@@ -40,12 +44,15 @@ const PuzzlesPage = () => {
 
   const sortedPuzzles = useMemo(() => {
     const direction = sortOrder === "latest" ? -1 : 1;
-    return [...MOCK_PUZZLES].sort(
+    return MOCK_PUZZLES.filter(
+      (puzzle) =>
+        !filterDate || isSameDay(new Date(puzzle.meetingAt), filterDate)
+    ).sort(
       (a, b) =>
         direction *
         (new Date(a.meetingAt).getTime() - new Date(b.meetingAt).getTime())
     );
-  }, [sortOrder]);
+  }, [sortOrder, filterDate]);
 
   const puzzleImages: PuzzleImage[] = useMemo(
     () =>
@@ -75,6 +82,8 @@ const PuzzlesPage = () => {
       <Header
         title="모은 퍼즐"
         onBack={() => router.back()}
+        rightActionLabel="취소"
+        onRightActionClick={() => setFilterDate(null)}
         className="bg-bg-normal sticky top-0 z-10"
       />
       <div className="mt-5.5 mb-4 flex justify-between px-4">
@@ -85,7 +94,7 @@ const PuzzlesPage = () => {
             onToggle={handleToggleSortOrder}
           />
         </div>
-        <button type="button">
+        <button type="button" onClick={() => setIsDateFilterOpen(true)}>
           <IcCalendarMonth size={24} />
         </button>
       </div>
@@ -114,6 +123,15 @@ const PuzzlesPage = () => {
           onOpenChange={(open) => !open && setSelectedPuzzle(null)}
           puzzle={selectedPuzzle.puzzle}
           initialIndex={selectedPuzzle.initialIndex}
+        />
+      )}
+
+      {isDateFilterOpen && (
+        <PuzzleDateFilterModal
+          initialDate={filterDate}
+          puzzles={MOCK_PUZZLES}
+          onSelectDate={setFilterDate}
+          onClose={() => setIsDateFilterOpen(false)}
         />
       )}
     </div>

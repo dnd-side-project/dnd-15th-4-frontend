@@ -8,6 +8,9 @@ export interface ModalProps extends Omit<Dialog.Root.Props, "children"> {
   title: string;
   children?: ReactNode;
   className?: string;
+  backdropClassName?: string;
+  viewportClassName?: string;
+  showCloseButton?: boolean;
   ref?: Ref<HTMLDivElement>;
 }
 
@@ -15,20 +18,35 @@ export const Modal = ({
   title,
   children,
   className,
+  backdropClassName,
+  viewportClassName,
+  showCloseButton = true,
   ref,
   ...props
 }: ModalProps) => {
   return (
     <Dialog.Root {...props}>
       <Dialog.Portal>
-        <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/63 transition-opacity duration-300 data-ending-style:opacity-0 data-starting-style:opacity-0" />
-        <Dialog.Close
-          aria-label="닫기"
-          className="fixed top-4 left-4 z-50 flex size-6 items-center justify-center text-white"
+        <Dialog.Backdrop
+          className={cn(
+            "fixed inset-0 z-50 bg-black/63 transition-opacity duration-300 data-ending-style:opacity-0 data-starting-style:opacity-0",
+            backdropClassName
+          )}
+        />
+        {showCloseButton && (
+          <Dialog.Close
+            aria-label="닫기"
+            className="fixed top-4 left-4 z-50 flex size-6 items-center justify-center text-white"
+          >
+            <IcClose size={24} />
+          </Dialog.Close>
+        )}
+        <Dialog.Viewport
+          className={cn(
+            "fixed inset-0 z-50 flex items-center justify-center px-6",
+            viewportClassName
+          )}
         >
-          <IcClose size={24} />
-        </Dialog.Close>
-        <Dialog.Viewport className="fixed inset-0 z-50 flex items-center justify-center px-6">
           <Dialog.Popup
             ref={ref}
             className={cn(
