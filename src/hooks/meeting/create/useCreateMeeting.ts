@@ -54,7 +54,7 @@ export const useMeetingQuery = (meetingId: number) =>
     },
     enabled: meetingId > 0,
   });
-
+  
 export const useInviteCodeQuery = (meetingId: number) =>
   useQuery({
     queryKey: meetingKeys.inviteCode(meetingId),
