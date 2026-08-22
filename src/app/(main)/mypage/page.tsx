@@ -35,7 +35,11 @@ const MyPage = () => {
             label: "지난 약속",
             value: `${MOCK_USER.previousAppointmentCount}개`,
           },
-          { label: "모은 퍼즐", value: `${MOCK_USER.collectedPuzzleCount}개` },
+          {
+            label: "모은 퍼즐",
+            value: `${MOCK_USER.collectedPuzzleCount}개`,
+            onClick: () => router.push("/mypage/puzzles"),
+          },
           { label: "즐겨찾기", value: `${MOCK_USER.favoritePlaceCount}개` },
         ]}
       />

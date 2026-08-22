@@ -1,12 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import heroEmptyImage from "@/assets/images/home-empty-hero.png";
 import heroProcessImage from "@/assets/images/home-process-hero.png";
 
 import { AvatarStack } from "@/components/home/AvatarStack";
-import { ProfileMenu } from "@/components/home/ProfileMenu";
+import { IcProfile } from "@/components/icons/IcProfile";
 import { IcArrivalDot, IcPuzzlePiece } from "@/components/icons";
 import { useParticipantLocationsQuery } from "@/hooks/meeting/shared/useParticipantLocations";
 import { MOCK_PARTICIPANT_LOCATIONS } from "@/mocks/mockParticipantLocations";
@@ -183,10 +184,19 @@ const HomeHeroSectionEmpty = () => {
 };
 
 export const HomeHeroSection = ({ meeting }: HomeHeroSectionProps) => {
+  const router = useRouter();
+
   return (
     <section className="bg-primary-light-active relative h-[54dvh] max-h-80 min-h-100 w-full overflow-hidden">
       <div className="absolute top-11 right-4 z-60">
-        <ProfileMenu />
+        <button
+          type="button"
+          aria-label="프로필 메뉴"
+          onClick={() => router.push("/mypage")}
+          className="text-primary cursor-pointer"
+        >
+          <IcProfile size={24} />
+        </button>
       </div>
 
       {meeting ? (

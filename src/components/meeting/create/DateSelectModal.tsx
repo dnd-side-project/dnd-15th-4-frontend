@@ -3,16 +3,11 @@
 import { useState } from "react";
 
 import { Button } from "@/components/common/Button";
-import { IcArrowBack } from "@/components/icons";
+import { MonthCalendar } from "@/components/common/MonthCalendar";
 import { ScheduleCard } from "@/components/common/ScheduleCard";
 import { cn } from "@/lib/utils";
 import type { MeetingData } from "@/types/meeting";
-import {
-  getMeetingsOnDate,
-  getMonthWeeks,
-  isPastDay,
-  isSameDay,
-} from "@/utils/date";
+import { getMeetingsOnDate, isPastDay } from "@/utils/date";
 
 export interface DateSelectModalProps {
   initialDate?: Date | null;
@@ -20,8 +15,6 @@ export interface DateSelectModalProps {
   onConfirm: (date: Date) => void;
   onClose: () => void;
 }
-
-const WEEKDAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
 export const DateSelectModal = ({
   initialDate,
@@ -36,8 +29,6 @@ export const DateSelectModal = ({
   const [viewYear, setViewYear] = useState(selectedDate.getFullYear());
   const [viewMonth, setViewMonth] = useState(selectedDate.getMonth());
   const [activeCardIndex, setActiveCardIndex] = useState(0);
-
-  const weeks = getMonthWeeks(viewYear, viewMonth);
 
   const meetingsOnSelectedDate = getMeetingsOnDate(meetings, selectedDate);
 
@@ -119,91 +110,19 @@ export const DateSelectModal = ({
         <div className="rounded-t-20 relative z-10 flex flex-col bg-white px-4 pt-3 pb-8">
           <div className="rounded-pill bg-border-1 mx-auto mb-5 h-1 w-9" />
 
-          <div className="mb-6 flex items-center justify-between px-4">
-            <button type="button" onClick={goToPrevMonth} aria-label="이전 달">
-              <IcArrowBack size={24} className="text-primary" />
-            </button>
-            <div className="h3 text-primary font-semibold">
-              {viewYear}년 {viewMonth + 1}월
-            </div>
-            <button type="button" onClick={goToNextMonth} aria-label="다음 달">
-              <IcArrowBack size={24} className="text-primary rotate-180" />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-7 pb-2">
-            {WEEKDAY_LABELS.map((label, index) => (
-              <span
-                key={label}
-                className={cn(
-                  "body7 text-center",
-                  index === 0 && "text-red-500",
-                  index === 6 && "text-primary-normal",
-                  index !== 0 && index !== 6 && "text-primary"
-                )}
-              >
-                {label}
-              </span>
-            ))}
-          </div>
-
-          <div className="flex flex-col gap-1">
-            {weeks.map((week, weekIndex) => (
-              <div key={weekIndex} className="grid grid-cols-7">
-                {week.map((date, dayIndex) => {
-                  if (!date) return <div key={dayIndex} />;
-
-                  const hasMeeting =
-                    getMeetingsOnDate(meetings, date).length > 0;
-
-                  const isSelected = isSameDay(date, selectedDate);
-                  const isToday = isSameDay(date, today);
-                  const disabled = isPastDay(date, today);
-
-                  return (
-                    <button
-                      key={dayIndex}
-                      type="button"
-                      disabled={disabled}
-                      aria-label={`${date.getMonth() + 1}월 ${date.getDate()}일`}
-                      onClick={() => handleSelectDate(date)}
-                      className="flex flex-col items-center gap-1 py-1.5 disabled:opacity-30"
-                    >
-                      <span
-                        className={cn(
-                          "body2 rounded-4 flex size-8 items-center justify-center transition-colors",
-                          isSelected &&
-                            "bg-primary-normal-hover text-white p-2",
-                          !isSelected && isToday && "text-primary font-bold",
-                          !isSelected &&
-                            !isToday &&
-                            dayIndex === 0 &&
-                            "text-red-500",
-                          !isSelected &&
-                            !isToday &&
-                            dayIndex === 6 &&
-                            "text-primary-normal",
-                          !isSelected &&
-                            !isToday &&
-                            dayIndex !== 0 &&
-                            dayIndex !== 6 &&
-                            "text-primary"
-                        )}
-                      >
-                        {date.getDate()}
-                      </span>
-                      <span
-                        className={cn(
-                          "rounded-pill size-1",
-                          hasMeeting ? "bg-surface-5" : "bg-transparent"
-                        )}
-                      />
-                    </button>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
+          <MonthCalendar
+            viewYear={viewYear}
+            viewMonth={viewMonth}
+            selectedDate={selectedDate}
+            today={today}
+            onSelectDate={handleSelectDate}
+            onPrevMonth={goToPrevMonth}
+            onNextMonth={goToNextMonth}
+            hasEventOnDate={(date) =>
+              getMeetingsOnDate(meetings, date).length > 0
+            }
+            isDateDisabled={(date) => isPastDay(date, today)}
+          />
 
           <Button
             type="button"
