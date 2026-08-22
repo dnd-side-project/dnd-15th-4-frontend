@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { IcPuzzlePiece, PUZZLE_SHAPES } from "@/components/icons";
 
 const meta: Meta<typeof IcPuzzlePiece> = {
-  title: "Components/Icons/IcPuzzlePiece",
+  title: "Icons/IcPuzzlePiece",
   component: IcPuzzlePiece,
   tags: ["autodocs"],
   argTypes: {
