@@ -19,10 +19,10 @@ import { PlaceSearchModal } from "@/components/meeting/create/PlaceSearchModal";
 import { PlaceSearchTrigger } from "@/components/meeting/create/PlaceSearchTrigger";
 import { TimeSelectModal } from "@/components/meeting/create/TimeSelectModal";
 import { getRandomBrandImage } from "@/constants/branding-images";
-import { MOCK_MEETINGS } from "@/mocks/mockMeetings";
 import { useCapacitySelection } from "@/hooks/meeting/create/useCapacitySelection";
 import { useCreateMeetingMutation } from "@/hooks/meeting/create/useCreateMeeting";
 import { useDateTimeSelection } from "@/hooks/meeting/create/useDateTimeSelection";
+import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
 import { urlToFile } from "@/utils/file";
 import { useAuthStore } from "@/stores/useAuthStore";
 
@@ -54,6 +54,7 @@ export default function CreateMeetingPage() {
   const [notifySpeechBubble, setNotifySpeechBubble] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const createMeetingMutation = useCreateMeetingMutation();
+  const { data: existingMeetings = [] } = useMeetingsQuery();
 
   const replaceSelectedImage = (next: MeetingImageSelection | null) => {
     setSelectedImage((prev) => {
@@ -98,7 +99,8 @@ export default function CreateMeetingPage() {
       latitude: place.latitude,
       longitude: place.longitude,
       memo: memo.trim() || null,
-      nickname: nicknameParticipation ? nickname.trim() : userName,
+      nickname:
+        nicknameParticipation && nickname.trim() ? nickname.trim() : userName,
     };
 
     const image = selectedImage
@@ -274,7 +276,7 @@ export default function CreateMeetingPage() {
           initialDate={
             dateTimeSelection.pendingDate ?? dateTimeSelection.dateTime
           }
-          meetings={MOCK_MEETINGS}
+          meetings={existingMeetings}
           onConfirm={dateTimeSelection.handleDateConfirm}
           onClose={dateTimeSelection.close}
         />
@@ -283,7 +285,7 @@ export default function CreateMeetingPage() {
       {dateTimeSelection.step === "time" && dateTimeSelection.pendingDate && (
         <TimeSelectModal
           date={dateTimeSelection.pendingDate}
-          meetings={MOCK_MEETINGS}
+          meetings={existingMeetings}
           initialHour={dateTimeSelection.dateTime?.getHours()}
           initialMinute={dateTimeSelection.dateTime?.getMinutes()}
           onConfirm={dateTimeSelection.handleTimeConfirm}
