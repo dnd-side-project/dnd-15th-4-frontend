@@ -13,4 +13,6 @@ export const meetingKeys = {
       "participant-locations",
       [...participantIds].sort((a, b) => a - b),
     ] as const,
+  preview: (inviteCode: string) =>
+    [...meetingKeys.all, "preview", inviteCode] as const,
 };

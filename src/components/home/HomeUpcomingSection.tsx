@@ -31,13 +31,17 @@ export const HomeUpcomingSection = ({
           </p>
         </div>
       ) : (
-        <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
-          {schedules.map((meeting, index) => (
-            <ScheduleCard
-              key={`${meeting.meetingId}-${index}`}
-              meeting={meeting}
-            />
-          ))}
+        <div className="relative flex min-h-0 flex-1 flex-col">
+          <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pb-8">
+            {schedules.map((meeting, index) => (
+              <ScheduleCard
+                key={`${meeting.meetingId}-${index}`}
+                meeting={meeting}
+              />
+            ))}
+          </div>
+
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-20 bg-linear-to-b from-transparent via-white/80 to-white" />
         </div>
       )}
     </section>

@@ -4,23 +4,27 @@ import { useRouter } from "next/navigation";
 import { Popover } from "@base-ui/react/popover";
 import { IcPlus } from "@/components/icons";
 
-const menuItems = [
-  { label: "약속방 만들기", href: "/meeting/create" },
-  { label: "초대 코드로 참여하기", href: "#" },
-];
+export interface FloatingActionButtonProps {
+  onParticipateClick: () => void;
+}
 
-export const FloatingActionButton = () => {
+const CREATE_MEETING_HREF = "/meeting/create";
+
+export const FloatingActionButton = ({
+  onParticipateClick,
+}: FloatingActionButtonProps) => {
   const router = useRouter();
 
-  const handleNavigate = (href: string) => {
-    router.push(href);
-  };
+  const menuItems = [
+    { label: "약속방 만들기", onClick: () => router.push(CREATE_MEETING_HREF) },
+    { label: "초대 코드로 참여하기", onClick: onParticipateClick },
+  ];
 
   return (
     <Popover.Root>
       <Popover.Trigger
         aria-label="약속 생성 및 참여"
-        className="bg-sub2-normal rounded-pill size-15.5rem absolute right-4 bottom-12 flex cursor-pointer items-center justify-center shadow-lg"
+        className="bg-sub2-normal rounded-pill size-15.5rem absolute right-4 bottom-12 z-20 flex cursor-pointer items-center justify-center shadow-lg"
       >
         <IcPlus size={62} className="text-white" />
       </Popover.Trigger>
@@ -33,10 +37,10 @@ export const FloatingActionButton = () => {
           className={"z-50"}
         >
           <Popover.Popup className="rounded-16 divide-border-1 flex w-48.25 flex-col divide-y overflow-hidden bg-white px-4.5 py-0 shadow-lg">
-            {menuItems.map(({ label, href }) => (
+            {menuItems.map(({ label, onClick }) => (
               <Popover.Close
                 key={label}
-                onClick={() => handleNavigate(href)}
+                onClick={onClick}
                 className="body2 text-primary hover:text-secondary-1 cursor-pointer py-4 text-left transition-colors"
               >
                 {label}

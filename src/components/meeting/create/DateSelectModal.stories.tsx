@@ -13,8 +13,8 @@ const MOCK_MEETINGS: MeetingData[] = [
     latitude: 37.5445,
     longitude: 127.0557,
     participants: [
-      { id: 1, name: "소정", profileImageNumber: 3 },
-      { id: 2, name: "민지", profileImageNumber: 5 },
+      { id: 1, name: "소정", profileImageUrl: "/character-1.png" },
+      { id: 2, name: "민지", profileImageUrl: "/character-1.png" },
     ],
     status: "WAITING",
   },
@@ -25,7 +25,9 @@ const MOCK_MEETINGS: MeetingData[] = [
     place: "성수동 카페",
     latitude: 37.5445,
     longitude: 127.0557,
-    participants: [{ id: 3, name: "현우", profileImageNumber: 1 }],
+    participants: [
+      { id: 3, name: "현우", profileImageUrl: "/character-1.png" },
+    ],
     status: "WAITING",
   },
 ];

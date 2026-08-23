@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-interface HeaderProps {
+interface IconActionHeaderProps {
   icon?: React.ReactNode;
   iconAriaLabel?: string;
   onIconClick?: () => void;
@@ -9,14 +9,14 @@ interface HeaderProps {
   className?: string;
 }
 
-export const Header = ({
+export const IconActionHeader = ({
   icon,
   iconAriaLabel,
   onIconClick,
   detailText,
   onDetailClick,
   className,
-}: HeaderProps) => {
+}: IconActionHeaderProps) => {
   return (
     <div
       className={cn("flex w-full items-center p-4 justify-between", className)}

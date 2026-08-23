@@ -1,7 +1,7 @@
 export interface Participant {
   id: number;
   name: string;
-  profileImageNumber: number;
+  profileImageUrl: string;
 }
 
 export type MeetingStatus =
@@ -122,6 +122,7 @@ export interface MeetingResultResponse {
 export interface MeetingImageSelection {
   type: "user" | "default";
   src: string;
+  bgColorClassName?: string;
 }
 
 export interface MeetingCreateRequest {
@@ -140,4 +141,34 @@ export interface MeetingCreateResponse {
 
 export interface MeetingInviteCodeResponse {
   inviteCode: string;
+}
+
+export interface MeetingPreviewRequest {
+  inviteCode: string;
+}
+
+export interface MeetingPreviewParticipant {
+  id: number;
+  name: string;
+  profileImageUrl: string;
+}
+
+export interface MeetingPreviewResponse {
+  meetingId: number;
+  title: string;
+  dateTime: string;
+  place: string;
+  latitude: number;
+  longitude: number;
+  status: MeetingStatus;
+  participants: MeetingPreviewParticipant[];
+}
+
+export interface MeetingJoinRequest {
+  inviteCode: string;
+  nickname?: string | null;
+}
+
+export interface MeetingJoinResponse {
+  meetingId: number;
 }

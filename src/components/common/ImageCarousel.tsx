@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect } from "react";
 
 import { IcArrowBack } from "@/components/icons";
-import { PuzzleSetIndicator } from "@/components/meeting/progress/PuzzleSetIndicator";
+import { DotIndicator } from "@/components/meeting/progress/PuzzleSetIndicator";
 import { useCarouselPage } from "@/hooks/common/useCarouselPage";
 import { cn } from "@/lib/utils";
 
@@ -81,7 +81,7 @@ export const ImageCarousel = ({
           </>
         )}
       </div>
-      <PuzzleSetIndicator
+      <DotIndicator
         pageCount={Math.max(images.length, 1)}
         currentPage={currentPage}
         className={cn(images.length <= 1 && "invisible")}

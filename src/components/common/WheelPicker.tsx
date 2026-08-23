@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -32,7 +32,7 @@ export const WheelPicker = ({
 
   const [selectedIndex, setSelectedIndex] = useState(initialIndex);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
 

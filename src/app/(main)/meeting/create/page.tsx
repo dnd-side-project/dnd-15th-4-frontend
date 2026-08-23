@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { AlertModal } from "@/components/common/AlertModal";
 import { Button } from "@/components/common/Button";
 import { Header } from "@/components/common/Header";
-import { Input } from "@/components/common/Input";
 import { InfoBanner } from "@/components/common/InfoBanner";
+import { Input } from "@/components/common/Input";
 import { ToggleField } from "@/components/common/ToggleField";
 import { CapacityField } from "@/components/meeting/create/CapacityField";
 import { CapacityPickerModal } from "@/components/meeting/create/CapacityPickerModal";
@@ -18,29 +18,35 @@ import { ImageUploadBox } from "@/components/meeting/create/ImageUploadBox";
 import { PlaceSearchModal } from "@/components/meeting/create/PlaceSearchModal";
 import { PlaceSearchTrigger } from "@/components/meeting/create/PlaceSearchTrigger";
 import { TimeSelectModal } from "@/components/meeting/create/TimeSelectModal";
-import { getRandomBrandImage } from "@/constants/branding-images";
 import { useCapacitySelection } from "@/hooks/meeting/create/useCapacitySelection";
 import { useCreateMeetingMutation } from "@/hooks/meeting/create/useCreateMeeting";
 import { useDateTimeSelection } from "@/hooks/meeting/create/useDateTimeSelection";
+import { useMeetingImageSelection } from "@/hooks/meeting/shared/useMeetingImageSelection";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
-import { urlToFile } from "@/utils/file";
 import { useAuthStore } from "@/stores/useAuthStore";
-
-import type {
-  MeetingCreateRequest,
-  MeetingImageSelection,
-} from "@/types/meeting";
-import type { SelectedPlace } from "@/types/place";
 import { formatDateTimeForApi } from "@/utils/date";
+import { urlToFile } from "@/utils/file";
+
+import type { MeetingCreateRequest } from "@/types/meeting";
+import type { SelectedPlace } from "@/types/place";
+
+const DEFAULT_CREATE_ERROR_MESSAGE =
+  "약속방 생성에 실패했어요. 다시 시도해주세요.";
 
 export default function CreateMeetingPage() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const userName = user?.nickname || "";
 
-  const [selectedImage, setSelectedImage] =
-    useState<MeetingImageSelection | null>(null);
-  const [pendingCropImage, setPendingCropImage] = useState<string | null>(null);
+  const {
+    selectedImage,
+    pendingCropImage,
+    handleFileSelected,
+    handleCropCancel,
+    handleCropConfirm,
+    handleProvidedImageToggle,
+  } = useMeetingImageSelection();
+
   const [nicknameParticipation, setNicknameParticipation] = useState(false);
   const [nickname, setNickname] = useState("");
   const [title, setTitle] = useState("");
@@ -53,73 +59,72 @@ export default function CreateMeetingPage() {
   const [notifyFriendArrival, setNotifyFriendArrival] = useState(false);
   const [notifySpeechBubble, setNotifySpeechBubble] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const createMeetingMutation = useCreateMeetingMutation();
   const { data: existingMeetings = [] } = useMeetingsQuery();
 
-  const replaceSelectedImage = (next: MeetingImageSelection | null) => {
-    setSelectedImage((prev) => {
-      if (prev?.type === "user") URL.revokeObjectURL(prev.src);
-      return next;
-    });
-  };
-
-  const handleFileSelected = (file: File) => {
-    setPendingCropImage(URL.createObjectURL(file));
-  };
-
-  const handleCropCancel = () => {
-    if (pendingCropImage) URL.revokeObjectURL(pendingCropImage);
-    setPendingCropImage(null);
-  };
-
-  const handleCropConfirm = (croppedImageUrl: string) => {
-    if (pendingCropImage) URL.revokeObjectURL(pendingCropImage);
-    setPendingCropImage(null);
-    replaceSelectedImage({ type: "user", src: croppedImageUrl });
-  };
-
-  const handleProvidedImageToggle = (checked: boolean) => {
-    replaceSelectedImage(
-      checked ? { type: "default", src: getRandomBrandImage().src } : null
-    );
-  };
+  const isNicknameValid = !nicknameParticipation || nickname.trim().length > 0;
+  const isCapacitySelected =
+    capacitySelection.capacity !== null && capacitySelection.capacity > 0;
 
   const canSubmit =
+    selectedImage !== null &&
     title.trim().length > 0 &&
     dateTimeSelection.dateTime !== null &&
     place !== null &&
-    selectedImage !== null;
+    isCapacitySelected &&
+    isNicknameValid;
 
   const handleSubmit = async () => {
-    if (!canSubmit || !dateTimeSelection.dateTime || !place || !selectedImage)
+    if (
+      !canSubmit ||
+      isSubmitting ||
+      !selectedImage ||
+      !dateTimeSelection.dateTime ||
+      !place ||
+      !capacitySelection.capacity
+    )
       return;
 
-    const request: MeetingCreateRequest = {
-      title: title.trim(),
-      dateTime: formatDateTimeForApi(dateTimeSelection.dateTime),
-      destination: place.placeName,
-      latitude: place.latitude,
-      longitude: place.longitude,
-      memo: memo.trim() || null,
-      nickname:
-        nicknameParticipation && nickname.trim() ? nickname.trim() : userName,
-    };
+    setIsSubmitting(true);
 
-    const image = await urlToFile(selectedImage.src, "meeting-image.jpg");
+    try {
+      const request: MeetingCreateRequest = {
+        title: title.trim(),
+        dateTime: formatDateTimeForApi(dateTimeSelection.dateTime),
+        destination: place.placeName,
+        latitude: place.latitude,
+        longitude: place.longitude,
+        memo: memo.trim() || null,
+        nickname:
+          nicknameParticipation && nickname.trim() ? nickname.trim() : userName,
+      };
 
-    createMeetingMutation.mutate(
-      { request, image },
-      {
-        onSuccess: ({ meetingId }) => {
-          const query = capacitySelection.capacity
-            ? `?capacity=${capacitySelection.capacity}`
-            : "";
-          router.push(`/meeting/${meetingId}/success${query}`);
-        },
-        onError: () =>
-          setSubmitError("약속방 생성에 실패했어요. 다시 시도해주세요."),
-      }
-    );
+      const image = await urlToFile(selectedImage.src, "meeting-image.jpg");
+
+      createMeetingMutation.mutate(
+        { request, image },
+        {
+          onSuccess: ({ meetingId }) => {
+            router.push(
+              `/meeting/${meetingId}/success?capacity=${capacitySelection.capacity}`
+            );
+          },
+          onError: (error) => {
+            const message =
+              error instanceof Error
+                ? error.message
+                : DEFAULT_CREATE_ERROR_MESSAGE;
+            setSubmitError(message || DEFAULT_CREATE_ERROR_MESSAGE);
+            setIsSubmitting(false);
+          },
+        }
+      );
+    } catch {
+      setSubmitError(DEFAULT_CREATE_ERROR_MESSAGE);
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -147,7 +152,10 @@ export default function CreateMeetingPage() {
             <ToggleField
               label="닉네임으로 참여"
               checked={nicknameParticipation}
-              onCheckedChange={setNicknameParticipation}
+              onCheckedChange={(checked) => {
+                setNicknameParticipation(checked);
+                if (!checked) setNickname("");
+              }}
             />
             {nicknameParticipation && (
               <Input
@@ -226,7 +234,9 @@ export default function CreateMeetingPage() {
         <Button
           type="button"
           size="cta"
-          disabled={!canSubmit || createMeetingMutation.isPending}
+          disabled={
+            !canSubmit || isSubmitting || createMeetingMutation.isPending
+          }
           onClick={handleSubmit}
           className={
             canSubmit

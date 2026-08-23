@@ -78,7 +78,10 @@ const tryReissue = (): Promise<boolean> => {
   if (!reissuePromise) {
     reissuePromise = request<ApiResult<ReissueResponseDto>>(
       "/api/v1/auth/reissue",
-      { method: "POST" }
+      {
+        method: "POST",
+        credentials: "include",
+      }
     )
       .then((result) => {
         useAuthStore.getState().setAccessToken(result.data.accessToken);

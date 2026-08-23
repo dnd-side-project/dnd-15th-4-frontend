@@ -21,7 +21,9 @@ const MOCK_MEETINGS: MeetingData[] = [
     place: "성수 상상플래닛",
     latitude: 37.5445,
     longitude: 127.0557,
-    participants: [{ id: 1, name: "소정", profileImageNumber: 3 }],
+    participants: [
+      { id: 1, name: "소정", profileImageUrl: "/character-1.png" },
+    ],
     status: "WAITING",
   },
 ];

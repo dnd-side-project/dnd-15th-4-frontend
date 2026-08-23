@@ -18,8 +18,8 @@ export const Input = ({
 }: InputProps) => {
   const generatedId = React.useId();
   const inputId = id ?? generatedId;
-  const displayValue = value === undefined || value === null ? "" : `${value}`;
-  const length = displayValue.length;
+  const normalizedValue = value == null ? "" : String(value);
+  const length = normalizedValue.length;
   const hasValue = length > 0;
 
   return (

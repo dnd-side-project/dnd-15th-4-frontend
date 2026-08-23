@@ -3,11 +3,11 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { AvatarStack } from "./AvatarStack";
 
 const mockParticipants = [
-  { id: 1, name: "소정", profileImageNumber: 3 },
-  { id: 2, name: "민지", profileImageNumber: 5 },
-  { id: 3, name: "현우", profileImageNumber: 1 },
-  { id: 4, name: "예린", profileImageNumber: 2 },
-  { id: 5, name: "성진", profileImageNumber: 4 },
+  { id: 1, name: "소정", profileImageUrl: "/character-1.png" },
+  { id: 2, name: "민지", profileImageUrl: "/character-1.png" },
+  { id: 3, name: "현우", profileImageUrl: "/character-1.png" },
+  { id: 4, name: "예린", profileImageUrl: "/character-1.png" },
+  { id: 5, name: "성진", profileImageUrl: "/character-1.png" },
 ];
 
 const meta: Meta<typeof AvatarStack> = {

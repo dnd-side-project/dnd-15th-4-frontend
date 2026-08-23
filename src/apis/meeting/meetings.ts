@@ -5,6 +5,10 @@ import type {
   MeetingCreateResponse,
   MeetingData,
   MeetingInviteCodeResponse,
+  MeetingJoinRequest,
+  MeetingJoinResponse,
+  MeetingPreviewRequest,
+  MeetingPreviewResponse,
 } from "@/types/meeting";
 
 export const fetchMeetings = async (): Promise<MeetingData[]> => {
@@ -35,6 +39,34 @@ export const fetchInviteCode = async (
 ): Promise<MeetingInviteCodeResponse> => {
   const result = await api.get<ApiResult<MeetingInviteCodeResponse>>(
     `/api/v1/meetings/${meetingId}/invite-code`
+  );
+  return result.data;
+};
+
+export const previewMeeting = async (
+  request: MeetingPreviewRequest
+): Promise<MeetingPreviewResponse> => {
+  const result = await api.post<ApiResult<MeetingPreviewResponse>>(
+    "/api/v1/meetings/preview",
+    request
+  );
+  return result.data;
+};
+
+export const joinMeeting = async (
+  request: MeetingJoinRequest,
+  image?: File
+): Promise<MeetingJoinResponse> => {
+  const formData = new FormData();
+  formData.append(
+    "request",
+    new Blob([JSON.stringify(request)], { type: "application/json" })
+  );
+  if (image) formData.append("image", image);
+
+  const result = await api.post<ApiResult<MeetingJoinResponse>>(
+    "/api/v1/meetings/members",
+    formData
   );
   return result.data;
 };

@@ -1,14 +1,44 @@
+import { IcInfo } from "@/components/icons";
+import { cn } from "@/lib/utils";
+
 interface ToastProps {
   message: string;
+  position?: "top" | "bottom";
+  isExiting?: boolean;
 }
 
-export function Toast({ message }: ToastProps) {
+export function Toast({
+  message,
+  position = "bottom",
+  isExiting = false,
+}: ToastProps) {
+  const isTop = position === "top";
+
   return (
-    <output
-      aria-atomic="true"
-      className="animate-in fade-in slide-in-from-bottom-4 fixed bottom-10 left-1/2 z-50 block -translate-x-1/2 rounded-full bg-gray-900/90 px-5 py-3 text-sm font-medium text-white shadow-lg backdrop-blur-sm transition-all"
+    <div
+      className={cn(
+        "fixed inset-x-0 z-50 mx-auto w-full max-w-md px-4",
+        isTop ? "top-6" : "bottom-10"
+      )}
     >
-      {message}
-    </output>
+      <output
+        aria-atomic="true"
+        className={cn(
+          "rounded-8 bg-sub2-normal/95 flex w-full items-center gap-1.75 px-2.25 py-2.75 shadow-lg",
+          isExiting
+            ? cn(
+                "animate-out fade-out",
+                isTop ? "slide-out-to-top-4" : "slide-out-to-bottom-4"
+              )
+            : cn(
+                "animate-in fade-in",
+                isTop ? "slide-in-from-top-4" : "slide-in-from-bottom-4"
+              )
+        )}
+      >
+        <IcInfo size={20} className="shrink-0 text-white" />
+        <span className="body7 whitespace-nowrap text-white">{message}</span>
+      </output>
+    </div>
   );
 }

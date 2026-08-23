@@ -50,3 +50,15 @@ export const BRAND_IMAGES: StaticImageData[] = [
 
 export const getRandomBrandImage = (): StaticImageData =>
   BRAND_IMAGES[Math.floor(Math.random() * BRAND_IMAGES.length)];
+
+const PROVIDED_IMAGE_BG_COLORS = [
+  "bg-point-normal",
+  "bg-sub1-normal",
+  "bg-surface-4",
+  "bg-surface-1",
+] as const;
+
+export const getRandomProvidedImageBgColor = (): string =>
+  PROVIDED_IMAGE_BG_COLORS[
+    Math.floor(Math.random() * PROVIDED_IMAGE_BG_COLORS.length)
+  ];

@@ -2,19 +2,19 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-export interface ArrivalConfirmButtonProps {
+export interface PillButtonProps {
   text: string;
   icon?: ReactNode;
   onClick?: () => void;
   className?: string;
 }
 
-export const ArrivalConfirmButton = ({
+export const PillButton = ({
   text,
   icon,
   onClick,
   className,
-}: ArrivalConfirmButtonProps) => {
+}: PillButtonProps) => {
   return (
     <button
       type="button"

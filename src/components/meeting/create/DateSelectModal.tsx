@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "@/components/common/Button";
 import { MonthCalendar } from "@/components/common/MonthCalendar";
@@ -30,6 +30,11 @@ export const DateSelectModal = ({
   const [viewMonth, setViewMonth] = useState(selectedDate.getMonth());
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
   const meetingsOnSelectedDate = getMeetingsOnDate(meetings, selectedDate);
 
   const goToPrevMonth = () => {
@@ -55,6 +60,29 @@ export const DateSelectModal = ({
     setActiveCardIndex(Math.round(el.scrollLeft / el.clientWidth));
   };
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!scrollRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
   const handleConfirm = () => {
     onConfirm(selectedDate);
   };
@@ -75,10 +103,21 @@ export const DateSelectModal = ({
 
       <div className="relative flex flex-col">
         {meetingsOnSelectedDate.length > 0 && (
-          <div className="relative z-10 mb-3 px-4">
-            <div
+          <div className="relative z-10 mb-3 w-full min-w-0 px-4">
+            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/no-noninteractive-element-interactions */}
+            <section
+              ref={scrollRef}
+              aria-label="일정 목록 카드"
               onScroll={handleScheduleScroll}
-              className="flex snap-x snap-mandatory scrollbar-none gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden"
+              onMouseDown={handleMouseDown}
+              onMouseLeave={handleMouseLeave}
+              onMouseUp={handleMouseUp}
+              onMouseMove={handleMouseMove}
+              className={cn(
+                "flex scrollbar-none gap-3 overflow-x-auto select-none [webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden",
+                !isDragging && "snap-x snap-mandatory",
+                isDragging ? "cursor-grabbing" : "cursor-grab"
+              )}
             >
               {meetingsOnSelectedDate.map((meeting) => (
                 <div
@@ -88,7 +127,8 @@ export const DateSelectModal = ({
                   <ScheduleCard meeting={meeting} />
                 </div>
               ))}
-            </div>
+            </section>
+
             {meetingsOnSelectedDate.length > 1 && (
               <div className="mt-3 flex items-center justify-center gap-1.5">
                 {meetingsOnSelectedDate.map((meeting, index) => (

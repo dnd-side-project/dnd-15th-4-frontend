@@ -86,6 +86,8 @@ const CHARACTER_IMAGES: Record<number, StaticImageData> = {
 
 export const CHARACTER_FALLBACK_IMAGE = character1;
 
+// todo: Number 방식이 아닌 URL 자체를 받는 방식으로 수정되었습니다. 해당 부분은 API 연결을 하면서 수정할 필요가 있습니다.
 export const getCharacterImage = (
   profileImageNumber: number
-): StaticImageData => CHARACTER_IMAGES[profileImageNumber] ?? character1;
+): StaticImageData =>
+  CHARACTER_IMAGES[profileImageNumber] ?? CHARACTER_FALLBACK_IMAGE;
