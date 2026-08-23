@@ -26,7 +26,7 @@ export const InviteCodeJoinSheet = ({
   const [inviteCode, setInviteCode] = useState(initialCode);
 
   useEffect(() => {
-    if (initialCode) setInviteCode(initialCode);
+    setInviteCode(initialCode);
   }, [initialCode]);
 
   const {

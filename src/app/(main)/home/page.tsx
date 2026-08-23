@@ -20,7 +20,10 @@ export default function HomePage() {
 
   const handleInviteOpenChange = (open: boolean) => {
     setIsInviteOpen(open);
-    if (!open) router.replace("/home");
+    if (!open) {
+      setInitialInviteCode("");
+      router.replace("/home");
+    }
   };
 
   useEffect(() => {
