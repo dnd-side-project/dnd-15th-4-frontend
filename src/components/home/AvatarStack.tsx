@@ -39,7 +39,7 @@ const StackAvatar = ({ item, zIndex, hiddenCount }: StackAvatarProps) => {
       />
 
       {hiddenCount ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/51 text-[14px] font-semibold text-white">
+        <div className="body6 absolute inset-0 flex items-center justify-center bg-black/51 text-white">
           +{hiddenCount}
         </div>
       ) : null}
@@ -60,7 +60,7 @@ export const AvatarStack = ({
   const hiddenCount = participants.length - visibleParticipants.length;
 
   return (
-    <div className="flex -space-x-2">
+    <div className="flex -space-x-4.25">
       {visibleParticipants.map((item, index) => (
         <StackAvatar
           key={item.id}

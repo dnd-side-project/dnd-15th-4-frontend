@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 export interface BottomSheetProps extends Omit<Drawer.Root.Props, "children"> {
   children?: ReactNode;
   className?: string;
+  backdropClassName?: string;
   shouldShowBackdrop?: boolean;
   ref?: Ref<HTMLDivElement>;
 }
@@ -13,6 +14,7 @@ export interface BottomSheetProps extends Omit<Drawer.Root.Props, "children"> {
 export const BottomSheet = ({
   children,
   className,
+  backdropClassName,
   shouldShowBackdrop = true,
   ref,
   ...props
@@ -21,7 +23,12 @@ export const BottomSheet = ({
     <Drawer.Root {...props}>
       <Drawer.Portal>
         {shouldShowBackdrop && (
-          <Drawer.Backdrop className="fixed inset-0 bg-black/40 transition-opacity duration-300 data-ending-style:opacity-0 data-starting-style:opacity-0" />
+          <Drawer.Backdrop
+            className={cn(
+              "fixed inset-0 bg-black/40 transition-opacity duration-300 data-ending-style:opacity-0 data-starting-style:opacity-0",
+              backdropClassName
+            )}
+          />
         )}
         <Drawer.Viewport className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center">
           <Drawer.Popup
