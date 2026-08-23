@@ -38,7 +38,7 @@ export const MOCK_MEETINGS: MeetingData[] = [
   {
     meetingId: 3,
     title: "주말 성수동 보드게임 모임",
-    dateTime: "2026-08-23T14:30:00+09:00",
+    dateTime: "2026-08-23T01:30:00+09:00",
     place: "성수동 히어로보드게임카페",
     latitude: 37.5445,
     longitude: 127.0557,

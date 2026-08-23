@@ -47,8 +47,12 @@ export const MeetingPuzzleFeedPanel = ({
         <ImageDetailModal
           open
           onOpenChange={(open) => !open && setSelectedFeedItem(null)}
-          imageUrl={selectedFeedItem.imageUrl}
-          imageAlt={`${selectedFeedItem.uploaderNickname}님이 등록한 사진`}
+          images={[
+            {
+              imageUrl: selectedFeedItem.imageUrl,
+              alt: `${selectedFeedItem.uploaderNickname}님이 등록한 사진`,
+            },
+          ]}
           uploaderNickname={selectedFeedItem.uploaderNickname}
           uploaderProfileImageUrl={selectedFeedItem.uploaderProfileImageUrl}
         />
