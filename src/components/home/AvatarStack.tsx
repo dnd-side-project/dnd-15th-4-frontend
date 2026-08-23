@@ -3,16 +3,13 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import {
-  CHARACTER_FALLBACK_IMAGE,
-  getCharacterImage,
-} from "@/constants/character-images";
+import { CHARACTER_FALLBACK_IMAGE } from "@/constants/character-images";
 
-export interface AvatarStackItem {
+export type AvatarStackItem = {
   id: number;
   name: string;
-  profileImageNumber: number;
-}
+  profileImageUrl: string;
+};
 
 interface StackAvatarProps {
   item: AvatarStackItem;
@@ -29,11 +26,7 @@ const StackAvatar = ({ item, zIndex, hiddenCount }: StackAvatarProps) => {
       className="border-border-4 rounded-8 relative size-9 shrink-0 overflow-hidden border bg-white"
     >
       <Image
-        src={
-          hasError
-            ? CHARACTER_FALLBACK_IMAGE
-            : getCharacterImage(item.profileImageNumber)
-        }
+        src={hasError ? CHARACTER_FALLBACK_IMAGE : item.profileImageUrl}
         alt={item.name}
         fill
         sizes="38px"

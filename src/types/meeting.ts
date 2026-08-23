@@ -1,7 +1,7 @@
 export interface Participant {
   id: number;
   name: string;
-  profileImageNumber: number;
+  profileImageUrl: string;
 }
 
 export type MeetingStatus =

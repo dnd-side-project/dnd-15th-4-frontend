@@ -22,9 +22,9 @@ const mockMeeting: MeetingData = {
   place: "강남역 11번 출구",
   status: "WAITING",
   participants: [
-    { id: 1, name: "김철수", profileImageNumber: 1 },
-    { id: 2, name: "이영희", profileImageNumber: 2 },
-    { id: 3, name: "박민수", profileImageNumber: 3 },
+    { id: 1, name: "김철수", profileImageUrl: "/character-1.png" },
+    { id: 2, name: "이영희", profileImageUrl: "/character-1.png" },
+    { id: 3, name: "박민수", profileImageUrl: "/character-1.png" },
   ],
 };
 
@@ -93,7 +93,7 @@ export const ManyParticipants: Story = {
       participants: Array.from({ length: 8 }, (_, i) => ({
         id: i + 1,
         name: `참여자 ${i + 1}`,
-        profileImageNumber: (i % 5) + 1,
+        profileImageUrl: "/character-1.png",
       })),
     },
   },
