@@ -17,7 +17,7 @@ const meta = {
     ),
   ],
   args: {
-    inviteCode: "https://puzzlemeet.kr/invite/123",
+    inviteCode: "aB3dEfGh",
   },
   tags: ["autodocs"],
 } satisfies Meta<typeof InviteCodeField>;
@@ -37,19 +37,19 @@ export const CopyShowsToast: Story = {
 
     const canvas = within(canvasElement);
     const copyButton = await canvas.findByRole("button", {
-      name: "초대 코드 복사",
+      name: "초대 링크 복사",
     });
 
     await copyButton.click();
 
     await waitFor(() =>
       expect(writeTextSpy).toHaveBeenCalledWith(
-        "https://puzzlemeet.kr/invite/123"
+        `${window.location.origin}/home?inviteCode=aB3dEfGh&modal=invite`
       )
     );
     await waitFor(() =>
       expect(canvas.getByRole("status")).toHaveTextContent(
-        "초대 코드가 복사되었어요"
+        "초대 링크가 복사되었습니다!"
       )
     );
   },

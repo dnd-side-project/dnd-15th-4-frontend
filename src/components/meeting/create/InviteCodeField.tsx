@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { IcCopy } from "@/components/icons";
 import { cn } from "@/lib/utils";
@@ -17,10 +17,17 @@ export const InviteCodeField = ({
   inviteCode,
 }: InviteCodeFieldProps) => {
   const [showToast, setShowToast] = useState(false);
+  const [origin, setOrigin] = useState("");
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
+
+  const inviteLink = `${origin}/home?inviteCode=${encodeURIComponent(inviteCode)}&modal=invite`;
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(inviteCode);
+      await navigator.clipboard.writeText(inviteLink);
       setShowToast(true);
       setTimeout(() => setShowToast(false), TOAST_DURATION_MS);
     } catch {
@@ -32,11 +39,11 @@ export const InviteCodeField = ({
     <div className="relative flex w-full flex-col gap-3">
       {label && <label className="h4 text-primary font-bold">{label}</label>}
       <div className="border-border-1 rounded-16 flex w-full items-center justify-between border px-4 py-4.5">
-        <span className="body3 text-primary truncate">{inviteCode}</span>
+        <span className="body3 text-primary truncate">{inviteLink}</span>
         <button
           type="button"
           onClick={handleCopy}
-          aria-label="초대 코드 복사"
+          aria-label="초대 링크 복사"
           className="shrink-0 pl-2"
         >
           <IcCopy size={20} className="text-disable" />
@@ -51,7 +58,7 @@ export const InviteCodeField = ({
         )}
       >
         <span className="body6 whitespace-nowrap text-white">
-          초대 코드가 복사되었습니다!
+          초대 링크가 복사되었습니다!
         </span>
       </output>
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog } from "@base-ui/react/dialog";
 
@@ -12,6 +12,7 @@ import { InviteCodeInputCard } from "./InviteCodeInputCard";
 export interface InviteCodeJoinSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  initialCode?: string;
 }
 
 const DEFAULT_ERROR_MESSAGE = "초대코드가 존재하지 않습니다";
@@ -19,9 +20,15 @@ const DEFAULT_ERROR_MESSAGE = "초대코드가 존재하지 않습니다";
 export const InviteCodeJoinSheet = ({
   open,
   onOpenChange,
+  initialCode = "",
 }: InviteCodeJoinSheetProps) => {
   const router = useRouter();
-  const [inviteCode, setInviteCode] = useState("");
+  const [inviteCode, setInviteCode] = useState(initialCode);
+
+  useEffect(() => {
+    if (initialCode) setInviteCode(initialCode);
+  }, [initialCode]);
+
   const {
     data: previewData,
     isSuccess: isValid,
