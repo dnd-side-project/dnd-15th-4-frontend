@@ -17,7 +17,7 @@ const meta = {
     ),
   ],
   args: {
-    inviteLink: "https://puzzlemeet.kr/invite/123",
+    inviteCode: "https://puzzlemeet.kr/invite/123",
   },
   tags: ["autodocs"],
 } satisfies Meta<typeof InviteCodeField>;

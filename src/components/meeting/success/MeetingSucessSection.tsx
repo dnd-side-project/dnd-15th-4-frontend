@@ -2,14 +2,14 @@
 
 import { useParams, useSearchParams } from "next/navigation";
 
-import { formatMeetingDateTime } from "@/utils/date";
+import { ScheduleCard } from "@/components/common/ScheduleCard";
 import { InviteCodeField } from "@/components/meeting/create/InviteCodeField";
 import { KakaoShareButton } from "@/components/meeting/create/KakaoShareButton";
-import { ScheduleCard } from "@/components/common/ScheduleCard";
 import {
   useInviteCodeQuery,
   useMeetingQuery,
 } from "@/hooks/meeting/create/useCreateMeeting";
+import { formatMeetingDateTime } from "@/utils/date";
 
 export const MeetingSucessSectoin = () => {
   const params = useParams<{ meetingId: string }>();
@@ -20,11 +20,13 @@ export const MeetingSucessSectoin = () => {
 
   const { data: meeting, isLoading, isError } = useMeetingQuery(meetingId);
   const {
-    data: inviteCode,
+    data: inviteCodeData,
     isLoading: isInviteCodeLoading,
     isError: isInviteCodeError,
     refetch: refetchInviteCode,
   } = useInviteCodeQuery(meetingId);
+
+  const inviteCode = inviteCodeData ?? "";
 
   const { dateFormatted, timeFormatted } = meeting
     ? formatMeetingDateTime(meeting.dateTime)
@@ -38,11 +40,13 @@ export const MeetingSucessSectoin = () => {
             약속 정보를 불러오는 중이에요
           </p>
         )}
+        
         {isError && (
           <p className="body3 text-disable py-10 text-center">
             약속 정보를 불러오지 못했어요
           </p>
         )}
+
         {meeting && (
           <div className="pointer-events-none select-none">
             <ScheduleCard meeting={meeting} participantLimit={capacity} />
@@ -68,7 +72,7 @@ export const MeetingSucessSectoin = () => {
               <button
                 type="button"
                 onClick={() => refetchInviteCode()}
-                className="body6 text-sub1-dark-hover font-medium"
+                className="body6 text-sub1-dark-hover font-medium cursor-pointer"
               >
                 다시 시도
               </button>
@@ -76,7 +80,11 @@ export const MeetingSucessSectoin = () => {
           </div>
         )}
 
-        {inviteCode && <InviteCodeField inviteCode={inviteCode} />}
+        {inviteCode && (
+          <InviteCodeField
+            inviteCode={inviteCode}
+          />
+        )}
       </div>
 
       <div className="shrink-0 pt-4">

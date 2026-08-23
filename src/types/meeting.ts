@@ -162,3 +162,16 @@ export interface MeetingPreviewResponse {
   status: MeetingStatus;
   participants: MeetingPreviewParticipant[];
 }
+
+export interface MeetingInviteCodeResponse {
+  inviteCode: string;
+}
+
+export interface MeetingJoinRequest {
+  inviteCode: string;
+  nickname?: string | null;
+}
+
+export interface MeetingJoinResponse {
+  meetingId: number;
+}
