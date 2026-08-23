@@ -74,8 +74,8 @@ export default function MeetingParticipatePage() {
         image,
       },
       {
-        onSuccess: ({ meetingId }) => {
-          router.push(`/meeting/${meetingId}`);
+        onSuccess: () => {
+          router.push(`/home`);
         },
         onError: (error) => setSubmitError(getJoinErrorMessage(error)),
       }
