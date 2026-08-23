@@ -171,16 +171,3 @@ export interface MeetingJoinRequest {
 export interface MeetingJoinResponse {
   meetingId: number;
 }
-
-export interface MeetingInviteCodeResponse {
-  inviteCode: string;
-}
-
-export interface MeetingJoinRequest {
-  inviteCode: string;
-  nickname?: string | null;
-}
-
-export interface MeetingJoinResponse {
-  meetingId: number;
-}
