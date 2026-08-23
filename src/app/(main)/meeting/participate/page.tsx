@@ -47,6 +47,7 @@ export default function MeetingParticipatePage() {
   const [nicknameParticipation, setNicknameParticipation] = useState(false);
   const [nickname, setNickname] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const joinMeetingMutation = useJoinMeetingMutation();
 
   useEffect(() => {
@@ -58,7 +59,9 @@ export default function MeetingParticipatePage() {
   const canSubmit = selectedImage !== null && isNicknameValid;
 
   const handleSubmit = async () => {
-    if (!canSubmit) return;
+    if (!canSubmit || isSubmitting) return;
+
+    setIsSubmitting(true);
 
     try {
       const image = await urlToFile(selectedImage.src, "meeting-image.jpg");
@@ -78,11 +81,15 @@ export default function MeetingParticipatePage() {
           onSuccess: () => {
             router.push(`/home`);
           },
-          onError: (error) => setSubmitError(getJoinErrorMessage(error)),
+          onError: (error) => {
+            setSubmitError(getJoinErrorMessage(error));
+            setIsSubmitting(false);
+          },
         }
       );
     } catch {
       setSubmitError(DEFAULT_JOIN_ERROR_MESSAGE);
+      setIsSubmitting(false);
     }
   };
 
@@ -132,7 +139,7 @@ export default function MeetingParticipatePage() {
         <Button
           type="button"
           size="cta"
-          disabled={!canSubmit || joinMeetingMutation.isPending}
+          disabled={!canSubmit || isSubmitting || joinMeetingMutation.isPending}
           onClick={handleSubmit}
           className={
             canSubmit
