@@ -18,18 +18,15 @@ import { ImageUploadBox } from "@/components/meeting/create/ImageUploadBox";
 import { PlaceSearchModal } from "@/components/meeting/create/PlaceSearchModal";
 import { PlaceSearchTrigger } from "@/components/meeting/create/PlaceSearchTrigger";
 import { TimeSelectModal } from "@/components/meeting/create/TimeSelectModal";
-import { getRandomBrandImage } from "@/constants/branding-images";
 import { useCapacitySelection } from "@/hooks/meeting/create/useCapacitySelection";
 import { useCreateMeetingMutation } from "@/hooks/meeting/create/useCreateMeeting";
 import { useDateTimeSelection } from "@/hooks/meeting/create/useDateTimeSelection";
+import { useMeetingImageSelection } from "@/hooks/meeting/shared/useMeetingImageSelection";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
 import { urlToFile } from "@/utils/file";
 import { useAuthStore } from "@/stores/useAuthStore";
 
-import type {
-  MeetingCreateRequest,
-  MeetingImageSelection,
-} from "@/types/meeting";
+import type { MeetingCreateRequest } from "@/types/meeting";
 import type { SelectedPlace } from "@/types/place";
 import { formatDateTimeForApi } from "@/utils/date";
 
@@ -38,9 +35,14 @@ export default function CreateMeetingPage() {
   const user = useAuthStore((state) => state.user);
   const userName = user?.nickname || "";
 
-  const [selectedImage, setSelectedImage] =
-    useState<MeetingImageSelection | null>(null);
-  const [pendingCropImage, setPendingCropImage] = useState<string | null>(null);
+  const {
+    selectedImage,
+    pendingCropImage,
+    handleFileSelected,
+    handleCropCancel,
+    handleCropConfirm,
+    handleProvidedImageToggle,
+  } = useMeetingImageSelection();
   const [nicknameParticipation, setNicknameParticipation] = useState(false);
   const [nickname, setNickname] = useState("");
   const [title, setTitle] = useState("");
@@ -55,34 +57,6 @@ export default function CreateMeetingPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const createMeetingMutation = useCreateMeetingMutation();
   const { data: existingMeetings = [] } = useMeetingsQuery();
-
-  const replaceSelectedImage = (next: MeetingImageSelection | null) => {
-    setSelectedImage((prev) => {
-      if (prev?.type === "user") URL.revokeObjectURL(prev.src);
-      return next;
-    });
-  };
-
-  const handleFileSelected = (file: File) => {
-    setPendingCropImage(URL.createObjectURL(file));
-  };
-
-  const handleCropCancel = () => {
-    if (pendingCropImage) URL.revokeObjectURL(pendingCropImage);
-    setPendingCropImage(null);
-  };
-
-  const handleCropConfirm = (croppedImageUrl: string) => {
-    if (pendingCropImage) URL.revokeObjectURL(pendingCropImage);
-    setPendingCropImage(null);
-    replaceSelectedImage({ type: "user", src: croppedImageUrl });
-  };
-
-  const handleProvidedImageToggle = (checked: boolean) => {
-    replaceSelectedImage(
-      checked ? { type: "default", src: getRandomBrandImage().src } : null
-    );
-  };
 
   const canSubmit =
     title.trim().length > 0 &&
