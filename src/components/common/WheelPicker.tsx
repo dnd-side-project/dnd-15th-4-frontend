@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -27,11 +27,14 @@ export const WheelPicker = ({
 }: WheelPickerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
   const lastCommittedIndexRef = useRef(initialIndex);
   const initialIndexRef = useRef(initialIndex);
 
   const [selectedIndex, setSelectedIndex] = useState(initialIndex);
+
+  useLayoutEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   useEffect(() => {
     containerRef.current?.scrollTo({
