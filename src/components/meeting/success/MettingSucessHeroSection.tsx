@@ -12,7 +12,7 @@ export const MeetingSucessHeroSectoin = () => {
   const router = useRouter();
 
   return (
-    <section className="bg-primary-light-active relative flex h-[54dvh] max-h-80 min-h-100 w-full flex-col items-center justify-center overflow-hidden pt-12">
+    <section className="bg-primary-light-active relative flex h-[54dvh] max-h-80 min-h-100 w-full flex-col items-center overflow-hidden pt-16">
       <button
         type="button"
         onClick={() => router.push("/home")}
@@ -24,19 +24,17 @@ export const MeetingSucessHeroSectoin = () => {
 
       <Image
         src={successHeroImage}
-        alt="약속 생성 완료"
+        alt="약속 "
         priority
-        className="h-auto w-[40vw] object-contain"
+        className="h-37.5 w-auto object-contain"
       />
 
-      <h1 className="h2 text-primary mt-4 text-center tracking-[-0.02em]">
+      <h1 className="h1 text-primary mt-4 text-center tracking-[-0.02em]">
         약속 생성이
         <br />
         완료되었습니다!
       </h1>
-      <p className="body2 text-primary mt-3 text-center">
-        초대 코드를 공유해보세요
-      </p>
+      <p className="body2 text-primary mt-3">초대 코드를 공유해보세요</p>
     </section>
   );
 };
