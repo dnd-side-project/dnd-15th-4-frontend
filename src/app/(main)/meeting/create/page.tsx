@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { AlertModal } from "@/components/common/AlertModal";
 import { Button } from "@/components/common/Button";
 import { Header } from "@/components/common/Header";
-import { Input } from "@/components/common/Input";
 import { InfoBanner } from "@/components/common/InfoBanner";
+import { Input } from "@/components/common/Input";
 import { ToggleField } from "@/components/common/ToggleField";
 import { CapacityField } from "@/components/meeting/create/CapacityField";
 import { CapacityPickerModal } from "@/components/meeting/create/CapacityPickerModal";
@@ -23,12 +23,15 @@ import { useCreateMeetingMutation } from "@/hooks/meeting/create/useCreateMeetin
 import { useDateTimeSelection } from "@/hooks/meeting/create/useDateTimeSelection";
 import { useMeetingImageSelection } from "@/hooks/meeting/shared/useMeetingImageSelection";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
-import { urlToFile } from "@/utils/file";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { formatDateTimeForApi } from "@/utils/date";
+import { urlToFile } from "@/utils/file";
 
 import type { MeetingCreateRequest } from "@/types/meeting";
 import type { SelectedPlace } from "@/types/place";
-import { formatDateTimeForApi } from "@/utils/date";
+
+const DEFAULT_CREATE_ERROR_MESSAGE =
+  "약속방 생성에 실패했어요. 다시 시도해주세요.";
 
 export default function CreateMeetingPage() {
   const router = useRouter();
@@ -43,6 +46,7 @@ export default function CreateMeetingPage() {
     handleCropConfirm,
     handleProvidedImageToggle,
   } = useMeetingImageSelection();
+
   const [nicknameParticipation, setNicknameParticipation] = useState(false);
   const [nickname, setNickname] = useState("");
   const [title, setTitle] = useState("");
@@ -55,45 +59,66 @@ export default function CreateMeetingPage() {
   const [notifyFriendArrival, setNotifyFriendArrival] = useState(false);
   const [notifySpeechBubble, setNotifySpeechBubble] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
   const createMeetingMutation = useCreateMeetingMutation();
   const { data: existingMeetings = [] } = useMeetingsQuery();
 
+  const isNicknameValid = !nicknameParticipation || nickname.trim().length > 0;
+  const isCapacitySelected =
+    capacitySelection.capacity !== null && capacitySelection.capacity > 0;
+
   const canSubmit =
+    selectedImage !== null &&
     title.trim().length > 0 &&
     dateTimeSelection.dateTime !== null &&
-    place !== null;
+    place !== null &&
+    isCapacitySelected &&
+    isNicknameValid;
 
   const handleSubmit = async () => {
-    if (!canSubmit || !dateTimeSelection.dateTime || !place) return;
+    if (
+      !canSubmit ||
+      !selectedImage ||
+      !dateTimeSelection.dateTime ||
+      !place ||
+      !capacitySelection.capacity
+    )
+      return;
 
-    const request: MeetingCreateRequest = {
-      title: title.trim(),
-      dateTime: formatDateTimeForApi(dateTimeSelection.dateTime),
-      destination: place.placeName,
-      latitude: place.latitude,
-      longitude: place.longitude,
-      memo: memo.trim() || null,
-      nickname:
-        nicknameParticipation && nickname.trim() ? nickname.trim() : userName,
-    };
+    try {
+      const request: MeetingCreateRequest = {
+        title: title.trim(),
+        dateTime: formatDateTimeForApi(dateTimeSelection.dateTime),
+        destination: place.placeName,
+        latitude: place.latitude,
+        longitude: place.longitude,
+        memo: memo.trim() || null,
+        nickname:
+          nicknameParticipation && nickname.trim() ? nickname.trim() : userName,
+      };
 
-    const image = selectedImage
-      ? await urlToFile(selectedImage.src, "meeting-image.jpg")
-      : undefined;
+      const image = await urlToFile(selectedImage.src, "meeting-image.jpg");
 
-    createMeetingMutation.mutate(
-      { request, image },
-      {
-        onSuccess: ({ meetingId }) => {
-          const query = capacitySelection.capacity
-            ? `?capacity=${capacitySelection.capacity}`
-            : "";
-          router.push(`/meeting/${meetingId}/success${query}`);
-        },
-        onError: () =>
-          setSubmitError("약속방 생성에 실패했어요. 다시 시도해주세요."),
-      }
-    );
+      createMeetingMutation.mutate(
+        { request, image },
+        {
+          onSuccess: ({ meetingId }) => {
+            router.push(
+              `/meeting/${meetingId}/success?capacity=${capacitySelection.capacity}`
+            );
+          },
+          onError: (error) => {
+            const message =
+              error instanceof Error
+                ? error.message
+                : DEFAULT_CREATE_ERROR_MESSAGE;
+            setSubmitError(message || DEFAULT_CREATE_ERROR_MESSAGE);
+          },
+        }
+      );
+    } catch {
+      setSubmitError(DEFAULT_CREATE_ERROR_MESSAGE);
+    }
   };
 
   return (
@@ -121,7 +146,10 @@ export default function CreateMeetingPage() {
             <ToggleField
               label="닉네임으로 참여"
               checked={nicknameParticipation}
-              onCheckedChange={setNicknameParticipation}
+              onCheckedChange={(checked) => {
+                setNicknameParticipation(checked);
+                if (!checked) setNickname("");
+              }}
             />
             {nicknameParticipation && (
               <Input
