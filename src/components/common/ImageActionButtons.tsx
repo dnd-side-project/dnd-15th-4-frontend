@@ -8,7 +8,7 @@ interface ImageActionButtonsProps {
   className?: string;
 }
 
-const shareImageFile = async (imageUrl: string) => {
+const shareImageFile = async (imageUrl: string, fallbackTab: Window | null) => {
   const response = await fetch(imageUrl);
   if (!response.ok) {
     throw new Error("이미지를 불러오지 못했습니다.");
@@ -19,11 +19,16 @@ const shareImageFile = async (imageUrl: string) => {
   const file = new File([blob], fileName, { type: blob.type });
 
   if (navigator.canShare?.({ files: [file] })) {
+    fallbackTab?.close();
     await navigator.share({ files: [file] });
     return;
   }
 
-  window.open(imageUrl, "_blank", "noopener,noreferrer");
+  if (fallbackTab) {
+    fallbackTab.location.href = imageUrl;
+  } else {
+    window.open(imageUrl, "_blank", "noopener,noreferrer");
+  }
 };
 
 export const ImageActionButtons = ({
@@ -31,9 +36,19 @@ export const ImageActionButtons = ({
   className,
 }: ImageActionButtonsProps) => {
   const handleShareClick = () => {
-    shareImageFile(imageUrl).catch((error: unknown) => {
-      if (error instanceof DOMException && error.name === "AbortError") return;
-      window.open(imageUrl, "_blank", "noopener,noreferrer");
+    const fallbackTab = window.open("", "_blank", "noopener,noreferrer");
+
+    shareImageFile(imageUrl, fallbackTab).catch((error: unknown) => {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        fallbackTab?.close();
+        return;
+      }
+
+      if (fallbackTab) {
+        fallbackTab.location.href = imageUrl;
+      } else {
+        window.open(imageUrl, "_blank", "noopener,noreferrer");
+      }
     });
   };
 
