@@ -39,7 +39,11 @@ export const MyPageListHeader = ({
         <p className="body8 text-disable">결과 {resultCount}개</p>
         <SortToggleButton sortOrder={sortOrder} onToggle={onToggleSort} />
       </div>
-      <button type="button" onClick={onCalendarClick}>
+      <button
+        type="button"
+        onClick={onCalendarClick}
+        aria-label="날짜로 필터링"
+      >
         <IcCalendarMonth size={24} />
       </button>
     </div>

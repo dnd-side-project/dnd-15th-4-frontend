@@ -64,6 +64,7 @@ export const PlaceItem = ({
         variant="radio"
         checked={selected}
         onCheckedChange={(checked) => checked && onSelect(place)}
+        aria-label={`${place.placeName} 선택`}
       />
     )}
 
