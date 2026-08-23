@@ -22,6 +22,7 @@ export const InviteCodeField = ({
   const [toastPhase, setToastPhase] = useState<ToastPhase>("hidden");
   const [origin, setOrigin] = useState("");
   const toastTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
     setOrigin(window.location.origin);
@@ -29,6 +30,7 @@ export const InviteCodeField = ({
 
   useEffect(() => {
     return () => {
+      isMountedRef.current = false;
       toastTimers.current.forEach(clearTimeout);
     };
   }, []);
@@ -38,6 +40,7 @@ export const InviteCodeField = ({
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(inviteLink);
+      if (!isMountedRef.current) return;
       toastTimers.current.forEach(clearTimeout);
       setToastPhase("entering");
       toastTimers.current = [
