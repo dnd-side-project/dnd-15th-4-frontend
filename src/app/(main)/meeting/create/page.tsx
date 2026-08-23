@@ -59,6 +59,7 @@ export default function CreateMeetingPage() {
   const [notifyFriendArrival, setNotifyFriendArrival] = useState(false);
   const [notifySpeechBubble, setNotifySpeechBubble] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const createMeetingMutation = useCreateMeetingMutation();
   const { data: existingMeetings = [] } = useMeetingsQuery();
@@ -78,12 +79,15 @@ export default function CreateMeetingPage() {
   const handleSubmit = async () => {
     if (
       !canSubmit ||
+      isSubmitting ||
       !selectedImage ||
       !dateTimeSelection.dateTime ||
       !place ||
       !capacitySelection.capacity
     )
       return;
+
+    setIsSubmitting(true);
 
     try {
       const request: MeetingCreateRequest = {
@@ -113,11 +117,13 @@ export default function CreateMeetingPage() {
                 ? error.message
                 : DEFAULT_CREATE_ERROR_MESSAGE;
             setSubmitError(message || DEFAULT_CREATE_ERROR_MESSAGE);
+            setIsSubmitting(false);
           },
         }
       );
     } catch {
       setSubmitError(DEFAULT_CREATE_ERROR_MESSAGE);
+      setIsSubmitting(false);
     }
   };
 
@@ -228,7 +234,9 @@ export default function CreateMeetingPage() {
         <Button
           type="button"
           size="cta"
-          disabled={!canSubmit || createMeetingMutation.isPending}
+          disabled={
+            !canSubmit || isSubmitting || createMeetingMutation.isPending
+          }
           onClick={handleSubmit}
           className={
             canSubmit
