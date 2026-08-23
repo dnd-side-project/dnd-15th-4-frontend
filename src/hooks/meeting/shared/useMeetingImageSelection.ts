@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 
-import { getRandomBrandImage } from "@/constants/branding-images";
+import {
+  getRandomBrandImage,
+  getRandomProvidedImageBgColor,
+} from "@/constants/branding-images";
 import type { MeetingImageSelection } from "@/types/meeting";
 
 export const useMeetingImageSelection = () => {
@@ -34,7 +37,13 @@ export const useMeetingImageSelection = () => {
 
   const handleProvidedImageToggle = (checked: boolean) => {
     replaceSelectedImage(
-      checked ? { type: "default", src: getRandomBrandImage().src } : null
+      checked
+        ? {
+            type: "default",
+            src: getRandomBrandImage().src,
+            bgColorClassName: getRandomProvidedImageBgColor(),
+          }
+        : null
     );
   };
 

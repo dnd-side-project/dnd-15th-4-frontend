@@ -122,6 +122,7 @@ export interface MeetingResultResponse {
 export interface MeetingImageSelection {
   type: "user" | "default";
   src: string;
+  bgColorClassName?: string;
 }
 
 export interface MeetingCreateRequest {

@@ -32,7 +32,8 @@ export const ImageUploadBox = ({
       onClick={() => inputRef.current?.click()}
       aria-label="사진 업로드"
       className={cn(
-        "bg-surface-1 relative flex size-48 shrink-0 items-center justify-center overflow-hidden rounded-20",
+        "relative flex size-48 shrink-0 items-center justify-center overflow-hidden rounded-20",
+        selectedImage?.bgColorClassName ?? "bg-surface-1",
         className
       )}
     >
