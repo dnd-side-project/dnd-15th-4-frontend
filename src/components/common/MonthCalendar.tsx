@@ -79,7 +79,7 @@ export const MonthCalendar = ({
                   key={dayIndex}
                   type="button"
                   disabled={disabled}
-                  aria-label={`${date.getMonth() + 1}월 ${date.getDate()}일`}
+                  aria-label={`${date.getMonth() + 1}월 ${date.getDate()}일${isSelected ? ", 선택됨" : ""}`}
                   onClick={() => onSelectDate(date)}
                   className="flex flex-col items-center gap-1 py-1.5 disabled:opacity-30"
                 >
