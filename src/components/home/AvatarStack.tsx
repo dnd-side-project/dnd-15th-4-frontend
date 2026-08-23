@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { CHARACTER_FALLBACK_IMAGE } from "@/constants/character-images";
 
@@ -19,6 +19,10 @@ interface StackAvatarProps {
 
 const StackAvatar = ({ item, zIndex, hiddenCount }: StackAvatarProps) => {
   const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setHasError(false);
+  }, [item.profileImageUrl]);
 
   return (
     <div
