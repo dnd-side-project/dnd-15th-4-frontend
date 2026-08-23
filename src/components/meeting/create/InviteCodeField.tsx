@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { IcCopy } from "@/components/icons";
 import { Toast } from "@/components/common/Toast";
@@ -21,9 +21,16 @@ export const InviteCodeField = ({
 }: InviteCodeFieldProps) => {
   const [toastPhase, setToastPhase] = useState<ToastPhase>("hidden");
   const [origin, setOrigin] = useState("");
+  const toastTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
     setOrigin(window.location.origin);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      toastTimers.current.forEach(clearTimeout);
+    };
   }, []);
 
   const inviteLink = `${origin}/home?inviteCode=${encodeURIComponent(inviteCode)}&modal=invite`;
@@ -31,12 +38,15 @@ export const InviteCodeField = ({
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(inviteLink);
+      toastTimers.current.forEach(clearTimeout);
       setToastPhase("entering");
-      setTimeout(() => setToastPhase("exiting"), TOAST_VISIBLE_MS);
-      setTimeout(
-        () => setToastPhase("hidden"),
-        TOAST_VISIBLE_MS + TOAST_EXIT_MS
-      );
+      toastTimers.current = [
+        setTimeout(() => setToastPhase("exiting"), TOAST_VISIBLE_MS),
+        setTimeout(
+          () => setToastPhase("hidden"),
+          TOAST_VISIBLE_MS + TOAST_EXIT_MS
+        ),
+      ];
     } catch {
       // memo: 클립보드 권한이 없는 환경(포커스 없음 등)에서 무시
     }
