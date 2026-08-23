@@ -30,6 +30,7 @@ export const InviteCodeInputCard = ({
         onChange={(event) => onChange(event.target.value)}
         maxLength={8}
         placeholder="초대 코드를 입력해 주세요"
+        aria-label="초대 코드"
         className="body3 text-primary placeholder:text-disable flex-1 bg-transparent outline-none"
       />
       <button
