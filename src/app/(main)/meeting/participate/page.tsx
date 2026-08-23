@@ -13,10 +13,20 @@ import { ImageCropModal } from "@/components/meeting/create/ImageCropModal";
 import { ImageUploadBox } from "@/components/meeting/create/ImageUploadBox";
 import { useJoinMeetingMutation } from "@/hooks/meeting/participate/useJoinMeeting";
 import { useMeetingImageSelection } from "@/hooks/meeting/shared/useMeetingImageSelection";
+import { HttpError } from "@/lib/api/http-error";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { urlToFile } from "@/utils/file";
 
 const DEFAULT_JOIN_ERROR_MESSAGE = "약속 참여에 실패했어요. 다시 시도해주세요.";
+const INVALID_REQUEST_MESSAGE = "올바르지 않은 요청입니다.";
+
+const getJoinErrorMessage = (error: unknown): string => {
+  if (error instanceof HttpError && error.status === 400) {
+    const data = error.data as { message?: string } | null;
+    return data?.message || INVALID_REQUEST_MESSAGE;
+  }
+  return DEFAULT_JOIN_ERROR_MESSAGE;
+};
 
 export default function MeetingParticipatePage() {
   const router = useRouter();
@@ -67,7 +77,7 @@ export default function MeetingParticipatePage() {
         onSuccess: ({ meetingId }) => {
           router.push(`/meeting/${meetingId}`);
         },
-        onError: () => setSubmitError(DEFAULT_JOIN_ERROR_MESSAGE),
+        onError: (error) => setSubmitError(getJoinErrorMessage(error)),
       }
     );
   };
