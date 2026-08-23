@@ -23,4 +23,8 @@ const meta: Meta<typeof FloatingActionButton> = {
 export default meta;
 type Story = StoryObj<typeof FloatingActionButton>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  args: {
+    onParticipateClick: () => {},
+  },
+};

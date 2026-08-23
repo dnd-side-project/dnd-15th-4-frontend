@@ -141,3 +141,24 @@ export interface MeetingCreateResponse {
 export interface MeetingInviteCodeResponse {
   inviteCode: string;
 }
+
+export interface MeetingPreviewRequest {
+  inviteCode: string;
+}
+
+export interface MeetingPreviewParticipant {
+  id: number;
+  name: string;
+  profileImageUrl: string;
+}
+
+export interface MeetingPreviewResponse {
+  meetingId: number;
+  title: string;
+  dateTime: string;
+  place: string;
+  latitude: number;
+  longitude: number;
+  status: MeetingStatus;
+  participants: MeetingPreviewParticipant[];
+}

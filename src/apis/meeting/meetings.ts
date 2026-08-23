@@ -5,6 +5,8 @@ import type {
   MeetingCreateResponse,
   MeetingData,
   MeetingInviteCodeResponse,
+  MeetingPreviewRequest,
+  MeetingPreviewResponse,
 } from "@/types/meeting";
 
 export const fetchMeetings = async (): Promise<MeetingData[]> => {
@@ -35,6 +37,16 @@ export const fetchInviteCode = async (
 ): Promise<MeetingInviteCodeResponse> => {
   const result = await api.get<ApiResult<MeetingInviteCodeResponse>>(
     `/api/v1/meetings/${meetingId}/invite-code`
+  );
+  return result.data;
+};
+
+export const previewMeeting = async (
+  request: MeetingPreviewRequest
+): Promise<MeetingPreviewResponse> => {
+  const result = await api.post<ApiResult<MeetingPreviewResponse>>(
+    "/api/v1/meetings/preview",
+    request
   );
   return result.data;
 };

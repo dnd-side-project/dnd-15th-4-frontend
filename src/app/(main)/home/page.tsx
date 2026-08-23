@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { FloatingActionButton } from "@/components/home/FloatingActionButton";
 import { HomeHeroSection } from "@/components/home/HomeHeroSection";
 import { HomeUpcomingSection } from "@/components/home/HomeUpcomingSection";
+import { InviteCodeJoinSheet } from "@/components/meeting/participate/InviteCodeJoinSheet";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
 import type { MeetingData } from "@/types/meeting";
 import { isActiveOrUpcomingMeeting } from "@/utils/date";
 
 export default function HomePage() {
   const [isMounted, setIsMounted] = useState(false);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
   const { data: meetings = [] } = useMeetingsQuery();
 
   useEffect(() => {
@@ -21,7 +23,13 @@ export default function HomePage() {
       <div className="relative flex h-dvh flex-col overflow-hidden bg-white">
         <HomeHeroSection meeting={null} />
         <HomeUpcomingSection schedules={[]} />
-        <FloatingActionButton />
+        <FloatingActionButton
+          onParticipateClick={() => setIsInviteOpen(true)}
+        />
+        <InviteCodeJoinSheet
+          open={isInviteOpen}
+          onOpenChange={setIsInviteOpen}
+        />
       </div>
     );
   }
@@ -45,7 +53,9 @@ export default function HomePage() {
 
       <HomeUpcomingSection schedules={upcomingMeetings} />
 
-      <FloatingActionButton />
+      <FloatingActionButton onParticipateClick={() => setIsInviteOpen(true)} />
+
+      <InviteCodeJoinSheet open={isInviteOpen} onOpenChange={setIsInviteOpen} />
     </div>
   );
 }

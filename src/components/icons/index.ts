@@ -3,6 +3,7 @@ export * from "./IcAlarm";
 export * from "./IcArrivalDot";
 export * from "./IcArrowBack";
 export * from "./IcArrowOutward";
+export * from "./IcArrowRight";
 export * from "./IcClose";
 export * from "./IcDownload";
 export * from "./IcExtension";
