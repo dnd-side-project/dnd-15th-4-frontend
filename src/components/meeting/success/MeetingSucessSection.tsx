@@ -40,7 +40,7 @@ export const MeetingSucessSectoin = () => {
             약속 정보를 불러오는 중이에요
           </p>
         )}
-        
+
         {isError && (
           <p className="body3 text-disable py-10 text-center">
             약속 정보를 불러오지 못했어요
@@ -72,7 +72,7 @@ export const MeetingSucessSectoin = () => {
               <button
                 type="button"
                 onClick={() => refetchInviteCode()}
-                className="body6 text-sub1-dark-hover font-medium cursor-pointer"
+                className="body6 text-sub1-dark-hover cursor-pointer font-medium"
               >
                 다시 시도
               </button>
@@ -80,11 +80,7 @@ export const MeetingSucessSectoin = () => {
           </div>
         )}
 
-        {inviteCode && (
-          <InviteCodeField
-            inviteCode={inviteCode}
-          />
-        )}
+        {inviteCode && <InviteCodeField inviteCode={inviteCode} />}
       </div>
 
       <div className="shrink-0 pt-4">
