@@ -60,26 +60,30 @@ export default function MeetingParticipatePage() {
   const handleSubmit = async () => {
     if (!canSubmit) return;
 
-    const image = await urlToFile(selectedImage.src, "meeting-image.jpg");
+    try {
+      const image = await urlToFile(selectedImage.src, "meeting-image.jpg");
 
-    joinMeetingMutation.mutate(
-      {
-        request: {
-          inviteCode,
-          nickname:
-            nicknameParticipation && nickname.trim()
-              ? nickname.trim()
-              : userName,
+      joinMeetingMutation.mutate(
+        {
+          request: {
+            inviteCode,
+            nickname:
+              nicknameParticipation && nickname.trim()
+                ? nickname.trim()
+                : userName,
+          },
+          image,
         },
-        image,
-      },
-      {
-        onSuccess: () => {
-          router.push(`/home`);
-        },
-        onError: (error) => setSubmitError(getJoinErrorMessage(error)),
-      }
-    );
+        {
+          onSuccess: () => {
+            router.push(`/home`);
+          },
+          onError: (error) => setSubmitError(getJoinErrorMessage(error)),
+        }
+      );
+    } catch {
+      setSubmitError(DEFAULT_JOIN_ERROR_MESSAGE);
+    }
   };
 
   if (!inviteCode) return null;
