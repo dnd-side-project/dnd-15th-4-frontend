@@ -191,7 +191,7 @@ export const HomeHeroSection = ({ meeting }: HomeHeroSectionProps) => {
       <div className="absolute top-11 right-4 z-60">
         <button
           type="button"
-          aria-label="프로필 메뉴"
+          aria-label="마이페이지로 이동"
           onClick={() => router.push("/mypage")}
           className="text-primary cursor-pointer"
         >
