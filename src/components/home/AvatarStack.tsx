@@ -26,7 +26,11 @@ const StackAvatar = ({ item, zIndex, hiddenCount }: StackAvatarProps) => {
       className="border-border-4 rounded-8 relative size-9 shrink-0 overflow-hidden border bg-white"
     >
       <Image
-        src={hasError ? CHARACTER_FALLBACK_IMAGE : item.profileImageUrl}
+        src={
+          hasError || !item.profileImageUrl?.trim()
+            ? CHARACTER_FALLBACK_IMAGE
+            : item.profileImageUrl
+        }
         alt={item.name}
         fill
         sizes="38px"
