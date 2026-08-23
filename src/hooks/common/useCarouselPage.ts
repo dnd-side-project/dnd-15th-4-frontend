@@ -23,5 +23,22 @@ export const useCarouselPage = (pageCount: number, initialPage = 0) => {
     setCurrentPage(clampedPage);
   }, [pageCount]);
 
-  return { containerRef, currentPage, handleScroll };
+  const goToPage = useCallback(
+    (page: number) => {
+      const clampedPage = Math.min(Math.max(page, 0), pageCount - 1);
+      const container = containerRef.current;
+
+      if (container && container.clientWidth > 0) {
+        container.scrollTo({
+          left: container.clientWidth * clampedPage,
+          behavior: "smooth",
+        });
+      }
+
+      setCurrentPage(clampedPage);
+    },
+    [pageCount]
+  );
+
+  return { containerRef, currentPage, handleScroll, goToPage };
 };
