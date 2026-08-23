@@ -29,6 +29,7 @@ export const InviteCodeField = ({
   }, []);
 
   useEffect(() => {
+    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
       toastTimers.current.forEach(clearTimeout);
