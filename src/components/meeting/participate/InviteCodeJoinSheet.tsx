@@ -55,7 +55,7 @@ export const InviteCodeJoinSheet = ({
 
             {previewData && (
               <div className="pointer-events-none absolute bottom-full left-0 mb-4 w-full select-none">
-                <ScheduleCard meeting={previewData} />
+                <ScheduleCard meeting={previewData} interactive={false} />
               </div>
             )}
 

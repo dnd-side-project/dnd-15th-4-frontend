@@ -11,6 +11,7 @@ interface ScheduleCardProps {
   participantLimit?: number;
   onClick?: () => void;
   showDDay?: boolean;
+  interactive?: boolean;
 }
 
 export const ScheduleCard = ({
@@ -18,11 +19,27 @@ export const ScheduleCard = ({
   participantLimit,
   onClick,
   showDDay = true,
+  interactive = true,
 }: ScheduleCardProps) => {
   const router = useRouter();
   const { dateFormatted, timeFormatted, dDay } = formatMeetingDateTime(
     meeting.dateTime
   );
+
+  if (!interactive) {
+    return (
+      <div className="rounded-20 shadow-3 relative flex w-full shrink-0 items-center overflow-hidden bg-white px-4.5 pt-4.5 pb-5.5 text-left">
+        <ScheduleCardContent
+          meeting={meeting}
+          participantLimit={participantLimit}
+          showDDay={showDDay}
+          dateFormatted={dateFormatted}
+          timeFormatted={timeFormatted}
+          dDay={dDay}
+        />
+      </div>
+    );
+  }
 
   return (
     <button
@@ -30,6 +47,37 @@ export const ScheduleCard = ({
       onClick={onClick ?? (() => router.push(`#`))}
       className="rounded-20 shadow-3 relative flex w-full shrink-0 cursor-pointer items-center overflow-hidden bg-white px-4.5 pt-4.5 pb-5.5 text-left"
     >
+      <ScheduleCardContent
+        meeting={meeting}
+        participantLimit={participantLimit}
+        showDDay={showDDay}
+        dateFormatted={dateFormatted}
+        timeFormatted={timeFormatted}
+        dDay={dDay}
+      />
+    </button>
+  );
+};
+
+interface ScheduleCardContentProps {
+  meeting: MeetingData;
+  participantLimit?: number;
+  showDDay: boolean;
+  dateFormatted: string;
+  timeFormatted: string;
+  dDay: string;
+}
+
+const ScheduleCardContent = ({
+  meeting,
+  participantLimit,
+  showDDay,
+  dateFormatted,
+  timeFormatted,
+  dDay,
+}: ScheduleCardContentProps) => {
+  return (
+    <>
       <div className="relative z-10 flex min-w-0 flex-1 flex-col pb-1">
         <h3 className="body1 text-primary mb-1 wrap-break-word break-keep">
           {meeting.title}
@@ -72,6 +120,6 @@ export const ScheduleCard = ({
           {dDay}
         </span>
       )}
-    </button>
+    </>
   );
 };
