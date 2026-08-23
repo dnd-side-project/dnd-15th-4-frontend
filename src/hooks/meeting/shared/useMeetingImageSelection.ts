@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   getRandomBrandImage,
@@ -34,6 +34,19 @@ export const useMeetingImageSelection = () => {
     setPendingCropImage(null);
     replaceSelectedImage({ type: "user", src: croppedImageUrl });
   };
+
+  useEffect(() => {
+    return () => {
+      if (pendingCropImage) URL.revokeObjectURL(pendingCropImage);
+    };
+  }, [pendingCropImage]);
+
+  useEffect(() => {
+    return () => {
+      if (selectedImage?.type === "user")
+        URL.revokeObjectURL(selectedImage.src);
+    };
+  }, [selectedImage]);
 
   const handleProvidedImageToggle = (checked: boolean) => {
     replaceSelectedImage(
