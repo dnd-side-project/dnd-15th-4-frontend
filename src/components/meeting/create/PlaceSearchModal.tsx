@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 
 import { IcSearch } from "@/components/icons";
 import { SearchInputBar } from "@/components/common/SearchInputBar";
-import { usePlaceSearchQuery } from "@/hooks/place/usePlaceSearch";
 import { usePlaceSearchFavorites } from "@/hooks/place/usePlaceSearchFavorites";
+import { usePlaceSearchQuery } from "@/hooks/place/usePlaceSearch";
 import type { PlaceDto, SelectedPlace } from "@/types/place";
 
+import { PlaceConfirmSheet } from "./PlaceConfirmSheet";
 import { PlaceResultList, type PlaceResultStatus } from "./PlaceResultList";
 
 export interface PlaceSearchModalProps {
@@ -29,7 +30,8 @@ export const PlaceSearchModal = ({
 }: PlaceSearchModalProps) => {
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
-  const { favorites, addFavorite } = usePlaceSearchFavorites();
+  const [pendingPlace, setPendingPlace] = useState<PlaceDto | null>(null);
+  const { favorites } = usePlaceSearchFavorites();
   const { data, isLoading, isError } = usePlaceSearchQuery(keyword);
 
   const status: PlaceResultStatus =
@@ -42,12 +44,15 @@ export const PlaceSearchModal = ({
           : "success";
 
   const handleSelect = (place: PlaceDto) => {
-    addFavorite(place.placeName);
-    onSelect(toSelectedPlace(place));
+    setPendingPlace(place);
   };
 
-  const handleFavoriteClick = (item: string) => {
-    setKeyword(item);
+  const handleFavoriteClick = (place: PlaceDto) => {
+    setPendingPlace(place);
+  };
+
+  const handleConfirmPlace = (place: PlaceDto) => {
+    onSelect(toSelectedPlace(place));
   };
 
   return (
@@ -66,15 +71,15 @@ export const PlaceSearchModal = ({
         {favorites.length > 0 && (
           <div className="flex h-9.5 items-center gap-5">
             <div className="flex flex-1 items-center gap-2 overflow-x-auto">
-              {favorites.map((item) => (
+              {favorites.map((place) => (
                 <button
-                  key={item}
+                  key={place.placeId}
                   type="button"
-                  onClick={() => handleFavoriteClick(item)}
+                  onClick={() => handleFavoriteClick(place)}
                   className="bg-primary-light border-primary-normal text-primary-dark speech-bubble flex shrink-0 items-center gap-px rounded-full border px-4 py-2.25 tracking-[-0.3px]"
                 >
                   <IcSearch size={20} />
-                  {item}
+                  {place.placeName}
                 </button>
               ))}
             </div>
@@ -102,6 +107,14 @@ export const PlaceSearchModal = ({
           onSelect={handleSelect}
         />
       </div>
+
+      {pendingPlace && (
+        <PlaceConfirmSheet
+          place={pendingPlace}
+          onClose={() => setPendingPlace(null)}
+          onConfirm={handleConfirmPlace}
+        />
+      )}
     </div>
   );
 };

@@ -27,6 +27,7 @@ export * from "./IcPin";
 export * from "./IcPlus";
 export * from "./IcSearch";
 export * from "./IcProfile";
+export * from "./IcStar";
 export * from "./IcPuzzlePiece";
 export * from "./IcRotateLeft";
 export * from "./IcSyncAlt";

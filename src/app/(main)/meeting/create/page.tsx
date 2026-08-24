@@ -18,6 +18,8 @@ import { ImageUploadBox } from "@/components/meeting/create/ImageUploadBox";
 import { PlaceSearchModal } from "@/components/meeting/create/PlaceSearchModal";
 import { PlaceSearchTrigger } from "@/components/meeting/create/PlaceSearchTrigger";
 import { TimeSelectModal } from "@/components/meeting/create/TimeSelectModal";
+import { MeetingMap } from "@/components/meeting/progress/MeetingMap";
+import { AdvancedMarker } from "@vis.gl/react-google-maps";
 import { useCapacitySelection } from "@/hooks/meeting/create/useCapacitySelection";
 import { useCreateMeetingMutation } from "@/hooks/meeting/create/useCreateMeeting";
 import { useDateTimeSelection } from "@/hooks/meeting/create/useDateTimeSelection";
@@ -188,6 +190,20 @@ export default function CreateMeetingPage() {
               placeholder="장소, 지역, 주소를 검색하세요"
               onClick={() => setIsPlaceSearchOpen(true)}
             />
+            {place && (
+              <div className="rounded-16 h-32 w-full overflow-hidden">
+                <MeetingMap
+                  key={`${place.latitude}:${place.longitude}`}
+                  center={{ lat: place.latitude, lng: place.longitude }}
+                  zoom={16}
+                  className="size-full"
+                >
+                  <AdvancedMarker
+                    position={{ lat: place.latitude, lng: place.longitude }}
+                  />
+                </MeetingMap>
+              </div>
+            )}
             <CapacityField
               label="참여 인원"
               value={capacitySelection.capacity}
