@@ -172,3 +172,34 @@ export interface MeetingJoinRequest {
 export interface MeetingJoinResponse {
   meetingId: number;
 }
+
+export interface DepartureOrigin {
+  placeName: string;
+  addressName: string;
+  latitude: number;
+  longitude: number;
+}
+
+export type TravelSegmentType = "WALK" | "SUBWAY" | "BUS";
+
+export interface TravelSegment {
+  type: TravelSegmentType;
+  label: string;
+}
+
+export interface TravelRouteOption {
+  routeId: string;
+  durationMinutes: number;
+  isFastest: boolean;
+  segments: TravelSegment[];
+}
+
+export interface MeetingDepartureInfo {
+  meetingId: number;
+  origin: DepartureOrigin;
+  route: TravelRouteOption;
+  notifyLocation: boolean;
+  notifyFriendArrival: boolean;
+  notifySpeechBubble: boolean;
+  departedAt: string;
+}

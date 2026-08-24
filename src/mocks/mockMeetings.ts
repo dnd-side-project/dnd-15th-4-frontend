@@ -49,6 +49,21 @@ export const MOCK_MEETINGS: MeetingData[] = [
     ],
     status: "WAITING",
   },
+  {
+    meetingId: 4,
+    title: "성수나들이 약속",
+    dateTime: getIsoStringMinutesAgo(-180),
+    place: "성수역 상상대로 아웅이 카페",
+    latitude: 37.5445,
+    longitude: 127.0557,
+    participants: [
+      { id: 1, name: "이주빈(나)", profileImageUrl: "/character-1.png" },
+      { id: 4, name: "권소영", profileImageUrl: "/character-1.png" },
+      { id: 3, name: "조희우", profileImageUrl: "/character-1.png" },
+      { id: 6, name: "윤나경", profileImageUrl: "/character-1.png" },
+    ],
+    status: "WAITING",
+  },
 ];
 
 export const mockMeetingSummary: MeetingSummary = {
