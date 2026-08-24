@@ -14,14 +14,15 @@ import {
   PlaceResultList,
   type PlaceResultStatus,
 } from "@/components/meeting/create/PlaceResultList";
+import {
+  MAX_FAVORITE_PLACE_COUNT,
+  usePlaceSearchFavorites,
+} from "@/hooks/place/usePlaceSearchFavorites";
 import { usePlaceSearchQuery } from "@/hooks/place/usePlaceSearch";
-import { usePlaceSearchFavorites } from "@/hooks/place/usePlaceSearchFavorites";
 import { cn } from "@/lib/utils";
 import type { PlaceDto } from "@/types/place";
-import { MOCK_FAVORITE_PLACES } from "@/mocks/mockUser";
 
 const RESULT_PAGE_SIZE = 8;
-const MAX_FAVORITE_COUNT = 5;
 
 const FavoritesPage = () => {
   const router = useRouter();
@@ -30,8 +31,11 @@ const FavoritesPage = () => {
   const [visibleCount, setVisibleCount] = useState(RESULT_PAGE_SIZE);
   const [selectedPlace, setSelectedPlace] = useState<PlaceDto | null>(null);
   const [isAddConfirmOpen, setIsAddConfirmOpen] = useState(false);
-  const [savedPlaces, setSavedPlaces] = useState(MOCK_FAVORITE_PLACES);
-  const { addFavorite, removeFavorite } = usePlaceSearchFavorites();
+  const {
+    favorites: savedPlaces,
+    addFavorite,
+    removeFavorite,
+  } = usePlaceSearchFavorites();
   const { data, isLoading, isError } = usePlaceSearchQuery(submittedKeyword);
   const results = data ?? [];
   const visibleResults = results.slice(0, visibleCount);
@@ -62,21 +66,17 @@ const FavoritesPage = () => {
   const handleAddClick = () => {
     if (!selectedPlace) return;
 
-    if (savedPlaces.length >= MAX_FAVORITE_COUNT) {
+    if (savedPlaces.length >= MAX_FAVORITE_PLACE_COUNT) {
       setIsAddConfirmOpen(true);
       return;
     }
 
-    addFavorite(selectedPlace.placeName);
-    setSavedPlaces((prev) => [selectedPlace, ...prev]);
+    addFavorite(selectedPlace);
     setSelectedPlace(null);
   };
 
   const handleDelete = (place: PlaceDto) => {
-    removeFavorite(place.placeName);
-    setSavedPlaces((prev) =>
-      prev.filter((item) => item.placeId !== place.placeId)
-    );
+    removeFavorite(place.placeId);
   };
 
   return (
@@ -122,7 +122,7 @@ const FavoritesPage = () => {
         <div className="mb-3 flex items-center gap-1">
           <p className="h4 text-primary">저장된 검색어</p>
           <p className="puzzle-process text-disable">
-            ({savedPlaces.length}/{MAX_FAVORITE_COUNT})
+            ({savedPlaces.length}/{MAX_FAVORITE_PLACE_COUNT})
           </p>
         </div>
         <InfoBanner
@@ -161,7 +161,7 @@ const FavoritesPage = () => {
 
       {isAddConfirmOpen && (
         <AlertModal
-          message="검색어 저장은 5개까지 가능합니다"
+          message={`검색어 저장은 ${MAX_FAVORITE_PLACE_COUNT}개까지 가능합니다`}
           onConfirm={() => setIsAddConfirmOpen(false)}
         />
       )}
