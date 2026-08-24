@@ -7,6 +7,7 @@ export interface InputLayoutProps {
   hasValue?: boolean;
   maxLength?: number;
   currentLength?: number;
+  disabled?: boolean;
   containerClassName?: string;
   children: React.ReactNode;
 }
@@ -17,6 +18,7 @@ export const InputLayout = ({
   hasValue,
   maxLength,
   currentLength = 0,
+  disabled = false,
   containerClassName,
   children,
 }: InputLayoutProps) => {
@@ -27,7 +29,14 @@ export const InputLayout = ({
           {label}
         </label>
       )}
-      <div className="border-border-1 rounded-16 flex min-h-13.75 w-full items-center justify-between border px-4 py-4.5">
+      <div
+        className={cn(
+          "rounded-16 flex min-h-13.75 w-full items-center justify-between px-4 py-4.5",
+          disabled
+            ? "bg-surface-1 border border-transparent"
+            : "border-border-1 border"
+        )}
+      >
         <div className="flex-1 pr-2">{children}</div>
 
         {maxLength !== undefined ? (
