@@ -78,7 +78,7 @@ export const useMeetingDeparture = () => {
     departures[meetingId] ?? null;
 
   const getEffectiveStatus = (meeting: MeetingData): MeetingStatus =>
-    departures[meeting.meetingId] ? "IN_PROGRESS" : meeting.status;
+    departures[meeting.meetingId] ? "in-progress" : meeting.status;
 
   const setDeparture = (info: MeetingDepartureInfo) => {
     persist({ ...departures, [info.meetingId]: info });

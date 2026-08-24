@@ -4,11 +4,7 @@ export interface Participant {
   profileImageUrl: string;
 }
 
-export type MeetingStatus =
-  | "WAITING"
-  | "IN_PROGRESS"
-  | "COMPLETED"
-  | "CANCELED";
+export type MeetingStatus = "waiting" | "in-progress" | "complted" | "canceled";
 
 export interface MeetingData {
   meetingId: number;

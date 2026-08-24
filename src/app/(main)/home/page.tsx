@@ -6,9 +6,9 @@ import { FloatingActionButton } from "@/components/home/FloatingActionButton";
 import { HomeHeroSection } from "@/components/home/HomeHeroSection";
 import { HomeUpcomingSection } from "@/components/home/HomeUpcomingSection";
 import { InviteCodeJoinSheet } from "@/components/meeting/participate/InviteCodeJoinSheet";
-import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
+import { useHomeMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
 import type { MeetingData } from "@/types/meeting";
-import { isActiveOrUpcomingMeeting } from "@/utils/date";
+import { isActiveOrUpcomingMeeting, isSameDay } from "@/utils/date";
 
 export default function HomePage() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function HomePage() {
   const [isMounted, setIsMounted] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [initialInviteCode, setInitialInviteCode] = useState("");
-  const { data: meetings = [] } = useMeetingsQuery();
+  const { data: meetings = [] } = useHomeMeetingsQuery();
 
   const handleInviteOpenChange = (open: boolean) => {
     setIsInviteOpen(open);
@@ -59,11 +59,26 @@ export default function HomePage() {
     isActiveOrUpcomingMeeting(meeting)
   );
 
-  const heroMeeting: MeetingData | null =
-    visibleMeetings.find((meeting) => meeting.status === "IN_PROGRESS") ?? null;
+  const now = new Date();
+  const heroCandidates = visibleMeetings
+    .filter((meeting) => {
+      const meetingDate = new Date(meeting.dateTime);
+      return (
+        isSameDay(meetingDate, now) && meetingDate.getTime() > now.getTime()
+      );
+    })
+    .sort(
+      (a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()
+    );
+
+  const heroMeeting: MeetingData | null = heroCandidates[0] ?? null;
 
   const upcomingMeetings = visibleMeetings
-    .filter((meeting) => meeting.status === "WAITING")
+    .filter(
+      (meeting) =>
+        meeting.status === "WAITING" &&
+        meeting.meetingId !== heroMeeting?.meetingId
+    )
     .sort(
       (a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()
     );

@@ -9,6 +9,7 @@ import heroProcessImage from "@/assets/images/home-process-hero.png";
 import { AvatarStack } from "@/components/home/AvatarStack";
 import { IcProfile } from "@/components/icons/IcProfile";
 import { IcArrivalDot, IcPuzzlePiece } from "@/components/icons";
+import { useMeetingDeparture } from "@/hooks/meeting/departure/useMeetingDeparture";
 import { useParticipantLocationsQuery } from "@/hooks/meeting/shared/useParticipantLocations";
 import { MOCK_PARTICIPANT_LOCATIONS } from "@/mocks/mockParticipantLocations";
 import type { MeetingData, Participant, UserLocation } from "@/types/meeting";
@@ -100,7 +101,13 @@ const ProgressTrack = ({
   );
 };
 
-const HomeHeroSectionActive = ({ meeting }: { meeting: MeetingData }) => {
+const HomeHeroSectionActive = ({
+  meeting,
+  onClick,
+}: {
+  meeting: MeetingData;
+  onClick: () => void;
+}) => {
   const participantIds = meeting.participants.map(
     (participant) => participant.id
   );
@@ -122,7 +129,11 @@ const HomeHeroSectionActive = ({ meeting }: { meeting: MeetingData }) => {
   };
 
   return (
-    <div className="relative z-10 flex h-full flex-col px-4 pt-11 pb-6">
+    <button
+      type="button"
+      onClick={onClick}
+      className="relative z-10 flex h-full w-full flex-col px-4 pt-11 pb-6 text-left"
+    >
       <h1 className="h1 text-primary">
         {meeting.title}
         <br />
@@ -156,7 +167,7 @@ const HomeHeroSectionActive = ({ meeting }: { meeting: MeetingData }) => {
           locationsByUserId={locationsByUserId}
         />
       </div>
-    </div>
+    </button>
   );
 };
 
@@ -185,6 +196,17 @@ const HomeHeroSectionEmpty = () => {
 
 export const HomeHeroSection = ({ meeting }: HomeHeroSectionProps) => {
   const router = useRouter();
+  const { getEffectiveStatus } = useMeetingDeparture();
+
+  const handleMeetingClick = () => {
+    if (!meeting) return;
+
+    router.push(
+      getEffectiveStatus(meeting) === "in-progress"
+        ? `/meeting/${meeting.meetingId}`
+        : `/meeting/${meeting.meetingId}/departure`
+    );
+  };
 
   return (
     <section className="bg-primary-light-active relative h-[54dvh] max-h-80 min-h-100 w-full overflow-hidden">
@@ -200,7 +222,7 @@ export const HomeHeroSection = ({ meeting }: HomeHeroSectionProps) => {
       </div>
 
       {meeting ? (
-        <HomeHeroSectionActive meeting={meeting} />
+        <HomeHeroSectionActive meeting={meeting} onClick={handleMeetingClick} />
       ) : (
         <HomeHeroSectionEmpty />
       )}

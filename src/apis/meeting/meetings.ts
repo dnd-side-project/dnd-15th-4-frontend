@@ -9,10 +9,15 @@ import type {
   MeetingJoinResponse,
   MeetingPreviewRequest,
   MeetingPreviewResponse,
+  MeetingStatus,
 } from "@/types/meeting";
 
-export const fetchMeetings = async (): Promise<MeetingData[]> => {
-  const result = await api.get<ApiResult<MeetingData[]>>("/api/v1/meetings");
+export const fetchMeetings = async (
+  status?: MeetingStatus
+): Promise<MeetingData[]> => {
+  const result = await api.get<ApiResult<MeetingData[]>>("/api/v1/meetings", {
+    params: status ? { status } : undefined,
+  });
   return result.data;
 };
 
