@@ -43,7 +43,9 @@ const subscribe = (listener: () => void) => {
 };
 
 const getSnapshot = () => favorites;
-const getServerSnapshot = (): PlaceDto[] => [];
+
+const EMPTY_FAVORITES: PlaceDto[] = [];
+const getServerSnapshot = (): PlaceDto[] => EMPTY_FAVORITES;
 
 export const usePlaceSearchFavorites = () => {
   const favorites = useSyncExternalStore(
