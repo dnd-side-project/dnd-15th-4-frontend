@@ -8,10 +8,21 @@ import { SummaryRow } from "@/components/common/SummaryRow";
 import { getCharacterImage } from "@/constants/character-images";
 import { AccountSection } from "@/components/mypage/AccountSection";
 import { NotificationSettingsSection } from "@/components/mypage/NotificationSettingsSection";
+import { useFavoriteSearchesQuery } from "@/hooks/mypage/useFavoriteSearches";
+import { usePuzzlesQuery } from "@/hooks/mypage/usePuzzles";
+import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
 import { MOCK_USER } from "@/mocks/mockUser";
 
 const MyPage = () => {
   const router = useRouter();
+  const { data: puzzles } = usePuzzlesQuery();
+  const collectedPuzzleCount =
+    puzzles?.reduce((sum, puzzle) => sum + puzzle.puzzleImageUrls.length, 0) ??
+    0;
+  const { data: favoriteSearches } = useFavoriteSearchesQuery();
+  const favoriteSearchCount = favoriteSearches?.length ?? 0;
+  const { data: completedMeetings } = useMeetingsQuery("COMPLETED");
+  const previousAppointmentCount = completedMeetings?.length ?? 0;
 
   return (
     <div className="h-screen scrollbar-none overflow-y-auto pb-12">
@@ -34,17 +45,17 @@ const MyPage = () => {
         items={[
           {
             label: "지난 약속",
-            value: `${MOCK_USER.previousAppointmentCount}개`,
+            value: `${previousAppointmentCount}개`,
             onClick: () => router.push("/mypage/meetings"),
           },
           {
             label: "모은 퍼즐",
-            value: `${MOCK_USER.collectedPuzzleCount}개`,
+            value: `${collectedPuzzleCount}개`,
             onClick: () => router.push("/mypage/puzzles"),
           },
           {
             label: "내 검색어",
-            value: `${MOCK_USER.favoritePlaceCount}개`,
+            value: `${favoriteSearchCount}개`,
             onClick: () => router.push("/mypage/favorites"),
           },
         ]}

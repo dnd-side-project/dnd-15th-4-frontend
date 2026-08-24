@@ -8,7 +8,7 @@ import { DateFilterModal } from "@/components/common/DateFilterModal";
 import { MyPageListHeader } from "@/components/mypage/MyPageListHeader";
 import { PuzzleMeetingDetailModal } from "@/components/mypage/PuzzleMeetingDetailModal";
 import { useDateFilter } from "@/hooks/mypage/useDateFilter";
-import { MOCK_PUZZLES } from "@/mocks/mockUser";
+import { usePuzzlesQuery } from "@/hooks/mypage/usePuzzles";
 import { isSameDay } from "@/utils/date";
 import type { CollectedPuzzle } from "@/types/user";
 
@@ -31,6 +31,9 @@ const PuzzlesPage = () => {
     null
   );
 
+  const { data } = usePuzzlesQuery();
+  const puzzles = useMemo(() => data ?? [], [data]);
+
   const {
     sortOrder,
     handleToggleSortOrder,
@@ -39,7 +42,7 @@ const PuzzlesPage = () => {
     isDateFilterOpen,
     setIsDateFilterOpen,
     filteredItems: sortedPuzzles,
-  } = useDateFilter(MOCK_PUZZLES, (puzzle) => puzzle.meetingAt);
+  } = useDateFilter(puzzles, (puzzle) => puzzle.meetingAt);
 
   const puzzleImages: PuzzleImage[] = useMemo(
     () =>
@@ -56,7 +59,7 @@ const PuzzlesPage = () => {
   );
 
   const handleSelectImage = (puzzleImage: PuzzleImage) => {
-    const puzzle = MOCK_PUZZLES.find(
+    const puzzle = puzzles.find(
       (item) => item.meetingId === puzzleImage.meetingId
     );
     if (!puzzle) return;
@@ -107,7 +110,7 @@ const PuzzlesPage = () => {
         <DateFilterModal
           initialDate={filterDate}
           hasEventOnDate={(date) =>
-            MOCK_PUZZLES.some((puzzle) =>
+            puzzles.some((puzzle) =>
               isSameDay(new Date(puzzle.meetingAt), date)
             )
           }
