@@ -1,27 +1,22 @@
 "use client";
 
-import { IcArrowBack, IcSearch } from "@/components/icons";
-import type { IconProps } from "@/components/icons/icon.types";
+import { IcArrowBack, IcClose, IcSearch } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
-export interface SearchInputBarProps {
+interface SearchInputBarProps {
   value: string;
   onChange: (value: string) => void;
   onBack?: () => void;
-  onTrailingIconClick?: () => void;
   placeholder?: string;
   className?: string;
-  TrailingIcon?: (props: IconProps) => React.ReactNode;
 }
 
 export const SearchInputBar = ({
   value,
   onChange,
   onBack,
-  onTrailingIconClick,
   placeholder,
   className,
-  TrailingIcon = IcSearch,
 }: SearchInputBarProps) => (
   <div
     className={cn(
@@ -40,12 +35,16 @@ export const SearchInputBar = ({
       placeholder={placeholder}
       className="body3 text-primary placeholder:text-disable flex-1 bg-transparent outline-none"
     />
-    {onTrailingIconClick ? (
-      <button type="button" onClick={onTrailingIconClick} aria-label="검색">
-        <TrailingIcon size={24} className="text-border-4" />
+    {value ? (
+      <button
+        type="button"
+        onClick={() => onChange("")}
+        aria-label="검색어 지우기"
+      >
+        <IcClose size={24} className="text-border-4" />
       </button>
     ) : (
-      <TrailingIcon size={24} className="text-border-4" />
+      <IcSearch size={24} className="text-border-4" />
     )}
   </div>
 );

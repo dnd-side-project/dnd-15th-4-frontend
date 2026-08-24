@@ -33,16 +33,17 @@ export const PlaceItem = ({
   selected,
   onDelete,
 }: PlaceItemProps) => (
-  <div className="flex w-full items-center gap-3 py-3">
-    <button
-      type="button"
-      onClick={() => onSelect(place)}
-      className="flex min-w-0 flex-1 items-center gap-3 text-left"
-    >
-      <span className="bg-surface-1 rounded-8 flex size-11 shrink-0 items-center justify-center">
-        <Image src={pinImage} alt="" width={24} height={24} />
-      </span>
-      <span className="flex flex-col gap-1">
+  <div className="flex w-full items-center gap-3">
+    <span className="bg-surface-1 rounded-8 flex size-8.5 shrink-0 items-center justify-center">
+      <Image src={pinImage} alt="" width={26} height={26} />
+    </span>
+
+    <div className="border-border-1 flex min-w-0 flex-1 items-center gap-3 border-b py-3">
+      <button
+        type="button"
+        onClick={() => onSelect(place)}
+        className="flex min-w-0 flex-1 flex-col gap-1.25 text-left"
+      >
         <span className="body2 text-primary">
           {splitByKeyword(place.placeName, keyword).map((part, index) => (
             <span
@@ -56,27 +57,27 @@ export const PlaceItem = ({
         <span className="body6 text-disable">
           {place.roadAddressName || place.addressName}
         </span>
-      </span>
-    </button>
-
-    {selected !== undefined && (
-      <Toggle
-        variant="radio"
-        checked={selected}
-        onCheckedChange={(checked) => checked && onSelect(place)}
-        aria-label={`${place.placeName} 선택`}
-      />
-    )}
-
-    {onDelete && (
-      <button
-        type="button"
-        onClick={onDelete}
-        aria-label="검색어 삭제"
-        className="text-red-2 shrink-0"
-      >
-        <IcDelete size={24} />
       </button>
-    )}
+
+      {selected !== undefined && (
+        <Toggle
+          variant="radio"
+          checked={selected}
+          onCheckedChange={(checked) => checked && onSelect(place)}
+          aria-label={`${place.placeName} 선택`}
+        />
+      )}
+
+      {onDelete && (
+        <button
+          type="button"
+          onClick={onDelete}
+          aria-label="검색어 삭제"
+          className="text-red-2 shrink-0"
+        >
+          <IcDelete size={24} />
+        </button>
+      )}
+    </div>
   </div>
 );

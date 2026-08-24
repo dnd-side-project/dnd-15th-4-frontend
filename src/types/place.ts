@@ -7,6 +7,11 @@ export interface PlaceDto {
   longitude: number;
 }
 
+export interface FavoriteSearchDto {
+  id: number;
+  keyword: string;
+}
+
 export interface SelectedPlace {
   placeName: string;
   addressName: string;
