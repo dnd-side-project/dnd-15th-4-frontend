@@ -193,6 +193,7 @@ export default function CreateMeetingPage() {
             {place && (
               <div className="rounded-16 h-32 w-full overflow-hidden">
                 <MeetingMap
+                  key={`${place.latitude}:${place.longitude}`}
                   center={{ lat: place.latitude, lng: place.longitude }}
                   zoom={16}
                   className="size-full"
