@@ -112,6 +112,7 @@ export default function MeetingParticipatePage() {
         <div className="flex w-full flex-col gap-6">
           <ToggleField
             label="제공 이미지로 참여"
+            isBold={true}
             checked={selectedImage?.type === "default"}
             onCheckedChange={handleProvidedImageToggle}
           />
@@ -119,6 +120,7 @@ export default function MeetingParticipatePage() {
           <div className="flex w-full flex-col gap-3">
             <ToggleField
               label="닉네임으로 참여"
+              isBold={true}
               checked={nicknameParticipation}
               onCheckedChange={setNicknameParticipation}
             />
