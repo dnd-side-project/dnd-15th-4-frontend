@@ -7,9 +7,25 @@ import type { PlaceDto } from "@/types/place";
 const STORAGE_KEY = "placeSearchFavorites";
 export const MAX_FAVORITE_PLACE_COUNT = 5;
 
+const isPlaceDto = (value: unknown): value is PlaceDto => {
+  if (typeof value !== "object" || value === null) return false;
+  const item = value as Record<string, unknown>;
+
+  return (
+    typeof item.placeId === "string" &&
+    typeof item.placeName === "string" &&
+    typeof item.addressName === "string" &&
+    (item.roadAddressName === null ||
+      typeof item.roadAddressName === "string") &&
+    typeof item.latitude === "number" &&
+    Number.isFinite(item.latitude) &&
+    typeof item.longitude === "number" &&
+    Number.isFinite(item.longitude)
+  );
+};
+
 const isPlaceDtoArray = (value: unknown): value is PlaceDto[] =>
-  Array.isArray(value) &&
-  value.every((item) => typeof item?.placeId === "string");
+  Array.isArray(value) && value.every(isPlaceDto);
 
 const readStoredFavorites = (): PlaceDto[] => {
   if (typeof window === "undefined") return [];
