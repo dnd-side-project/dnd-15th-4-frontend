@@ -12,11 +12,18 @@ import type {
   MeetingStatus,
 } from "@/types/meeting";
 
+const STATUS_QUERY_PARAM: Record<MeetingStatus, string> = {
+  WAITING: "waiting",
+  IN_PROGRESS: "in-progress",
+  COMPLETED: "completed",
+  CANCELED: "canceled",
+};
+
 export const fetchMeetings = async (
   status?: MeetingStatus
 ): Promise<MeetingData[]> => {
   const result = await api.get<ApiResult<MeetingData[]>>("/api/v1/meetings", {
-    params: status ? { status } : undefined,
+    params: status ? { status: STATUS_QUERY_PARAM[status] } : undefined,
   });
   return result.data;
 };

@@ -2,11 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 
-import type {
-  MeetingData,
-  MeetingDepartureInfo,
-  MeetingStatus,
-} from "@/types/meeting";
+import type { MeetingDepartureInfo } from "@/types/meeting";
 
 const STORAGE_KEY = "meetingDepartureInfo";
 
@@ -77,9 +73,6 @@ export const useMeetingDeparture = () => {
   const getDeparture = (meetingId: number): MeetingDepartureInfo | null =>
     departures[meetingId] ?? null;
 
-  const getEffectiveStatus = (meeting: MeetingData): MeetingStatus =>
-    departures[meeting.meetingId] ? "in-progress" : meeting.status;
-
   const setDeparture = (info: MeetingDepartureInfo) => {
     persist({ ...departures, [info.meetingId]: info });
   };
@@ -89,5 +82,5 @@ export const useMeetingDeparture = () => {
     persist(rest);
   };
 
-  return { getDeparture, getEffectiveStatus, setDeparture, clearDeparture };
+  return { getDeparture, setDeparture, clearDeparture };
 };

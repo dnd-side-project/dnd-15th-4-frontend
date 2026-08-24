@@ -4,7 +4,7 @@ import { useQueries, useQuery } from "@tanstack/react-query";
 
 import { meetingKeys } from "@/apis/meeting/keys";
 import { fetchMeetings } from "@/apis/meeting/meetings";
-import type { MeetingData } from "@/types/meeting";
+import type { MeetingData, MeetingStatus } from "@/types/meeting";
 
 export const useMeetingsQuery = () =>
   useQuery({
@@ -12,7 +12,7 @@ export const useMeetingsQuery = () =>
     queryFn: () => fetchMeetings(),
   });
 
-const HOME_MEETING_STATUSES = ["waiting", "in-progress"] as const;
+const HOME_MEETING_STATUSES: MeetingStatus[] = ["WAITING", "IN_PROGRESS"];
 
 export const useHomeMeetingsQuery = () => {
   return useQueries({
