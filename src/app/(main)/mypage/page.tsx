@@ -24,6 +24,7 @@ const MyPage = () => {
         <Image
           src={getCharacterImage(MOCK_USER.profileImageNumber)}
           alt={MOCK_USER.nickname}
+          priority
           className="rounded-12 size-25.5 border-[0.1875rem] border-black object-cover"
         />
         <p className="h4 text-primary">{MOCK_USER.nickname}</p>
