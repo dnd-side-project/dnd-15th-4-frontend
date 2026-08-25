@@ -24,7 +24,7 @@ export const useHomeMeetingsQuery = () => {
       const isPending = results.some((result) => result.isPending);
       const isError = results.some((result) => result.isError);
 
-      const data: MeetingData[] | undefined = results.every(
+      const data: MeetingData[] | undefined = results.some(
         (result) => result.data !== undefined
       )
         ? results.flatMap((result) => result.data ?? [])
