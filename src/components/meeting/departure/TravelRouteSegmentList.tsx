@@ -1,37 +1,157 @@
 import { IcArrivalDot, IcHome, IcPin } from "@/components/icons";
-import { IcSubway } from "@/components/icons/IcSubway";
+import { IcBus, IcSubway, IcWalk } from "@/components/icons";
+import type { IconProps } from "@/components/icons/icon.types";
 import { cn } from "@/lib/utils";
-import type { TravelSegment, TravelSegmentType } from "@/types/meeting";
+import type { MeetingRouteStep } from "@/types/meeting";
 
-// todo: Walk와 Bus 아이콘이 없어서 Dot으로 임시 대체
-const SEGMENT_ICON_MAP: Record<TravelSegmentType, React.ComponentType> = {
+const STEP_ICON_MAP: Record<
+  MeetingRouteStep["type"],
+  React.ComponentType<IconProps>
+> = {
   SUBWAY: IcSubway,
-  BUS: IcArrivalDot,
-  WALK: IcArrivalDot,
+  BUS: IcBus,
+  WALK: IcWalk,
+  ETC: IcArrivalDot,
+};
+
+const MOVEMENT_SUFFIX_PATTERN = /\s*이동$/;
+
+const stripMovementSuffix = (text: string): string =>
+  text.replace(MOVEMENT_SUFFIX_PATTERN, "");
+
+const getEuroParticle = (text: string): "로" | "으로" => {
+  const trimmed = text.trim();
+  const lastChar = trimmed.at(-1);
+  if (!lastChar) return "으로";
+
+  if (/\d/.test(lastChar)) {
+    return ["1", "2", "4", "5", "8", "0"].includes(lastChar) ? "로" : "으로";
+  }
+
+  const code = lastChar.charCodeAt(0);
+  if (code < 0xac00 || code > 0xd7a3) return "으로";
+
+  const jongseongIndex = (code - 0xac00) % 28;
+  return jongseongIndex === 0 || jongseongIndex === 8 ? "로" : "으로";
+};
+
+const getBoardingStopLabel = (step: MeetingRouteStep): string =>
+  step.type === "BUS"
+    ? `${step.station?.start} 정거장`
+    : `${step.station?.start}${step.line ? ` ${step.line}` : ""}`;
+
+interface RouteRow {
+  key: string;
+  label: string;
+  icon: React.ComponentType<IconProps>;
+}
+
+const buildStepRows = (
+  steps: MeetingRouteStep[],
+  index: number,
+  destinationName: string
+): RouteRow[] => {
+  const step = steps[index];
+  const icon = STEP_ICON_MAP[step.type];
+
+  if (step.station) {
+    const isBus = step.type === "BUS";
+    const boardLabel = isBus
+      ? `${step.station.start} 정거장${step.line ? ` ${step.line}번` : ""} 버스승차`
+      : step.line
+        ? `${step.station.start} ${step.line} 승차`
+        : `${step.station.start} 승차`;
+
+    return [
+      { key: `${index}-board`, label: boardLabel, icon },
+      { key: `${index}-alight`, label: `${step.station.end} 하차`, icon },
+    ];
+  }
+
+  if (step.stations?.length) {
+    return [{ key: `${index}`, label: step.stations.join(" - "), icon }];
+  }
+
+  const nextStep = steps[index + 1];
+
+  if (nextStep?.station) {
+    const target = getBoardingStopLabel(nextStep);
+    return [
+      {
+        key: `${index}`,
+        label: `${target}${getEuroParticle(target)} 이동`,
+        icon,
+      },
+    ];
+  }
+
+  if (!nextStep) {
+    return [
+      {
+        key: `${index}`,
+        label: `${destinationName}${getEuroParticle(destinationName)} 이동`,
+        icon,
+      },
+    ];
+  }
+
+  return [
+    { key: `${index}`, label: step.description ?? destinationName, icon },
+  ];
+};
+
+export const buildRouteRows = (
+  steps: MeetingRouteStep[],
+  originName: string,
+  destinationName: string
+): RouteRow[] => [
+  { key: "origin", label: originName, icon: IcHome },
+  ...steps.flatMap((_, index) => buildStepRows(steps, index, destinationName)),
+  { key: "destination", label: destinationName, icon: IcPin },
+];
+
+export const getTotalWalkDistance = (steps: MeetingRouteStep[]): number =>
+  steps
+    .filter((step) => step.type === "WALK")
+    .reduce((sum, step) => sum + step.distance, 0);
+
+const getStepWaypoint = (step: MeetingRouteStep): string => {
+  if (step.station) return step.station.end;
+  if (step.description) return stripMovementSuffix(step.description);
+  if (step.stations?.length) return step.stations[step.stations.length - 1];
+  return "";
+};
+
+export const getRouteSummary = (
+  steps: MeetingRouteStep[],
+  originName: string,
+  destinationName: string
+): string => {
+  const waypoints = steps.map(getStepWaypoint).filter(Boolean);
+  return [originName, ...waypoints, destinationName].join(" - ");
 };
 
 export interface TravelRouteSegmentListProps {
-  segments: TravelSegment[];
+  steps: MeetingRouteStep[];
+  originName: string;
+  destinationName: string;
 }
 
 export const TravelRouteSegmentList = ({
-  segments,
+  steps,
+  originName,
+  destinationName,
 }: TravelRouteSegmentListProps) => {
-  const lastIndex = segments.length - 1;
+  const rows = buildRouteRows(steps, originName, destinationName);
+  const lastIndex = rows.length - 1;
 
   return (
     <div className="flex flex-col">
-      {segments.map((segment, index) => {
-        const isFirst = index === 0;
+      {rows.map((row, index) => {
         const isLast = index === lastIndex;
-        const Icon = isFirst
-          ? IcHome
-          : isLast
-            ? IcPin
-            : SEGMENT_ICON_MAP[segment.type];
 
         return (
-          <div key={`${segment.type}-${index}`} className="flex gap-2">
+          <div key={row.key} className="flex gap-2">
             <div className="relative flex w-5 shrink-0 flex-col items-center">
               {!isLast && (
                 <div
@@ -50,12 +170,12 @@ export const TravelRouteSegmentList = ({
                   isLast ? "text-primary-normal" : "text-primary"
                 )}
               >
-                <Icon size={20} />
+                <row.icon size={20} />
               </span>
             </div>
 
             <div className={cn("flex-1 pt-0.5", !isLast && "pb-6")}>
-              <p className="body6 text-secondary-1">{segment.label}</p>
+              <p className="body6 text-secondary-1">{row.label}</p>
             </div>
           </div>
         );
