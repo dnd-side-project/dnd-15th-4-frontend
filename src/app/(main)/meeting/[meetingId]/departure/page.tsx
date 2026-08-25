@@ -145,7 +145,11 @@ const DepartureSetupPage = () => {
   if (!meeting) {
     return (
       <div className="flex min-h-dvh flex-col">
-        <Header title="출발설정" onBack={() => router.back()} />
+        <Header
+          title="출발 설정"
+          onBack={() => router.back()}
+          className="bg-primary-light-active sticky top-0 z-10"
+        />
         <p className="body3 text-disable flex flex-1 items-center justify-center">
           {isMeetingLoading
             ? "약속 정보를 불러오고 있어요"
@@ -167,8 +171,11 @@ const DepartureSetupPage = () => {
   return (
     <div className="relative min-h-dvh bg-white pb-30">
       <div className="bg-primary-light-active">
-        <Header title="출발설정" onBack={() => router.back()} />
-
+        <Header
+          title="출발 설정"
+          onBack={() => router.back()}
+          className="bg-primary-light-active sticky top-0 z-10"
+        />
         <div className="flex flex-col gap-6 px-4 pt-2 pb-7">
           <div className="flex flex-col gap-2">
             <h2 className="h1 text-primary wrap-break-word">

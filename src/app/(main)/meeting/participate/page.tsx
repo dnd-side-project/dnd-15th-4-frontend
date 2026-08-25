@@ -97,9 +97,11 @@ export default function MeetingParticipatePage() {
 
   return (
     <div className="relative min-h-dvh bg-white">
-      <div className="sticky top-0 z-20 bg-white">
-        <Header title="약속 사전 설정" onBack={() => router.back()} />
-      </div>
+      <Header
+        title="약속 사전 설정"
+        onBack={() => router.back()}
+        className="sticky top-0 z-10 bg-white"
+      />
 
       <main className="flex flex-col items-center gap-7 px-4 pt-2 pb-32">
         <InfoBanner text="다 같이 사진 올리면, 그 중 하나를 사진퍼즐로 맞출 수 있어요!" />
