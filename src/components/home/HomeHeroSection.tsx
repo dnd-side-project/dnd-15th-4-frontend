@@ -2,13 +2,16 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import heroEmptyImage from "@/assets/images/home-empty-hero.png";
 import heroProcessImage from "@/assets/images/home-process-hero.png";
 
+import { AlertModal } from "@/components/common/AlertModal";
 import { AvatarStack } from "@/components/home/AvatarStack";
 import { IcProfile } from "@/components/icons/IcProfile";
 import { IcArrivalDot, IcPuzzlePiece } from "@/components/icons";
+import { useMemberDepartureQuery } from "@/hooks/meeting/departure/useMemberDeparture";
 import { useParticipantLocationsQuery } from "@/hooks/meeting/shared/useParticipantLocations";
 import { MOCK_PARTICIPANT_LOCATIONS } from "@/mocks/mockParticipantLocations";
 import type { MeetingData, Participant, UserLocation } from "@/types/meeting";
@@ -100,7 +103,13 @@ const ProgressTrack = ({
   );
 };
 
-const HomeHeroSectionActive = ({ meeting }: { meeting: MeetingData }) => {
+const HomeHeroSectionActive = ({
+  meeting,
+  onClick,
+}: {
+  meeting: MeetingData;
+  onClick: () => void;
+}) => {
   const participantIds = meeting.participants.map(
     (participant) => participant.id
   );
@@ -122,7 +131,11 @@ const HomeHeroSectionActive = ({ meeting }: { meeting: MeetingData }) => {
   };
 
   return (
-    <div className="relative z-10 flex h-full flex-col px-4 pt-11 pb-6">
+    <button
+      type="button"
+      onClick={onClick}
+      className="relative z-10 flex h-full w-full flex-col px-4 pt-11 pb-6 text-left"
+    >
       <h1 className="h1 text-primary">
         {meeting.title}
         <br />
@@ -156,7 +169,7 @@ const HomeHeroSectionActive = ({ meeting }: { meeting: MeetingData }) => {
           locationsByUserId={locationsByUserId}
         />
       </div>
-    </div>
+    </button>
   );
 };
 
@@ -185,9 +198,37 @@ const HomeHeroSectionEmpty = () => {
 
 export const HomeHeroSection = ({ meeting }: HomeHeroSectionProps) => {
   const router = useRouter();
+  const {
+    data: departure,
+    isLoading: isDepartureLoading,
+    isError: isDepartureError,
+  } = useMemberDepartureQuery(meeting?.meetingId ?? null);
+  const [showDepartureError, setShowDepartureError] = useState(false);
+
+  const handleMeetingClick = () => {
+    if (!meeting || isDepartureLoading) return;
+
+    if (isDepartureError) {
+      setShowDepartureError(true);
+      return;
+    }
+
+    router.push(
+      departure
+        ? `/meeting/${meeting.meetingId}`
+        : `/meeting/${meeting.meetingId}/departure`
+    );
+  };
 
   return (
     <section className="bg-primary-light-active relative h-[54dvh] max-h-80 min-h-100 w-full overflow-hidden">
+      {showDepartureError && (
+        <AlertModal
+          message="출발 정보를 확인하지 못했어요. 다시 시도해주세요."
+          onConfirm={() => setShowDepartureError(false)}
+        />
+      )}
+
       <div className="absolute top-11 right-4 z-60">
         <button
           type="button"
@@ -200,7 +241,7 @@ export const HomeHeroSection = ({ meeting }: HomeHeroSectionProps) => {
       </div>
 
       {meeting ? (
-        <HomeHeroSectionActive meeting={meeting} />
+        <HomeHeroSectionActive meeting={meeting} onClick={handleMeetingClick} />
       ) : (
         <HomeHeroSectionEmpty />
       )}

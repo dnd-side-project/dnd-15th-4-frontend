@@ -172,3 +172,85 @@ export interface MeetingJoinRequest {
 export interface MeetingJoinResponse {
   meetingId: number;
 }
+
+export interface DepartureOrigin {
+  placeName: string;
+  addressName: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface MeetingMemberDepartureOrigin {
+  placeName: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface MeetingMemberNotificationSettings {
+  locationPermission: boolean;
+  friendArrival: boolean;
+  chatBubble: boolean;
+}
+
+export interface MeetingMemberNicknameSetting {
+  enabled: boolean;
+  nickname?: string | null;
+}
+
+export type MeetingTravelMode = "TRANSIT" | "CAR" | "WALK";
+
+export interface MeetingRouteStation {
+  start: string;
+  end: string;
+}
+
+export interface MeetingRouteStep {
+  type: "SUBWAY" | "BUS" | "WALK" | "ETC";
+  time: number;
+  distance: number;
+  description?: string | null;
+  line?: string | null;
+  color?: string | null;
+  station?: MeetingRouteStation | null;
+  stations?: string[] | null;
+}
+
+export interface MeetingRoute {
+  totalTime: number;
+  fare: number;
+  transferCount: number;
+  pathType?: number | null;
+  steps: MeetingRouteStep[];
+}
+
+export interface MeetingRouteSearchRequest {
+  start: {
+    latitude: number;
+    longitude: number;
+  };
+  travelMode?: MeetingTravelMode | null;
+}
+
+export interface MeetingRouteRequest {
+  totalTime: number;
+  steps: MeetingRouteStep[];
+}
+
+export interface MeetingMemberDepartureCreateRequest {
+  departure: MeetingMemberDepartureOrigin;
+  notificationSettings: MeetingMemberNotificationSettings;
+  nicknameSetting: MeetingMemberNicknameSetting;
+  route: MeetingRouteRequest;
+  travelMode?: MeetingTravelMode | null;
+}
+
+export interface MeetingMemberDepartureResponse {
+  meetingId: number;
+  departure: MeetingMemberDepartureOrigin;
+  notificationSettings: MeetingMemberNotificationSettings;
+  nicknameSetting: MeetingMemberNicknameSetting;
+  totalEstimatedTime: number;
+  recommendedDepartureTime: string;
+  routes: MeetingRoute[];
+  travelMode?: MeetingTravelMode | null;
+}

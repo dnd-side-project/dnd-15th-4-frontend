@@ -6,9 +6,9 @@ import { FloatingActionButton } from "@/components/home/FloatingActionButton";
 import { HomeHeroSection } from "@/components/home/HomeHeroSection";
 import { HomeUpcomingSection } from "@/components/home/HomeUpcomingSection";
 import { InviteCodeJoinSheet } from "@/components/meeting/participate/InviteCodeJoinSheet";
-import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
+import { useHomeMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
 import type { MeetingData } from "@/types/meeting";
-import { isActiveOrUpcomingMeeting } from "@/utils/date";
+import { isActiveOrUpcomingMeeting, isSameDay } from "@/utils/date";
 
 export default function HomePage() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function HomePage() {
   const [isMounted, setIsMounted] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [initialInviteCode, setInitialInviteCode] = useState("");
-  const { data: meetings = [] } = useMeetingsQuery();
+  const { data: meetings = [] } = useHomeMeetingsQuery();
 
   const handleInviteOpenChange = (open: boolean) => {
     setIsInviteOpen(open);
@@ -59,14 +59,25 @@ export default function HomePage() {
     isActiveOrUpcomingMeeting(meeting)
   );
 
-  const heroMeeting: MeetingData | null =
-    visibleMeetings.find((meeting) => meeting.status === "IN_PROGRESS") ?? null;
+  const sortedMeetings = [...visibleMeetings].sort(
+    (a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()
+  );
 
-  const upcomingMeetings = visibleMeetings
-    .filter((meeting) => meeting.status === "WAITING")
-    .sort(
-      (a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()
-    );
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const heroCandidates = sortedMeetings.filter((meeting) => {
+    const meetingDate = new Date(meeting.dateTime);
+
+    return isSameDay(meetingDate, now) || isSameDay(meetingDate, tomorrow);
+  });
+
+  const heroMeeting: MeetingData | null = heroCandidates[0] ?? null;
+
+  const upcomingMeetings = sortedMeetings.filter(
+    (meeting) => meeting.meetingId !== heroMeeting?.meetingId
+  );
 
   return (
     <div className="relative flex h-dvh flex-col overflow-hidden bg-white">
