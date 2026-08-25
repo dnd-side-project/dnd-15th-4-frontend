@@ -20,7 +20,8 @@ import type { MeetingParticipant } from "@/types/meeting";
 
 const MEETING_PLACE_CENTER = { lat: 37.534, lng: 127.058 };
 
-const SHEET_COLLAPSED_HEIGHT = 170;
+const SHEET_COLLAPSED_HEIGHT = 100;
+const SHEET_HALF_HEIGHT = 270;
 const SHEET_EXPANDED_HEIGHT = 9999;
 
 const MAP_FOCUS_TOP_PADDING = 16;
@@ -134,6 +135,11 @@ const MeetingDetailPage = () => {
           setIsBubblePickerOpen(false);
         }}
         className="absolute right-4 bottom-45 cursor-pointer"
+        style={
+          sheetSnapPoint !== SHEET_EXPANDED_HEIGHT
+            ? { bottom: sheetSnapPoint + 12 }
+            : undefined
+        }
       />
       <BottomSheet
         ref={sheetPopupRef}
@@ -142,12 +148,15 @@ const MeetingDetailPage = () => {
         modal={false}
         shouldShowBackdrop={false}
         disablePointerDismissal
-        snapPoints={[SHEET_COLLAPSED_HEIGHT, SHEET_EXPANDED_HEIGHT]}
+        snapPoints={[
+          SHEET_COLLAPSED_HEIGHT,
+          SHEET_HALF_HEIGHT,
+          SHEET_EXPANDED_HEIGHT,
+        ]}
         snapPoint={sheetSnapPoint}
         onSnapPointChange={(point) => {
           if (typeof point !== "number") return;
           setSheetSnapPoint(point);
-          setIsBubblePickerOpen(false);
         }}
       >
         <MeetingProgressSheet

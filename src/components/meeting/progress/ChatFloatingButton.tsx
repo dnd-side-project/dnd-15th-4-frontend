@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import { SpeechBubble } from "@/components/common/SpeechBubble";
 import { IcMessengerFill } from "@/components/icons";
 import { SPEECH_BUBBLE_MESSAGES } from "@/constants/message";
@@ -8,6 +10,7 @@ export interface ChatFloatingButtonProps {
   onOpenChange: (isOpen: boolean) => void;
   onSelectMessage: (message: string) => void;
   className?: string;
+  style?: CSSProperties;
 }
 
 export const ChatFloatingButton = ({
@@ -15,9 +18,10 @@ export const ChatFloatingButton = ({
   onOpenChange,
   onSelectMessage,
   className,
+  style,
 }: ChatFloatingButtonProps) => {
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative", className)} style={style}>
       {isOpen && (
         <div className="absolute right-0 bottom-full mb-3 flex max-w-[calc(100vw-2rem)] flex-col items-end gap-2">
           {SPEECH_BUBBLE_MESSAGES.map((message) => (
@@ -35,15 +39,9 @@ export const ChatFloatingButton = ({
         type="button"
         aria-label="말풍선 옵션 열기"
         onClick={() => onOpenChange(!isOpen)}
-        className={cn(
-          "flex size-15 items-center justify-center rounded-full p-4 shadow-1 transition-colors",
-          isOpen ? "bg-surface-3" : "bg-sub2-normal"
-        )}
+        className="bg-surface-6 shadow-1 flex size-15 items-center justify-center rounded-full p-4 transition-colors"
       >
-        <IcMessengerFill
-          size={24}
-          className={isOpen ? "text-sub2-normal" : "text-white"}
-        />
+        <IcMessengerFill size={24} className="text-surface-0" />
       </button>
     </div>
   );
