@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { AlertModal } from "@/components/common/AlertModal";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { useLogout } from "@/hooks/auth/useLogout";
 import { useWithdraw } from "@/hooks/auth/useWithdraw";
@@ -34,6 +35,7 @@ export const AccountSection = ({ kakaoId }: AccountSectionProps) => {
   const withdraw = useWithdraw();
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const [isWithdrawConfirmOpen, setIsWithdrawConfirmOpen] = useState(false);
+  const [isWithdrawErrorOpen, setIsWithdrawErrorOpen] = useState(false);
 
   const handleConfirmLogout = () => {
     setIsLogoutConfirmOpen(false);
@@ -44,7 +46,7 @@ export const AccountSection = ({ kakaoId }: AccountSectionProps) => {
     setIsWithdrawConfirmOpen(false);
     withdraw()
       .then(() => router.push("/"))
-      .catch(() => {});
+      .catch(() => setIsWithdrawErrorOpen(true));
   };
 
   return (
@@ -81,6 +83,12 @@ export const AccountSection = ({ kakaoId }: AccountSectionProps) => {
           cancelLabel="취소"
           onCancel={() => setIsWithdrawConfirmOpen(false)}
           onConfirm={handleConfirmWithdraw}
+        />
+      )}
+      {isWithdrawErrorOpen && (
+        <AlertModal
+          message="회원 탈퇴에 실패했어요. 다시 시도해주세요."
+          onConfirm={() => setIsWithdrawErrorOpen(false)}
         />
       )}
     </div>
