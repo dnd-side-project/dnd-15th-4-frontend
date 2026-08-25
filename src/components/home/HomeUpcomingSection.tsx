@@ -32,7 +32,7 @@ export const HomeUpcomingSection = ({
         </div>
       ) : (
         <div className="relative flex min-h-0 flex-1 flex-col">
-          <div className="flex min-h-0 flex-1 scrollbar-none flex-col gap-3 overflow-y-auto pb-8">
+          <div className="flex min-h-0 flex-1 scrollbar-none flex-col gap-3 overflow-y-auto pb-24">
             {schedules.map((meeting, index) => (
               <ScheduleCard
                 key={`${meeting.meetingId}-${index}`}
