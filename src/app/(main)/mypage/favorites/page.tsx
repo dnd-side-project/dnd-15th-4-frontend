@@ -40,6 +40,7 @@ const FavoritesPage = () => {
   const [visibleCount, setVisibleCount] = useState(RESULT_PAGE_SIZE);
   const [selectedPlace, setSelectedPlace] = useState<PlaceDto | null>(null);
   const [isAddConfirmOpen, setIsAddConfirmOpen] = useState(false);
+  const [isAddErrorOpen, setIsAddErrorOpen] = useState(false);
   const { data: favoriteSearchData } = useFavoriteSearchesQuery();
   const favoriteSearches = favoriteSearchData ?? [];
   const addFavoriteSearchMutation = useAddFavoriteSearchMutation();
@@ -77,12 +78,17 @@ const FavoritesPage = () => {
       return;
     }
 
-    addFavoriteSearchMutation.mutate({
-      keyword: selectedPlace.placeName,
-      roadAddressName:
-        selectedPlace.roadAddressName || selectedPlace.addressName,
-    });
-    setSelectedPlace(null);
+    addFavoriteSearchMutation.mutate(
+      {
+        keyword: selectedPlace.placeName,
+        roadAddressName:
+          selectedPlace.roadAddressName || selectedPlace.addressName,
+      },
+      {
+        onSuccess: () => setSelectedPlace(null),
+        onError: () => setIsAddErrorOpen(true),
+      }
+    );
   };
 
   const handleDelete = (favoriteSearchId: number) => {
@@ -178,6 +184,13 @@ const FavoritesPage = () => {
         <AlertModal
           message={`검색어 저장은 ${MAX_FAVORITE_SEARCH_COUNT}개까지 가능합니다`}
           onConfirm={() => setIsAddConfirmOpen(false)}
+        />
+      )}
+
+      {isAddErrorOpen && (
+        <AlertModal
+          message="검색어 저장에 실패했어요. 다시 시도해주세요."
+          onConfirm={() => setIsAddErrorOpen(false)}
         />
       )}
     </div>
