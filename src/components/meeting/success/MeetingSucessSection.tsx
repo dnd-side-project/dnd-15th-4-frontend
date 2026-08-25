@@ -34,7 +34,7 @@ export const MeetingSucessSectoin = () => {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col justify-between overflow-hidden px-4 pb-3">
-      <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto">
+      <div className="flex min-h-0 flex-1 scrollbar-none flex-col gap-6 overflow-y-auto">
         {isLoading && (
           <p className="body3 text-disable py-10 text-center">
             약속 정보를 불러오는 중이에요
