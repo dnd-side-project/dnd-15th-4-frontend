@@ -158,6 +158,11 @@ const DepartureSetupPage = () => {
   const { timeFormatted } = formatMeetingDateTime(meeting.dateTime);
   const originName = origin?.placeName ?? "";
   const destinationName = meeting.place;
+  const sortedParticipants = [...meeting.participants].sort((a, b) => {
+    if (a.id === currentUserId) return -1;
+    if (b.id === currentUserId) return 1;
+    return 0;
+  });
 
   return (
     <div className="relative min-h-dvh bg-white pb-30">
@@ -177,7 +182,7 @@ const DepartureSetupPage = () => {
           </div>
 
           <div className="flex flex-wrap gap-4 pt-12">
-            {meeting.participants.map((participant) => (
+            {sortedParticipants.map((participant) => (
               <ParticipantAvatar
                 key={participant.id}
                 participant={participant}
