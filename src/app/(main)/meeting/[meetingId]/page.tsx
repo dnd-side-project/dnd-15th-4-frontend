@@ -68,7 +68,7 @@ const MeetingDetailPage = () => {
     const targetTime = new Date(mockMeetingSummary.dateTime).getTime();
 
     return scheduleAt(targetTime, () => {
-      router.replace(`/meeting/${meetingId}`);
+      router.replace(`/meeting/${meetingId}/completed`);
     });
   }, [meetingId, router]);
 
