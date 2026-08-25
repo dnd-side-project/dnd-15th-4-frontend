@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import heroEmptyImage from "@/assets/images/home-empty-hero.png";
 import heroProcessImage from "@/assets/images/home-process-hero.png";
 
+import { AlertModal } from "@/components/common/AlertModal";
 import { AvatarStack } from "@/components/home/AvatarStack";
 import { IcProfile } from "@/components/icons/IcProfile";
 import { IcArrivalDot, IcPuzzlePiece } from "@/components/icons";
@@ -196,11 +198,20 @@ const HomeHeroSectionEmpty = () => {
 
 export const HomeHeroSection = ({ meeting }: HomeHeroSectionProps) => {
   const router = useRouter();
-  const { data: departure, isLoading: isDepartureLoading } =
-    useMemberDepartureQuery(meeting?.meetingId ?? null);
+  const {
+    data: departure,
+    isLoading: isDepartureLoading,
+    isError: isDepartureError,
+  } = useMemberDepartureQuery(meeting?.meetingId ?? null);
+  const [showDepartureError, setShowDepartureError] = useState(false);
 
   const handleMeetingClick = () => {
     if (!meeting || isDepartureLoading) return;
+
+    if (isDepartureError) {
+      setShowDepartureError(true);
+      return;
+    }
 
     router.push(
       departure
@@ -211,6 +222,13 @@ export const HomeHeroSection = ({ meeting }: HomeHeroSectionProps) => {
 
   return (
     <section className="bg-primary-light-active relative h-[54dvh] max-h-80 min-h-100 w-full overflow-hidden">
+      {showDepartureError && (
+        <AlertModal
+          message="출발 정보를 확인하지 못했어요. 다시 시도해주세요."
+          onConfirm={() => setShowDepartureError(false)}
+        />
+      )}
+
       <div className="absolute top-11 right-4 z-60">
         <button
           type="button"
