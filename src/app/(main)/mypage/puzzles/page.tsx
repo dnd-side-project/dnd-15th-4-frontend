@@ -76,6 +76,7 @@ const PuzzlesPage = () => {
         sortOrder={sortOrder}
         onToggleSort={handleToggleSortOrder}
         onCalendarClick={() => setIsDateFilterOpen(true)}
+        isFiltered={filterDate !== null}
         onResetFilter={() => setFilterDate(null)}
       />
       <div className="grid grid-cols-3 gap-x-1 gap-y-2">

@@ -175,7 +175,7 @@ export const formatMeetingDateTime = (dateTimeString: string) => {
   }
 
   return {
-    dateFormatted: `${month}월 ${day}일 (${dayOfWeek})`,
+    dateFormatted: `${month}월 ${day}일 (${dayOfWeek}요일)`,
     timeFormatted: `${hours}:${minutes}`,
     dDay,
   };

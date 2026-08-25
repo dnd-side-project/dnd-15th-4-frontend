@@ -6,11 +6,13 @@ import { DateFilterModal } from "@/components/common/DateFilterModal";
 import { ScheduleCard } from "@/components/common/ScheduleCard";
 import { MyPageListHeader } from "@/components/mypage/MyPageListHeader";
 import { useDateFilter } from "@/hooks/mypage/useDateFilter";
-import { MOCK_MEETINGS } from "@/mocks/mockMeetings";
+import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
 import { isSameDay } from "@/utils/date";
 
 const MeetingsPage = () => {
   const router = useRouter();
+  const { data } = useMeetingsQuery("COMPLETED");
+  const meetings = data ?? [];
 
   const {
     sortOrder,
@@ -20,7 +22,7 @@ const MeetingsPage = () => {
     isDateFilterOpen,
     setIsDateFilterOpen,
     filteredItems: sortedMeetings,
-  } = useDateFilter(MOCK_MEETINGS, (meeting) => meeting.dateTime);
+  } = useDateFilter(meetings, (meeting) => meeting.dateTime);
 
   return (
     <div className="h-screen scrollbar-none overflow-y-auto pb-12">
@@ -31,6 +33,7 @@ const MeetingsPage = () => {
         sortOrder={sortOrder}
         onToggleSort={handleToggleSortOrder}
         onCalendarClick={() => setIsDateFilterOpen(true)}
+        isFiltered={filterDate !== null}
         onResetFilter={() => setFilterDate(null)}
       />
       <div className="flex flex-col gap-3 px-4">
@@ -48,7 +51,7 @@ const MeetingsPage = () => {
         <DateFilterModal
           initialDate={filterDate}
           hasEventOnDate={(date) =>
-            MOCK_MEETINGS.some((meeting) =>
+            meetings.some((meeting) =>
               isSameDay(new Date(meeting.dateTime), date)
             )
           }

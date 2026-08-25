@@ -20,9 +20,15 @@ export const DateFilterModal = ({
 }: DateFilterModalProps) => {
   const today = new Date();
 
-  const [selectedDate, setSelectedDate] = useState<Date>(initialDate ?? today);
-  const [viewYear, setViewYear] = useState(selectedDate.getFullYear());
-  const [viewMonth, setViewMonth] = useState(selectedDate.getMonth());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    initialDate ?? null
+  );
+  const [viewYear, setViewYear] = useState(
+    (selectedDate ?? today).getFullYear()
+  );
+  const [viewMonth, setViewMonth] = useState(
+    (selectedDate ?? today).getMonth()
+  );
 
   const goToPrevMonth = () => {
     const prev = new Date(viewYear, viewMonth - 1, 1);
