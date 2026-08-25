@@ -180,8 +180,41 @@ export interface DepartureOrigin {
   longitude: number;
 }
 
-export type TravelSegmentType = "WALK" | "SUBWAY" | "BUS";
+export interface MeetingMemberDepartureOrigin {
+  placeName: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface MeetingMemberNotificationSettings {
+  locationPermission: boolean;
+  friendArrival: boolean;
+  chatBubble: boolean;
+}
+
+export interface MeetingMemberNicknameSetting {
+  enabled: boolean;
+  nickname?: string | null;
+}
+
 export type MeetingTravelMode = "TRANSIT" | "CAR" | "WALK";
+
+export interface MeetingRouteStation {
+  start: string;
+  end: string;
+}
+
+export interface MeetingRouteStep {
+  type: "SUBWAY" | "BUS" | "WALK" | "ETC";
+  time: number;
+  distance: number;
+  description?: string | null;
+  line?: string | null;
+  color?: string | null;
+  station?: MeetingRouteStation | null;
+  stations?: string[] | null;
+}
+
 export interface MeetingRoute {
   totalTime: number;
   fare: number;
@@ -198,9 +231,9 @@ export interface MeetingRouteSearchRequest {
   travelMode?: MeetingTravelMode | null;
 }
 
-export interface TravelSegment {
-  type: TravelSegmentType;
-  label: string;
+export interface MeetingRouteRequest {
+  totalTime: number;
+  steps: MeetingRouteStep[];
 }
 
 export interface MeetingMemberDepartureCreateRequest {
