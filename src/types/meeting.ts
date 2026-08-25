@@ -181,6 +181,21 @@ export interface DepartureOrigin {
 }
 
 export type TravelSegmentType = "WALK" | "SUBWAY" | "BUS";
+export interface MeetingRoute {
+  totalTime: number;
+  fare: number;
+  transferCount: number;
+  pathType?: number | null;
+  steps: MeetingRouteStep[];
+}
+
+export interface MeetingRouteSearchRequest {
+  start: {
+    latitude: number;
+    longitude: number;
+  };
+  travelMode?: MeetingTravelMode | null;
+}
 
 export interface TravelSegment {
   type: TravelSegmentType;
