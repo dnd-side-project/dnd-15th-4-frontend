@@ -14,8 +14,8 @@ import {
   type PlaceResultStatus,
 } from "@/components/meeting/create/PlaceResultList";
 import { usePlaceSearchQuery } from "@/hooks/place/usePlaceSearch";
+import { useAddFavoriteSearch } from "@/hooks/mypage/useAddFavoriteSearch";
 import {
-  useAddFavoriteSearchMutation,
   useDeleteFavoriteSearchMutation,
   useFavoriteSearchesQuery,
 } from "@/hooks/mypage/useFavoriteSearches";
@@ -38,12 +38,17 @@ const FavoritesPage = () => {
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const [visibleCount, setVisibleCount] = useState(RESULT_PAGE_SIZE);
-  const [selectedPlace, setSelectedPlace] = useState<PlaceDto | null>(null);
-  const [isAddConfirmOpen, setIsAddConfirmOpen] = useState(false);
-  const [isAddErrorOpen, setIsAddErrorOpen] = useState(false);
   const { data: favoriteSearchData } = useFavoriteSearchesQuery();
   const favoriteSearches = favoriteSearchData ?? [];
-  const addFavoriteSearchMutation = useAddFavoriteSearchMutation();
+  const {
+    selectedPlace,
+    setSelectedPlace,
+    isAddConfirmOpen,
+    setIsAddConfirmOpen,
+    isAddErrorOpen,
+    setIsAddErrorOpen,
+    handleAddClick,
+  } = useAddFavoriteSearch(favoriteSearches.length, MAX_FAVORITE_SEARCH_COUNT);
   const deleteFavoriteSearchMutation = useDeleteFavoriteSearchMutation();
   const { data, isLoading, isError, isDebouncing } =
     usePlaceSearchQuery(keyword);
@@ -68,27 +73,6 @@ const FavoritesPage = () => {
 
   const handleShowMore = () => {
     setVisibleCount((prev) => prev + RESULT_PAGE_SIZE);
-  };
-
-  const handleAddClick = () => {
-    if (!selectedPlace) return;
-
-    if (favoriteSearches.length >= MAX_FAVORITE_SEARCH_COUNT) {
-      setIsAddConfirmOpen(true);
-      return;
-    }
-
-    addFavoriteSearchMutation.mutate(
-      {
-        keyword: selectedPlace.placeName,
-        roadAddressName:
-          selectedPlace.roadAddressName || selectedPlace.addressName,
-      },
-      {
-        onSuccess: () => setSelectedPlace(null),
-        onError: () => setIsAddErrorOpen(true),
-      }
-    );
   };
 
   const handleDelete = (favoriteSearchId: number) => {
