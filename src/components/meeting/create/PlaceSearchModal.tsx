@@ -70,18 +70,21 @@ export const PlaceSearchModal = ({
 
         {favorites.length > 0 && (
           <div className="flex h-9.5 items-center gap-5">
-            <div className="flex flex-1 items-center gap-2 overflow-x-auto">
-              {favorites.map((place) => (
-                <button
-                  key={place.placeId}
-                  type="button"
-                  onClick={() => handleFavoriteClick(place)}
-                  className="bg-primary-light border-primary-normal text-primary-dark speech-bubble flex shrink-0 items-center gap-px rounded-full border px-4 py-2.25 tracking-[-0.3px]"
-                >
-                  <IcSearch size={20} />
-                  {place.placeName}
-                </button>
-              ))}
+            <div className="relative flex flex-1 items-center overflow-hidden">
+              <div className="flex w-full scrollbar-none items-center gap-2 overflow-x-auto pr-8">
+                {favorites.map((place) => (
+                  <button
+                    key={place.placeId}
+                    type="button"
+                    onClick={() => handleFavoriteClick(place)}
+                    className="bg-primary-light border-primary-normal text-primary-dark speech-bubble flex shrink-0 items-center gap-px rounded-full border px-4 py-2.25 tracking-[-0.3px]"
+                  >
+                    <IcSearch size={20} />
+                    {place.placeName}
+                  </button>
+                ))}
+              </div>
+              <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-linear-to-l from-white to-transparent" />
             </div>
             <div className="bg-border-2 h-3.5 w-px shrink-0" />
             <button
