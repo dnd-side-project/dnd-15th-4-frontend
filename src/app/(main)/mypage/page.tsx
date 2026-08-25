@@ -25,7 +25,7 @@ const MyPage = () => {
   const previousAppointmentCount = completedMeetings?.length ?? 0;
 
   return (
-    <div className="h-screen scrollbar-none overflow-y-auto pb-12">
+    <div className="h-screen scrollbar-none overflow-y-auto pb-2">
       <Header
         title="마이페이지"
         onBack={() => router.back()}

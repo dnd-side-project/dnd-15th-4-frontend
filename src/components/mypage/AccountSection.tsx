@@ -51,6 +51,9 @@ export const AccountSection = ({ kakaoId }: AccountSectionProps) => {
         label="회원 탈퇴"
         onClick={() => setIsWithdrawConfirmOpen(true)}
       />
+      <p className="body7 text-secondary-4 mt-12 text-center">
+        askpuzzlemeet@gmail.com
+      </p>
       {isLogoutConfirmOpen && (
         <ConfirmModal
           title="로그아웃 할까요?"
