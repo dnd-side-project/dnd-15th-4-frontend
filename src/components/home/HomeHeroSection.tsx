@@ -9,7 +9,7 @@ import heroProcessImage from "@/assets/images/home-process-hero.png";
 import { AvatarStack } from "@/components/home/AvatarStack";
 import { IcProfile } from "@/components/icons/IcProfile";
 import { IcArrivalDot, IcPuzzlePiece } from "@/components/icons";
-import { useMeetingDeparture } from "@/hooks/meeting/departure/useMeetingDeparture";
+import { useMemberDepartureQuery } from "@/hooks/meeting/departure/useMemberDeparture";
 import { useParticipantLocationsQuery } from "@/hooks/meeting/shared/useParticipantLocations";
 import { MOCK_PARTICIPANT_LOCATIONS } from "@/mocks/mockParticipantLocations";
 import type { MeetingData, Participant, UserLocation } from "@/types/meeting";
@@ -196,13 +196,14 @@ const HomeHeroSectionEmpty = () => {
 
 export const HomeHeroSection = ({ meeting }: HomeHeroSectionProps) => {
   const router = useRouter();
-  const { getEffectiveStatus } = useMeetingDeparture();
+  const { data: departure, isLoading: isDepartureLoading } =
+    useMemberDepartureQuery(meeting?.meetingId ?? null);
 
   const handleMeetingClick = () => {
-    if (!meeting) return;
+    if (!meeting || isDepartureLoading) return;
 
     router.push(
-      getEffectiveStatus(meeting) === "in-progress"
+      departure
         ? `/meeting/${meeting.meetingId}`
         : `/meeting/${meeting.meetingId}/departure`
     );

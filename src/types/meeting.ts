@@ -181,6 +181,7 @@ export interface DepartureOrigin {
 }
 
 export type TravelSegmentType = "WALK" | "SUBWAY" | "BUS";
+export type MeetingTravelMode = "TRANSIT" | "CAR" | "WALK";
 export interface MeetingRoute {
   totalTime: number;
   fare: number;
@@ -202,19 +203,21 @@ export interface TravelSegment {
   label: string;
 }
 
-export interface TravelRouteOption {
-  routeId: string;
-  durationMinutes: number;
-  isFastest: boolean;
-  segments: TravelSegment[];
+export interface MeetingMemberDepartureCreateRequest {
+  departure: MeetingMemberDepartureOrigin;
+  notificationSettings: MeetingMemberNotificationSettings;
+  nicknameSetting: MeetingMemberNicknameSetting;
+  route: MeetingRouteRequest;
+  travelMode?: MeetingTravelMode | null;
 }
 
-export interface MeetingDepartureInfo {
+export interface MeetingMemberDepartureResponse {
   meetingId: number;
-  origin: DepartureOrigin;
-  route: TravelRouteOption;
-  notifyLocation: boolean;
-  notifyFriendArrival: boolean;
-  notifySpeechBubble: boolean;
-  departedAt: string;
+  departure: MeetingMemberDepartureOrigin;
+  notificationSettings: MeetingMemberNotificationSettings;
+  nicknameSetting: MeetingMemberNicknameSetting;
+  totalEstimatedTime: number;
+  recommendedDepartureTime: string;
+  routes: MeetingRoute[];
+  travelMode?: MeetingTravelMode | null;
 }
