@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import { SpeechBubble } from "@/components/common/SpeechBubble";
 import { IcMessengerFill } from "@/components/icons";
 import { SPEECH_BUBBLE_MESSAGES } from "@/constants/message";
@@ -8,6 +10,7 @@ export interface ChatFloatingButtonProps {
   onOpenChange: (isOpen: boolean) => void;
   onSelectMessage: (message: string) => void;
   className?: string;
+  style?: CSSProperties;
 }
 
 export const ChatFloatingButton = ({
@@ -15,9 +18,10 @@ export const ChatFloatingButton = ({
   onOpenChange,
   onSelectMessage,
   className,
+  style,
 }: ChatFloatingButtonProps) => {
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative", className)} style={style}>
       {isOpen && (
         <div className="absolute right-0 bottom-full mb-3 flex max-w-[calc(100vw-2rem)] flex-col items-end gap-2">
           {SPEECH_BUBBLE_MESSAGES.map((message) => (

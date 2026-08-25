@@ -135,6 +135,11 @@ const MeetingDetailPage = () => {
           setIsBubblePickerOpen(false);
         }}
         className="absolute right-4 bottom-45 cursor-pointer"
+        style={
+          sheetSnapPoint !== SHEET_EXPANDED_HEIGHT
+            ? { bottom: sheetSnapPoint + 12 }
+            : undefined
+        }
       />
       <BottomSheet
         ref={sheetPopupRef}
@@ -152,7 +157,6 @@ const MeetingDetailPage = () => {
         onSnapPointChange={(point) => {
           if (typeof point !== "number") return;
           setSheetSnapPoint(point);
-          setIsBubblePickerOpen(false);
         }}
       >
         <MeetingProgressSheet
