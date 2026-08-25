@@ -8,102 +8,105 @@ import { AlertModal } from "@/components/common/AlertModal";
 import { Button } from "@/components/common/Button";
 import { Header } from "@/components/common/Header";
 import { SearchInputBar } from "@/components/common/SearchInputBar";
-import { IcAdd } from "@/components/icons";
 import { PlaceItem } from "@/components/meeting/create/PlaceItem";
 import {
   PlaceResultList,
   type PlaceResultStatus,
 } from "@/components/meeting/create/PlaceResultList";
-import {
-  MAX_FAVORITE_PLACE_COUNT,
-  usePlaceSearchFavorites,
-} from "@/hooks/place/usePlaceSearchFavorites";
 import { usePlaceSearchQuery } from "@/hooks/place/usePlaceSearch";
+import { useAddFavoriteSearch } from "@/hooks/mypage/useAddFavoriteSearch";
+import {
+  useDeleteFavoriteSearchMutation,
+  useFavoriteSearchesQuery,
+} from "@/hooks/mypage/useFavoriteSearches";
 import { cn } from "@/lib/utils";
-import type { PlaceDto } from "@/types/place";
+import type { FavoriteSearchDto, PlaceDto } from "@/types/place";
+
+const toPlaceDto = (favoriteSearch: FavoriteSearchDto): PlaceDto => ({
+  placeId: String(favoriteSearch.id),
+  placeName: favoriteSearch.keyword,
+  addressName: favoriteSearch.roadAddressName,
+  roadAddressName: favoriteSearch.roadAddressName,
+  latitude: 0,
+  longitude: 0,
+});
 
 const RESULT_PAGE_SIZE = 8;
+const MAX_FAVORITE_SEARCH_COUNT = 5;
 
 const FavoritesPage = () => {
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
-  const [submittedKeyword, setSubmittedKeyword] = useState("");
   const [visibleCount, setVisibleCount] = useState(RESULT_PAGE_SIZE);
-  const [selectedPlace, setSelectedPlace] = useState<PlaceDto | null>(null);
-  const [isAddConfirmOpen, setIsAddConfirmOpen] = useState(false);
+  const { data: favoriteSearchData } = useFavoriteSearchesQuery();
+  const favoriteSearches = favoriteSearchData ?? [];
   const {
-    favorites: savedPlaces,
-    addFavorite,
-    removeFavorite,
-  } = usePlaceSearchFavorites();
-  const { data, isLoading, isError } = usePlaceSearchQuery(submittedKeyword);
+    selectedPlace,
+    setSelectedPlace,
+    isAddConfirmOpen,
+    setIsAddConfirmOpen,
+    isAddErrorOpen,
+    setIsAddErrorOpen,
+    handleAddClick,
+  } = useAddFavoriteSearch(favoriteSearches.length, MAX_FAVORITE_SEARCH_COUNT);
+  const deleteFavoriteSearchMutation = useDeleteFavoriteSearchMutation();
+  const { data, isLoading, isError, isDebouncing } =
+    usePlaceSearchQuery(keyword);
   const results = data ?? [];
   const visibleResults = results.slice(0, visibleCount);
   const hasMore = visibleCount < results.length;
 
   const status: PlaceResultStatus =
-    submittedKeyword.trim().length === 0
+    keyword.trim().length === 0
       ? "idle"
-      : isLoading
+      : isLoading || isDebouncing
         ? "loading"
         : isError
           ? "error"
           : "success";
 
-  const handleSearch = () => {
-    setSubmittedKeyword(keyword.trim());
+  const handleKeywordChange = (value: string) => {
+    setKeyword(value);
     setVisibleCount(RESULT_PAGE_SIZE);
-  };
-
-  const handleRestorePreviousSearch = () => {
-    setKeyword(submittedKeyword);
+    setSelectedPlace(null);
   };
 
   const handleShowMore = () => {
     setVisibleCount((prev) => prev + RESULT_PAGE_SIZE);
   };
 
-  const handleAddClick = () => {
-    if (!selectedPlace) return;
-
-    if (savedPlaces.length >= MAX_FAVORITE_PLACE_COUNT) {
-      setIsAddConfirmOpen(true);
-      return;
-    }
-
-    addFavorite(selectedPlace);
-    setSelectedPlace(null);
-  };
-
-  const handleDelete = (place: PlaceDto) => {
-    removeFavorite(place.placeId);
+  const handleDelete = (favoriteSearchId: number) => {
+    deleteFavoriteSearchMutation.mutate(favoriteSearchId);
   };
 
   return (
-    <div className="h-screen scrollbar-none overflow-y-auto pb-12">
+    <div className="h-screen scrollbar-none overflow-y-auto">
       <div className="bg-bg-normal sticky top-0 z-10">
         <Header title="내 검색어" onBack={() => router.back()} />
-        <div className="mb-6 px-4">
+        <div className="mt-1.5 px-4">
           <SearchInputBar
             value={keyword}
-            onChange={setKeyword}
-            onBack={submittedKeyword ? handleRestorePreviousSearch : undefined}
-            onTrailingIconClick={handleSearch}
+            onChange={handleKeywordChange}
             placeholder="저장하려는 검색어를 입력하세요"
-            TrailingIcon={IcAdd}
           />
         </div>
-        {status !== "idle" && (
-          <p className="body8 text-disable px-4 pb-3">
+        {status === "success" && (
+          <p className="body8 text-disable px-4 pt-6">
             결과 {results.length}개
           </p>
         )}
       </div>
-      <div className={cn("px-4", status === "idle" && "mb-53")}>
+      <div
+        className={cn(
+          "flex flex-col px-4",
+          (status === "idle" || visibleResults.length === 0) &&
+            "min-h-53 items-center justify-center"
+        )}
+      >
         <PlaceResultList
           status={status}
           results={visibleResults}
-          keyword={submittedKeyword}
+          keyword={keyword}
           onSelect={setSelectedPlace}
           selectedPlace={selectedPlace}
         />
@@ -111,58 +114,67 @@ const FavoritesPage = () => {
           <button
             type="button"
             onClick={handleShowMore}
-            className="body3 text-disable w-full py-6 text-center"
+            className="body3 text-disable w-full pt-6 text-center"
           >
             더보기
           </button>
         )}
       </div>
-      <div className="bg-divider-2 mb-6.25 h-2 w-full" />
+      <div className="bg-divider-2 mt-6 mb-6.25 h-2 w-full" />
       <div className="px-4">
         <div className="mb-3 flex items-center gap-1">
           <p className="h4 text-primary">저장된 검색어</p>
           <p className="puzzle-process text-disable">
-            ({savedPlaces.length}/{MAX_FAVORITE_PLACE_COUNT})
+            ({favoriteSearches.length}/{MAX_FAVORITE_SEARCH_COUNT})
           </p>
         </div>
         <InfoBanner
-          text="장소 선택시 검색없이 바로 선택 할 수 있어요. "
+          text="장소 선택시 검색없이 바로 선택할 수 있어요. "
           className="mb-3"
         />
         <ul
-          className={cn("flex w-full flex-col", status === "idle" && "mb-12")}
+          className={cn(
+            "flex w-full flex-col",
+            status === "idle" ? "mb-3" : "mb-20"
+          )}
         >
-          {savedPlaces.map((place) => (
-            <li
-              key={place.placeId}
-              className="border-border-1 border-b last:border-b-0"
-            >
+          {favoriteSearches.map((favoriteSearch) => (
+            <li key={favoriteSearch.id}>
               <PlaceItem
-                place={place}
+                place={toPlaceDto(favoriteSearch)}
                 keyword=""
                 onSelect={() => {}}
-                onDelete={() => handleDelete(place)}
+                onDelete={() => handleDelete(favoriteSearch.id)}
               />
             </li>
           ))}
         </ul>
-        {status !== "idle" && (
+      </div>
+
+      {selectedPlace && (
+        <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md bg-white px-3 py-4">
           <Button
             type="button"
             size="cta"
-            disabled={!selectedPlace}
             onClick={handleAddClick}
-            className="bg-sub2-normal hover:bg-transport rounded-16 mt-12 h-14"
+            className="bg-sub2-normal hover:bg-transport rounded-16 h-14"
           >
             추가하기
           </Button>
-        )}
-      </div>
+        </div>
+      )}
 
       {isAddConfirmOpen && (
         <AlertModal
-          message={`검색어 저장은 ${MAX_FAVORITE_PLACE_COUNT}개까지 가능합니다`}
+          message={`검색어 저장은 ${MAX_FAVORITE_SEARCH_COUNT}개까지 가능합니다`}
           onConfirm={() => setIsAddConfirmOpen(false)}
+        />
+      )}
+
+      {isAddErrorOpen && (
+        <AlertModal
+          message="검색어 저장에 실패했어요. 다시 시도해주세요."
+          onConfirm={() => setIsAddErrorOpen(false)}
         />
       )}
     </div>

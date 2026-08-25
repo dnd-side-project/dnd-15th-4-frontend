@@ -32,12 +32,13 @@ export const PlaceSearchModal = ({
   const [keyword, setKeyword] = useState("");
   const [pendingPlace, setPendingPlace] = useState<PlaceDto | null>(null);
   const { favorites } = usePlaceSearchFavorites();
-  const { data, isLoading, isError } = usePlaceSearchQuery(keyword);
+  const { data, isLoading, isError, isDebouncing } =
+    usePlaceSearchQuery(keyword);
 
   const status: PlaceResultStatus =
     keyword.trim().length === 0
       ? "idle"
-      : isLoading
+      : isLoading || isDebouncing
         ? "loading"
         : isError
           ? "error"

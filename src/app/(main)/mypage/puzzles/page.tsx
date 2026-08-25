@@ -8,7 +8,7 @@ import { DateFilterModal } from "@/components/common/DateFilterModal";
 import { MyPageListHeader } from "@/components/mypage/MyPageListHeader";
 import { PuzzleMeetingDetailModal } from "@/components/mypage/PuzzleMeetingDetailModal";
 import { useDateFilter } from "@/hooks/mypage/useDateFilter";
-import { MOCK_PUZZLES } from "@/mocks/mockUser";
+import { usePuzzlesQuery } from "@/hooks/mypage/usePuzzles";
 import { isSameDay } from "@/utils/date";
 import type { CollectedPuzzle } from "@/types/user";
 
@@ -31,6 +31,9 @@ const PuzzlesPage = () => {
     null
   );
 
+  const { data } = usePuzzlesQuery();
+  const puzzles = useMemo(() => data ?? [], [data]);
+
   const {
     sortOrder,
     handleToggleSortOrder,
@@ -39,24 +42,26 @@ const PuzzlesPage = () => {
     isDateFilterOpen,
     setIsDateFilterOpen,
     filteredItems: sortedPuzzles,
-  } = useDateFilter(MOCK_PUZZLES, (puzzle) => puzzle.meetingAt);
+  } = useDateFilter(puzzles, (puzzle) => puzzle.meetingAt);
 
   const puzzleImages: PuzzleImage[] = useMemo(
     () =>
-      sortedPuzzles.flatMap((puzzle) =>
-        puzzle.puzzleImageUrls.map((imageUrl, index) => ({
+      sortedPuzzles.flatMap((puzzle) => {
+        const images = puzzle.puzzleImageUrls.map((imageUrl, index) => ({
           key: `${puzzle.meetingId}-${index}`,
           imageUrl,
           title: puzzle.title,
           meetingId: puzzle.meetingId,
           indexInMeeting: index,
-        }))
-      ),
-    [sortedPuzzles]
+        }));
+
+        return sortOrder === "latest" ? images.toReversed() : images;
+      }),
+    [sortedPuzzles, sortOrder]
   );
 
   const handleSelectImage = (puzzleImage: PuzzleImage) => {
-    const puzzle = MOCK_PUZZLES.find(
+    const puzzle = puzzles.find(
       (item) => item.meetingId === puzzleImage.meetingId
     );
     if (!puzzle) return;
@@ -73,6 +78,7 @@ const PuzzlesPage = () => {
         sortOrder={sortOrder}
         onToggleSort={handleToggleSortOrder}
         onCalendarClick={() => setIsDateFilterOpen(true)}
+        isFiltered={filterDate !== null}
         onResetFilter={() => setFilterDate(null)}
       />
       <div className="grid grid-cols-3 gap-x-1 gap-y-2">
@@ -107,7 +113,7 @@ const PuzzlesPage = () => {
         <DateFilterModal
           initialDate={filterDate}
           hasEventOnDate={(date) =>
-            MOCK_PUZZLES.some((puzzle) =>
+            puzzles.some((puzzle) =>
               isSameDay(new Date(puzzle.meetingAt), date)
             )
           }

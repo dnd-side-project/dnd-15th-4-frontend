@@ -6,10 +6,10 @@ import { meetingKeys } from "@/apis/meeting/keys";
 import { fetchMeetings } from "@/apis/meeting/meetings";
 import type { MeetingData, MeetingStatus } from "@/types/meeting";
 
-export const useMeetingsQuery = () =>
+export const useMeetingsQuery = (status?: MeetingStatus) =>
   useQuery({
-    queryKey: meetingKeys.list(),
-    queryFn: () => fetchMeetings(),
+    queryKey: meetingKeys.list(status ? { status } : undefined),
+    queryFn: () => fetchMeetings(status),
   });
 
 const HOME_MEETING_STATUSES: MeetingStatus[] = ["WAITING", "IN_PROGRESS"];

@@ -14,6 +14,7 @@ interface MyPageListHeaderProps {
   sortOrder: SortOrder;
   onToggleSort: () => void;
   onCalendarClick: () => void;
+  isFiltered: boolean;
   onResetFilter: () => void;
 }
 
@@ -24,13 +25,14 @@ export const MyPageListHeader = ({
   sortOrder,
   onToggleSort,
   onCalendarClick,
+  isFiltered,
   onResetFilter,
 }: MyPageListHeaderProps) => (
   <>
     <Header
       title={title}
       onBack={onBack}
-      rightActionLabel="전체보기"
+      rightActionLabel={isFiltered ? "전체보기" : undefined}
       onRightActionClick={onResetFilter}
       className="bg-bg-normal sticky top-0 z-10"
     />

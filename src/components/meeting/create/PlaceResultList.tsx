@@ -32,10 +32,7 @@ export const PlaceResultList = ({
   return (
     <ul className="flex w-full flex-col">
       {results.map((place) => (
-        <li
-          key={place.placeId}
-          className="border-border-1 border-b last:border-b-0"
-        >
+        <li key={place.placeId}>
           <PlaceItem
             place={place}
             keyword={keyword}
