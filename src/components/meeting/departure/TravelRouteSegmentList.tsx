@@ -25,7 +25,9 @@ const getEuroParticle = (text: string): "로" | "으로" => {
   if (!lastChar) return "으로";
 
   if (/\d/.test(lastChar)) {
-    return ["1", "2", "4", "5", "8", "0"].includes(lastChar) ? "로" : "으로";
+    return ["1", "2", "4", "5", "7", "8", "9"].includes(lastChar)
+      ? "로"
+      : "으로";
   }
 
   const code = lastChar.charCodeAt(0);
