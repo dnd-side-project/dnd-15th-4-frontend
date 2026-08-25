@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { useLogout } from "@/hooks/auth/useLogout";
+import { useWithdraw } from "@/hooks/auth/useWithdraw";
 import { cn } from "@/lib/utils";
 
 interface MenuButtonProps {
@@ -27,13 +29,22 @@ interface AccountSectionProps {
 }
 
 export const AccountSection = ({ kakaoId }: AccountSectionProps) => {
+  const router = useRouter();
   const logout = useLogout();
+  const withdraw = useWithdraw();
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const [isWithdrawConfirmOpen, setIsWithdrawConfirmOpen] = useState(false);
 
   const handleConfirmLogout = () => {
     setIsLogoutConfirmOpen(false);
     logout().catch(() => {});
+  };
+
+  const handleConfirmWithdraw = () => {
+    setIsWithdrawConfirmOpen(false);
+    withdraw()
+      .then(() => router.push("/"))
+      .catch(() => {});
   };
 
   return (
@@ -69,7 +80,7 @@ export const AccountSection = ({ kakaoId }: AccountSectionProps) => {
           description="저장된 정보가 모두 사라지고 복구할 수 없습니다"
           cancelLabel="취소"
           onCancel={() => setIsWithdrawConfirmOpen(false)}
-          onConfirm={() => setIsWithdrawConfirmOpen(false)}
+          onConfirm={handleConfirmWithdraw}
         />
       )}
     </div>
