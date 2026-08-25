@@ -59,29 +59,27 @@ export default function HomePage() {
     isActiveOrUpcomingMeeting(meeting)
   );
 
+  const sortedMeetings = [...visibleMeetings].sort(
+    (a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()
+  );
+
   const now = new Date();
-  const heroCandidates = visibleMeetings
-    .filter((meeting) => {
-      const meetingDate = new Date(meeting.dateTime);
-      return (
-        isSameDay(meetingDate, now) && meetingDate.getTime() > now.getTime()
-      );
-    })
-    .sort(
-      (a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()
-    );
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const heroMeeting: MeetingData | null = heroCandidates[0] ?? null;
+  const nearestMeeting = sortedMeetings[0];
+  const isNearestMeetingHeroEligible =
+    nearestMeeting !== undefined &&
+    (isSameDay(new Date(nearestMeeting.dateTime), now) ||
+      isSameDay(new Date(nearestMeeting.dateTime), tomorrow));
 
-  const upcomingMeetings = visibleMeetings
-    .filter(
-      (meeting) =>
-        meeting.status === "WAITING" &&
-        meeting.meetingId !== heroMeeting?.meetingId
-    )
-    .sort(
-      (a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()
-    );
+  const heroMeeting: MeetingData | null = isNearestMeetingHeroEligible
+    ? nearestMeeting
+    : null;
+
+  const upcomingMeetings = sortedMeetings.filter(
+    (meeting) => meeting.meetingId !== heroMeeting?.meetingId
+  );
 
   return (
     <div className="relative flex h-dvh flex-col overflow-hidden bg-white">
