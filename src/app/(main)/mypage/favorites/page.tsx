@@ -106,7 +106,7 @@ const FavoritesPage = () => {
             placeholder="저장하려는 검색어를 입력하세요"
           />
         </div>
-        {status !== "idle" && (
+        {status === "success" && (
           <p className="body8 text-disable px-4 pt-6">
             결과 {results.length}개
           </p>
