@@ -98,7 +98,6 @@ export const PlaceConfirmSheet = ({
 
           <Button
             type="button"
-            size="cta"
             onClick={() => onConfirm(place)}
             className="bg-sub2-normal hover:bg-sub2-normal-hover"
           >

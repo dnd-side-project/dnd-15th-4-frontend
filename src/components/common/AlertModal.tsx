@@ -24,7 +24,6 @@ export const AlertModal = ({
 
     <Button
       type="button"
-      size="cta"
       onClick={onConfirm}
       className="bg-sub2-normal hover:bg-sub2-normal-hover mt-2"
     >

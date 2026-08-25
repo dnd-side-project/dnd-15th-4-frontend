@@ -166,7 +166,6 @@ export const DateSelectModal = ({
 
           <Button
             type="button"
-            size="cta"
             className="bg-sub2-normal hover:bg-sub2-normal-hover mt-6"
             onClick={handleConfirm}
           >

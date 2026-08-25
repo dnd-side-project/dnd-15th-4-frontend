@@ -140,7 +140,6 @@ export default function MeetingParticipatePage() {
       <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md bg-white px-4 pt-4 pb-8">
         <Button
           type="button"
-          size="cta"
           disabled={!canSubmit || isSubmitting || joinMeetingMutation.isPending}
           onClick={handleSubmit}
           className={

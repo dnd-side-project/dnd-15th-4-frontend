@@ -64,7 +64,6 @@ export const CapacityPickerModal = ({
         <div className="px-4">
           <Button
             type="button"
-            size="cta"
             className="bg-sub2-normal hover:bg-sub2-normal-hover"
             onClick={() => onConfirm(pendingValue)}
           >

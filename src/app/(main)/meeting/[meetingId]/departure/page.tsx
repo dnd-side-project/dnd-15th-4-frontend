@@ -5,7 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { AlertModal } from "@/components/common/AlertModal";
-import { Button } from "@/components/common/Button";
 import { Header } from "@/components/common/Header";
 import { InfoBanner } from "@/components/common/InfoBanner";
 import { InputLayout } from "@/components/common/InputLayout";
@@ -25,6 +24,7 @@ import type {
   Participant,
 } from "@/types/meeting";
 import { formatMeetingDateTime } from "@/utils/date";
+import { DoubleButton } from "@/components/common/DoubleButton";
 
 interface ParticipantAvatarProps {
   participant: Participant;
@@ -296,28 +296,15 @@ const DepartureSetupPage = () => {
       )}
 
       <div className="fixed inset-x-0 bottom-0 z-20 mx-auto flex w-full max-w-md gap-3 bg-white px-4 pt-4 pb-3">
-        <Button
-          type="button"
-          variant="outline"
-          size="cta"
-          onClick={handleReset}
-          className="rounded-16 h-14 flex-1"
-        >
-          초기화
-        </Button>
-        <Button
-          type="button"
-          size="cta"
-          disabled={!canDepart || createDepartureMutation.isPending}
-          onClick={handleDepart}
-          className={
-            canDepart
-              ? "bg-sub2-normal hover:bg-sub2-normal-hover rounded-16 h-14 flex-1"
-              : "bg-disable rounded-16 h-14 flex-1"
+        <DoubleButton
+          secondaryLabel="초기화"
+          onSecondaryClick={handleReset}
+          primaryLabel={
+            createDepartureMutation.isPending ? "출발 설정 중..." : "출발하기"
           }
-        >
-          {createDepartureMutation.isPending ? "출발 설정 중..." : "출발하기"}
-        </Button>
+          onPrimaryClick={handleDepart}
+          isPrimaryDisabled={!canDepart || createDepartureMutation.isPending}
+        />
       </div>
 
       {isOriginSearchOpen && (

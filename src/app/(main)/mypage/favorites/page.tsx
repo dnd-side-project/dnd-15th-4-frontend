@@ -149,7 +149,6 @@ const FavoritesPage = () => {
         {status !== "idle" && (
           <Button
             type="button"
-            size="cta"
             disabled={!selectedPlace}
             onClick={handleAddClick}
             className="bg-sub2-normal hover:bg-transport rounded-16 mt-12 h-14"
