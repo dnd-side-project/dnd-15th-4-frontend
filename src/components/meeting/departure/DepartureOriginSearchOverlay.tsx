@@ -156,7 +156,7 @@ export const DepartureOriginSearchOverlay = ({
         </p>
       )}
 
-      <div className="flex-1 overflow-y-auto px-5 pb-24">
+      <div className="flex-1 scrollbar-none overflow-y-auto px-5 pb-24">
         <PlaceResultList
           status={status}
           results={results}

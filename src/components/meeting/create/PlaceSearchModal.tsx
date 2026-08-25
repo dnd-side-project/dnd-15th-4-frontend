@@ -99,7 +99,7 @@ export const PlaceSearchModal = ({
       </div>
 
       <div
-        className={`flex-1 overflow-y-auto px-5 ${
+        className={`flex-1 scrollbar-none overflow-y-auto px-5 ${
           favorites.length === 0 ? "mt-6" : ""
         }`}
       >

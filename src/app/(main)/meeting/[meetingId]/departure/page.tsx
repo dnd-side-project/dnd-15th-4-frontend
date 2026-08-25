@@ -169,7 +169,7 @@ const DepartureSetupPage = () => {
   });
 
   return (
-    <div className="relative min-h-dvh bg-white pb-30">
+    <div className="h-screen scrollbar-none overflow-y-auto pb-12">
       <div className="bg-primary-light-active">
         <Header
           title="출발 설정"
