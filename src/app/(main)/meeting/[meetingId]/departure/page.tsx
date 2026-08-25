@@ -7,9 +7,10 @@ import { useState } from "react";
 import { AlertModal } from "@/components/common/AlertModal";
 import { Header } from "@/components/common/Header";
 import { InfoBanner } from "@/components/common/InfoBanner";
-import { InputLayout } from "@/components/common/InputLayout";
+import { PlaceSearchTrigger } from "@/components/common/PlaceSearchTrigger";
 import { ToggleField } from "@/components/common/ToggleField";
 import { DepartureOriginSearchOverlay } from "@/components/meeting/departure/DepartureOriginSearchOverlay";
+import { RouteSelectTrigger } from "@/components/meeting/departure/RouteSelectTrigger";
 import { TravelRouteList } from "@/components/meeting/departure/TravelRouteList";
 import { TravelRouteSummaryCard } from "@/components/meeting/departure/TravelRouteSummaryCard";
 import { getRouteSummary } from "@/components/meeting/departure/TravelRouteSegmentList";
@@ -201,50 +202,30 @@ const DepartureSetupPage = () => {
       </div>
 
       <div className="flex flex-col gap-6 px-4 pt-6">
-        <InputLayout label="출발지" hasValue={Boolean(origin)}>
-          <button
-            type="button"
-            onClick={() => setIsOriginSearchOpen(true)}
-            className="flex w-full items-center text-left outline-none"
-          >
-            {origin ? (
-              <span className="body3 text-primary break-all">
-                {origin.placeName}
-              </span>
-            ) : (
-              <span className="body3 text-disable">출발지를 선택해주세요</span>
-            )}
-          </button>
-        </InputLayout>
+        <PlaceSearchTrigger
+          label="출발지"
+          place={origin}
+          placeholder="출발지를 선택해주세요"
+          onClick={() => setIsOriginSearchOpen(true)}
+        />
 
-        <InputLayout
+        <RouteSelectTrigger
           label={selectedRoute ? "이동경로 요약" : "이동 경로"}
-          hasValue={Boolean(selectedRoute)}
-          disabled={!origin}
-        >
-          <button
-            type="button"
-            onClick={handleRouteFieldClick}
-            disabled={!origin}
-            className="flex w-full items-center text-left outline-none disabled:cursor-not-allowed"
-          >
-            {selectedRoute ? (
-              <span className="body3 text-primary break-all">
-                {getRouteSummary(
+          value={
+            selectedRoute
+              ? getRouteSummary(
                   selectedRoute.steps,
                   originName,
                   destinationName
-                )}
-              </span>
-            ) : (
-              <span className="body3 text-disable">
-                {origin
-                  ? "이동 경로를 선택해주세요"
-                  : "출발지를 먼저 선택해주세요"}
-              </span>
-            )}
-          </button>
-        </InputLayout>
+                )
+              : null
+          }
+          placeholder={
+            origin ? "이동 경로를 선택해주세요" : "출발지를 먼저 선택해주세요"
+          }
+          disabled={!origin}
+          onClick={handleRouteFieldClick}
+        />
 
         {isRouteListOpen &&
           (searchRoutesMutation.isPending ? (

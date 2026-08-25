@@ -22,16 +22,11 @@ export const CapacityField = ({
       label={label}
       hasValue={hasValue}
       containerClassName={containerClassName}
+      onClick={onClick}
     >
-      <button
-        type="button"
-        onClick={onClick}
-        className="flex w-full items-center text-left outline-none"
-      >
-        <span className={`body3 ${hasValue ? "text-primary" : "text-disable"}`}>
-          {hasValue ? `${value}명` : placeholder}
-        </span>
-      </button>
+      <span className={`body3 ${hasValue ? "text-primary" : "text-disable"}`}>
+        {hasValue ? `${value}명` : placeholder}
+      </span>
     </InputLayout>
   );
 };

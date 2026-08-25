@@ -5,7 +5,10 @@ import { InputLayout, type InputLayoutProps } from "./InputLayout";
 export interface InputProps
   extends
     React.InputHTMLAttributes<HTMLInputElement>,
-    Omit<InputLayoutProps, "children" | "hasValue" | "currentLength"> {}
+    Omit<
+      InputLayoutProps,
+      "children" | "hasValue" | "currentLength" | "onClick"
+    > {}
 
 export const Input = ({
   label,

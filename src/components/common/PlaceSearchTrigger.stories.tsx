@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { PlaceSearchTrigger } from "./PlaceSearchTrigger";
 
 const meta = {
-  title: "Meeting/Create/PlaceSearchTrigger",
+  title: "Common/PlaceSearchTrigger",
   component: PlaceSearchTrigger,
   parameters: {
     layout: "padded",
@@ -54,6 +54,16 @@ export const SelectedLongPlace: Story = {
       longitude: 127.0559,
     },
     placeholder: "장소, 지역, 주소를 검색하세요",
+    onClick: () => {},
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    label: "장소",
+    place: null,
+    placeholder: "출발지를 먼저 선택해주세요",
+    disabled: true,
     onClick: () => {},
   },
 };
