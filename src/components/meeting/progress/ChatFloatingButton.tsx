@@ -39,15 +39,9 @@ export const ChatFloatingButton = ({
         type="button"
         aria-label="말풍선 옵션 열기"
         onClick={() => onOpenChange(!isOpen)}
-        className={cn(
-          "flex size-15 items-center justify-center rounded-full p-4 shadow-1 transition-colors",
-          isOpen ? "bg-surface-3" : "bg-sub2-normal"
-        )}
+        className="bg-surface-6 shadow-1 flex size-15 items-center justify-center rounded-full p-4 transition-colors"
       >
-        <IcMessengerFill
-          size={24}
-          className={isOpen ? "text-sub2-normal" : "text-white"}
-        />
+        <IcMessengerFill size={24} className="text-surface-0" />
       </button>
     </div>
   );
