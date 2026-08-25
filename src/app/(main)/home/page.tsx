@@ -67,15 +67,13 @@ export default function HomePage() {
   const tomorrow = new Date(now);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const nearestMeeting = sortedMeetings[0];
-  const isNearestMeetingHeroEligible =
-    nearestMeeting !== undefined &&
-    (isSameDay(new Date(nearestMeeting.dateTime), now) ||
-      isSameDay(new Date(nearestMeeting.dateTime), tomorrow));
+  const heroCandidates = sortedMeetings.filter((meeting) => {
+    const meetingDate = new Date(meeting.dateTime);
 
-  const heroMeeting: MeetingData | null = isNearestMeetingHeroEligible
-    ? nearestMeeting
-    : null;
+    return isSameDay(meetingDate, now) || isSameDay(meetingDate, tomorrow);
+  });
+
+  const heroMeeting: MeetingData | null = heroCandidates[0] ?? null;
 
   const upcomingMeetings = sortedMeetings.filter(
     (meeting) => meeting.meetingId !== heroMeeting?.meetingId
