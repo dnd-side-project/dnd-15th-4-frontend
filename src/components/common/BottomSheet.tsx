@@ -37,11 +37,11 @@ export const BottomSheet = ({
             )}
           />
         )}
-        <Drawer.Viewport className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex flex-col items-center">
+        <Drawer.Viewport className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex max-h-svh flex-col items-center">
           {aboveContent && (
             <div
               className={cn(
-                "pointer-events-auto w-full max-w-md",
+                "pointer-events-auto w-full max-w-md shrink-0",
                 aboveContentClassName
               )}
             >
@@ -51,7 +51,7 @@ export const BottomSheet = ({
           <Drawer.Popup
             ref={ref}
             className={cn(
-              "rounded-t-20 pointer-events-auto flex w-full max-w-md flex-col items-center gap-4 bg-white pt-5 transition-transform duration-300",
+              "rounded-t-20 pointer-events-auto flex min-h-0 max-h-[85svh] w-full max-w-md flex-col items-center gap-4 bg-white pt-5 transition-transform duration-300",
               "transform-[translateY(calc(var(--drawer-swipe-movement-y,0px)+var(--drawer-snap-point-offset,0px)))]",
               "data-ending-style:transform-[translateY(100%)] data-starting-style:transform-[translateY(100%)]",
               className

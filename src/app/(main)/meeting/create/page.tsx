@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { AlertModal } from "@/components/common/AlertModal";
@@ -65,6 +65,15 @@ export default function CreateMeetingPage() {
 
   const createMeetingMutation = useCreateMeetingMutation();
   const { data: existingMeetings = [] } = useMeetingsQuery();
+
+  useEffect(() => {
+    document.documentElement.classList.add("scrollbar-none");
+    document.body.classList.add("scrollbar-none");
+    return () => {
+      document.documentElement.classList.remove("scrollbar-none");
+      document.body.classList.remove("scrollbar-none");
+    };
+  }, []);
 
   const isNicknameValid = !nicknameParticipation || nickname.trim().length > 0;
   const isCapacitySelected =
