@@ -25,8 +25,8 @@ import type { FavoriteSearchDto, PlaceDto } from "@/types/place";
 const toPlaceDto = (favoriteSearch: FavoriteSearchDto): PlaceDto => ({
   placeId: String(favoriteSearch.id),
   placeName: favoriteSearch.keyword,
-  addressName: favoriteSearch.keyword,
-  roadAddressName: favoriteSearch.keyword,
+  addressName: favoriteSearch.roadAddressName,
+  roadAddressName: favoriteSearch.roadAddressName,
   latitude: 0,
   longitude: 0,
 });
@@ -77,7 +77,11 @@ const FavoritesPage = () => {
       return;
     }
 
-    addFavoriteSearchMutation.mutate(selectedPlace.placeName);
+    addFavoriteSearchMutation.mutate({
+      keyword: selectedPlace.placeName,
+      roadAddressName:
+        selectedPlace.roadAddressName || selectedPlace.addressName,
+    });
     setSelectedPlace(null);
   };
 

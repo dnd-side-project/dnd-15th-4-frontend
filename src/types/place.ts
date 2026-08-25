@@ -10,6 +10,12 @@ export interface PlaceDto {
 export interface FavoriteSearchDto {
   id: number;
   keyword: string;
+  roadAddressName: string;
+}
+
+export interface AddFavoriteSearchRequest {
+  keyword: string;
+  roadAddressName: string;
 }
 
 export interface SelectedPlace {

@@ -1,6 +1,9 @@
 import { api } from "@/lib/api/http-client";
 import type { ApiResult } from "@/types/api";
-import type { FavoriteSearchDto } from "@/types/place";
+import type {
+  AddFavoriteSearchRequest,
+  FavoriteSearchDto,
+} from "@/types/place";
 
 export const fetchFavoriteSearches = async (): Promise<FavoriteSearchDto[]> => {
   const result = await api.get<ApiResult<FavoriteSearchDto[]>>(
@@ -10,11 +13,11 @@ export const fetchFavoriteSearches = async (): Promise<FavoriteSearchDto[]> => {
 };
 
 export const addFavoriteSearch = async (
-  keyword: string
+  request: AddFavoriteSearchRequest
 ): Promise<FavoriteSearchDto> => {
   const result = await api.post<ApiResult<FavoriteSearchDto>>(
     "/api/v1/users/me/favorite-searches",
-    { keyword }
+    request
   );
   return result.data;
 };
