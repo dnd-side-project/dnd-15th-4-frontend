@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { useLogout } from "@/hooks/auth/useLogout";
@@ -28,7 +27,6 @@ interface AccountSectionProps {
 }
 
 export const AccountSection = ({ kakaoId }: AccountSectionProps) => {
-  const router = useRouter();
   const logout = useLogout();
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const [isWithdrawConfirmOpen, setIsWithdrawConfirmOpen] = useState(false);
@@ -40,11 +38,6 @@ export const AccountSection = ({ kakaoId }: AccountSectionProps) => {
 
   return (
     <div className="flex flex-col">
-      <MenuButton
-        label="즐겨찾기한 검색어"
-        onClick={() => router.push("/mypage/favorites")}
-      />
-      <span className="bg-divider-2 h-2 w-full" />
       <div className="flex items-center justify-between px-4 py-4">
         <p className="body2 text-primary">카카오 아이디</p>
         <p className="body3 text-secondary-3">{kakaoId}</p>
