@@ -24,7 +24,7 @@ export const FloatingActionButton = ({
     <Popover.Root>
       <Popover.Trigger
         aria-label="약속 생성 및 참여"
-        className="bg-sub2-normal rounded-pill size-15.5rem absolute right-4 bottom-12 z-20 flex cursor-pointer items-center justify-center shadow-lg"
+        className="bg-sub2-normal rounded-pill size-15.5rem absolute right-4 bottom-6 z-20 flex cursor-pointer items-center justify-center shadow-lg"
       >
         <IcPlus size={62} className="text-white" />
       </Popover.Trigger>

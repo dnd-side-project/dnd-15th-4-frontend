@@ -147,7 +147,7 @@ export const DateSelectModal = ({
           </div>
         )}
 
-        <div className="rounded-t-20 relative z-10 flex flex-col bg-white px-4 pt-3 pb-8">
+        <div className="rounded-t-20 relative z-10 flex flex-col bg-white px-4 pt-3 pb-3">
           <div className="rounded-pill bg-border-1 mx-auto mb-5 h-1 w-9" />
 
           <MonthCalendar

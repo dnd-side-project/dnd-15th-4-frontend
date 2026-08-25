@@ -85,12 +85,12 @@ export const TimeSelectModal = ({
         className="absolute inset-0 bg-black/63 backdrop-blur-[2px]"
       />
 
-      <div className="rounded-t-20 relative z-10 flex flex-col bg-white px-4 pt-3 pb-8">
+      <div className="rounded-t-20 relative z-10 flex min-h-[60dvh] flex-col justify-between bg-white px-5 pt-3 pb-3 shadow-xl">
         <div className="rounded-pill bg-border-1 mx-auto mb-5 h-1 w-9" />
 
-        <h2 className="h3 text-primary mb-6 text-center">약속 시간</h2>
+        <h2 className="h3 text-primary mb-3 text-center">약속 시간</h2>
 
-        <div className="relative flex items-center justify-center">
+        <div className="relative my-3 flex items-center justify-center">
           <div className="bg-primary-light-hover rounded-16 pointer-events-none absolute inset-x-0 top-1/2 h-11 -translate-y-1/2" />
 
           <WheelPicker
@@ -113,11 +113,7 @@ export const TimeSelectModal = ({
           />
         </div>
 
-        <Button
-          type="button"
-          className="bg-sub2-normal hover:bg-sub2-normal-hover mt-6"
-          onClick={handleConfirm}
-        >
+        <Button type="button" onClick={handleConfirm}>
           확인
         </Button>
       </div>

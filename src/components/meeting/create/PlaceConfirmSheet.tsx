@@ -70,7 +70,7 @@ export const PlaceConfirmSheet = ({
         <Drawer.Title className="sr-only">
           {place.placeName} 장소 확인
         </Drawer.Title>
-        <div className="flex w-full flex-col gap-5 px-4 pb-8">
+        <div className="flex w-full flex-col gap-5 px-4 pb-3">
           <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 flex-col gap-1">
               <p className="h4 text-primary wrap-break-word break-keep">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -26,21 +26,19 @@ export const WheelPicker = ({
   className,
 }: WheelPickerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const onChangeRef = useRef(onChange);
-  const lastCommittedIndexRef = useRef(initialIndex);
-  const initialIndexRef = useRef(initialIndex);
 
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
+  const lastCommittedIndexRef = useRef(initialIndex);
   const [selectedIndex, setSelectedIndex] = useState(initialIndex);
 
-  useLayoutEffect(() => {
-    onChangeRef.current = onChange;
-  }, [onChange]);
-
   useEffect(() => {
-    containerRef.current?.scrollTo({
-      top: initialIndexRef.current * ITEM_HEIGHT,
-    });
-  }, []);
+    if (!containerRef.current) return;
+    containerRef.current.scrollTop = initialIndex * ITEM_HEIGHT;
+    setSelectedIndex(initialIndex);
+    lastCommittedIndexRef.current = initialIndex;
+  }, [initialIndex]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -83,34 +81,38 @@ export const WheelPicker = ({
   };
 
   return (
-    <div
-      ref={containerRef}
-      className={cn(
-        "relative h-55 snap-y snap-mandatory overflow-y-scroll overscroll-contain scrollbar-none [&::-webkit-scrollbar]:hidden",
-        className
-      )}
-    >
-      <div style={{ height: PADDING_Y }} aria-hidden />
-      {items.map((item, itemIndex) => {
-        const distance = Math.abs(itemIndex - selectedIndex);
-        return (
-          <button
-            key={`${item}-${itemIndex}`}
-            type="button"
-            onClick={() => handleItemClick(itemIndex)}
-            style={{ height: ITEM_HEIGHT }}
-            className={cn(
-              "h1 text-primary flex w-full snap-center items-center justify-center transition-opacity",
-              distance === 0 && "font-semibold opacity-100",
-              distance === 1 && "opacity-40",
-              distance >= 2 && "opacity-15"
-            )}
-          >
-            {item}
-          </button>
-        );
-      })}
-      <div style={{ height: PADDING_Y }} aria-hidden />
+    <div className={cn("relative w-full", className)}>
+      <div
+        className="bg-primary-light-hover rounded-16 pointer-events-none absolute top-1/2 right-0 left-0 z-0 -translate-y-1/2"
+        style={{ height: ITEM_HEIGHT }}
+      />
+
+      <div
+        ref={containerRef}
+        className="relative z-10 h-55 snap-y snap-mandatory scrollbar-none overflow-y-scroll overscroll-contain [&::-webkit-scrollbar]:hidden"
+      >
+        <div style={{ height: PADDING_Y }} aria-hidden />
+        {items.map((item, itemIndex) => {
+          const distance = Math.abs(itemIndex - selectedIndex);
+          return (
+            <button
+              key={`${item}-${itemIndex}`}
+              type="button"
+              onClick={() => handleItemClick(itemIndex)}
+              style={{ height: ITEM_HEIGHT }}
+              className={cn(
+                "h1 text-primary flex w-full snap-center items-center justify-center transition-all duration-150",
+                distance === 0 && "font-semibold opacity-100 scale-100",
+                distance === 1 && "opacity-40 scale-95",
+                distance >= 2 && "opacity-15 scale-90"
+              )}
+            >
+              {item}
+            </button>
+          );
+        })}
+        <div style={{ height: PADDING_Y }} aria-hidden />
+      </div>
     </div>
   );
 };

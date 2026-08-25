@@ -163,7 +163,7 @@ export const DepartureOriginSearchOverlay = ({
         />
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md bg-white px-4 pt-4 pb-8">
+      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md bg-white px-4 pt-4 pb-3">
         <Button
           type="button"
           disabled={!selectedPlace}
