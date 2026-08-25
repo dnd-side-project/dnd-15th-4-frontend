@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { expect, fn, screen, userEvent, waitFor } from "storybook/test";
 
 import { CapacityPickerModal } from "./CapacityPickerModal";
 
@@ -34,11 +34,9 @@ export const MinBoundary: Story = {
   args: {
     value: 1,
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    await canvas.findByText("1");
-    expect(canvas.queryByText("0")).not.toBeInTheDocument();
+  play: async () => {
+    await screen.findByText("1");
+    expect(screen.queryByText("0")).not.toBeInTheDocument();
   },
 };
 
@@ -46,11 +44,9 @@ export const MaxBoundary: Story = {
   args: {
     value: 12,
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    await canvas.findByText("12");
-    expect(canvas.queryByText("13")).not.toBeInTheDocument();
+  play: async () => {
+    await screen.findByText("12");
+    expect(screen.queryByText("13")).not.toBeInTheDocument();
   },
 };
 
@@ -58,9 +54,8 @@ export const ConfirmSelection: Story = {
   args: {
     value: 4,
   },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    const confirmButton = await canvas.findByRole("button", { name: "확인" });
+  play: async ({ args }) => {
+    const confirmButton = await screen.findByRole("button", { name: "확인" });
 
     await userEvent.click(confirmButton);
 
@@ -69,11 +64,8 @@ export const ConfirmSelection: Story = {
 };
 
 export const CancelOnBackdropClick: Story = {
-  play: async ({ canvasElement, args }) => {
-    const backdrop = canvasElement.querySelector<HTMLElement>(
-      '[data-testid="capacity-picker-backdrop"]'
-    );
-    if (!backdrop) throw new Error("Backdrop element not found");
+  play: async ({ args }) => {
+    const backdrop = screen.getByTestId("capacity-picker-backdrop");
 
     await userEvent.click(backdrop);
 

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 const ITEM_HEIGHT = 44;
-const VISIBLE_ROWS = 5;
+const VISIBLE_ROWS = 7;
 const PADDING_Y = (ITEM_HEIGHT * (VISIBLE_ROWS - 1)) / 2;
 const SCROLL_SETTLE_MS = 120;
 
@@ -89,7 +89,7 @@ export const WheelPicker = ({
 
       <div
         ref={containerRef}
-        className="relative z-10 h-55 snap-y snap-mandatory scrollbar-none overflow-y-scroll overscroll-contain [&::-webkit-scrollbar]:hidden"
+        className="relative z-10 h-77 snap-y snap-mandatory scrollbar-none overflow-y-scroll overscroll-contain [&::-webkit-scrollbar]:hidden"
       >
         <div style={{ height: PADDING_Y }} aria-hidden />
         {items.map((item, itemIndex) => {

@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 
+import { Drawer } from "@base-ui/react/drawer";
+
 import { AlertModal } from "@/components/common/AlertModal";
+import { BottomSheet } from "@/components/common/BottomSheet";
 import { Button } from "@/components/common/Button";
 import { WheelPicker } from "@/components/common/WheelPicker";
 import type { MeetingData } from "@/types/meeting";
@@ -74,19 +77,13 @@ export const TimeSelectModal = ({
   };
 
   return (
-    <div
-      data-testid="time-select-modal"
-      className="fixed inset-0 z-50 mx-auto flex w-full max-w-md flex-col justify-end"
-    >
-      <button
-        type="button"
-        aria-label="닫기"
-        onClick={onClose}
-        className="absolute inset-0 bg-black/63 backdrop-blur-[2px]"
-      />
-
-      <div className="rounded-t-20 relative z-10 flex min-h-[60dvh] flex-col justify-between bg-white px-5 pt-3 pb-3 shadow-xl">
-        <div className="rounded-pill bg-border-1 mx-auto mb-5 h-1 w-9" />
+    <>
+      <BottomSheet
+        open
+        onOpenChange={(open) => !open && onClose()}
+        className="px-5 pb-3"
+      >
+        <Drawer.Title className="sr-only">약속 시간 선택</Drawer.Title>
 
         <h2 className="h3 text-primary mb-3 text-center">약속 시간</h2>
 
@@ -113,10 +110,10 @@ export const TimeSelectModal = ({
           />
         </div>
 
-        <Button type="button" onClick={handleConfirm}>
+        <Button type="button" className="mt-6" onClick={handleConfirm}>
           확인
         </Button>
-      </div>
+      </BottomSheet>
 
       {alertMessage && (
         <AlertModal
@@ -124,6 +121,6 @@ export const TimeSelectModal = ({
           onConfirm={() => setAlertMessage(null)}
         />
       )}
-    </div>
+    </>
   );
 };

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { expect, fn, screen, userEvent, waitFor } from "storybook/test";
 
 import { DateSelectModal } from "./DateSelectModal";
 import type { MeetingData } from "@/types/meeting";
@@ -62,13 +62,11 @@ export const SelectedDateHasSchedules: Story = {
   args: {
     initialDate: new Date(2026, 7, 21),
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
+  play: async () => {
     await waitFor(() =>
-      expect(canvas.getByText("성수동 약속")).toBeInTheDocument()
+      expect(screen.getByText("성수동 약속")).toBeInTheDocument()
     );
-    expect(canvas.getByText("저녁 약속")).toBeInTheDocument();
+    expect(screen.getByText("저녁 약속")).toBeInTheDocument();
   },
 };
 
@@ -76,13 +74,13 @@ export const SelectDateAndConfirm: Story = {
   args: {
     initialDate: new Date(2026, 7, 20),
   },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    const day25 = await canvas.findByRole("button", { name: "8월 25일" });
+  play: async ({ args }) => {
+    const day25 = await screen.findByRole("button", { name: "8월 25일" });
 
     await userEvent.click(day25);
+    await waitFor(() => expect(day25).toHaveAccessibleName("8월 25일, 선택됨"));
 
-    const confirmButton = await canvas.findByRole("button", { name: "확인" });
+    const confirmButton = await screen.findByRole("button", { name: "확인" });
     await userEvent.click(confirmButton);
 
     await waitFor(() => expect(args.onConfirm).toHaveBeenCalled());
@@ -97,25 +95,21 @@ export const NavigateMonth: Story = {
   args: {
     initialDate: new Date(2026, 7, 20),
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    expect(canvas.getByText("2026년 8월")).toBeInTheDocument();
+  play: async () => {
+    expect(screen.getByText("2026년 8월")).toBeInTheDocument();
 
-    const nextButton = await canvas.findByRole("button", { name: "다음 달" });
+    const nextButton = await screen.findByRole("button", { name: "다음 달" });
     await userEvent.click(nextButton);
 
     await waitFor(() =>
-      expect(canvas.getByText("2026년 9월")).toBeInTheDocument()
+      expect(screen.getByText("2026년 9월")).toBeInTheDocument()
     );
   },
 };
 
 export const CloseOnBackdropClick: Story = {
-  play: async ({ canvasElement, args }) => {
-    const backdrop = canvasElement.querySelector<HTMLElement>(
-      '[data-testid="data-select-backdrop"]'
-    );
-    if (!backdrop) throw new Error("Backdrop element not found");
+  play: async ({ args }) => {
+    const backdrop = screen.getByTestId("data-select-backdrop");
 
     await userEvent.click(backdrop);
 

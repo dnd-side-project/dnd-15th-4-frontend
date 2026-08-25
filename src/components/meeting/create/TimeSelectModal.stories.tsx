@@ -53,14 +53,13 @@ export const ConfirmWithoutConflict: Story = {
     initialHour: 10,
     initialMinute: 0,
   },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    const confirmButton = await canvas.findByRole("button", { name: "확인" });
+  play: async ({ args }) => {
+    const confirmButton = await screen.findByRole("button", { name: "확인" });
 
     await confirmButton.click();
 
     await waitFor(() => expect(args.onConfirm).toHaveBeenCalledWith(10, 0));
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getAllByRole("dialog")).toHaveLength(1);
   },
 };
 
@@ -69,13 +68,14 @@ export const BlocksDuplicateTime: Story = {
     initialHour: 18,
     initialMinute: 0,
   },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    const confirmButton = await canvas.findByRole("button", { name: "확인" });
+  play: async ({ args }) => {
+    const confirmButton = await screen.findByRole("button", { name: "확인" });
 
     await confirmButton.click();
 
-    const alertDialog = await screen.findByRole("dialog");
+    const alertDialog = await screen.findByRole("dialog", {
+      name: /이미 같은 시간에 등록된 약속이 있어요/,
+    });
     expect(alertDialog).toBeInTheDocument();
     expect(args.onConfirm).not.toHaveBeenCalled();
 
@@ -84,9 +84,7 @@ export const BlocksDuplicateTime: Story = {
     });
     await dismissButton.click();
 
-    await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
-    );
+    await waitFor(() => expect(screen.getAllByRole("dialog")).toHaveLength(1));
   },
 };
 
@@ -96,13 +94,14 @@ export const BlocksPastDateTime: Story = {
     initialHour: 10,
     initialMinute: 0,
   },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    const confirmButton = await canvas.findByRole("button", { name: "확인" });
+  play: async ({ args }) => {
+    const confirmButton = await screen.findByRole("button", { name: "확인" });
 
     await confirmButton.click();
 
-    const alertDialog = await screen.findByRole("dialog");
+    const alertDialog = await screen.findByRole("dialog", {
+      name: /이미 지난 날짜와 시간이에요/,
+    });
     expect(alertDialog).toHaveTextContent("이미 지난 날짜와 시간이에요");
     expect(args.onConfirm).not.toHaveBeenCalled();
   },
@@ -117,13 +116,14 @@ export const BlocksTooSoonDateTime: Story = {
       initialMinute: inTenMinutes.getMinutes(),
     };
   })(),
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    const confirmButton = await canvas.findByRole("button", { name: "확인" });
+  play: async ({ args }) => {
+    const confirmButton = await screen.findByRole("button", { name: "확인" });
 
     await confirmButton.click();
 
-    const alertDialog = await screen.findByRole("dialog");
+    const alertDialog = await screen.findByRole("dialog", {
+      name: new RegExp(`최소 ${MIN_LEAD_TIME_MINUTES}분 이후로`),
+    });
     expect(alertDialog).toHaveTextContent(
       `최소 ${MIN_LEAD_TIME_MINUTES}분 이후로`
     );
