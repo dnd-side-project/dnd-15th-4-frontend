@@ -46,16 +46,18 @@ const PuzzlesPage = () => {
 
   const puzzleImages: PuzzleImage[] = useMemo(
     () =>
-      sortedPuzzles.flatMap((puzzle) =>
-        puzzle.puzzleImageUrls.map((imageUrl, index) => ({
+      sortedPuzzles.flatMap((puzzle) => {
+        const images = puzzle.puzzleImageUrls.map((imageUrl, index) => ({
           key: `${puzzle.meetingId}-${index}`,
           imageUrl,
           title: puzzle.title,
           meetingId: puzzle.meetingId,
           indexInMeeting: index,
-        }))
-      ),
-    [sortedPuzzles]
+        }));
+
+        return sortOrder === "latest" ? images.toReversed() : images;
+      }),
+    [sortedPuzzles, sortOrder]
   );
 
   const handleSelectImage = (puzzleImage: PuzzleImage) => {
