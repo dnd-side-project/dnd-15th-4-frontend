@@ -17,6 +17,7 @@ export const Input = ({
   className,
   value,
   id,
+  onChange,
   ...props
 }: InputProps) => {
   const generatedId = React.useId();
@@ -24,6 +25,13 @@ export const Input = ({
   const normalizedValue = value == null ? "" : String(value);
   const length = normalizedValue.length;
   const hasValue = length > 0;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (maxLength && e.target.value.length > maxLength) {
+      e.target.value = e.target.value.slice(0, maxLength);
+    }
+    onChange?.(e);
+  };
 
   return (
     <InputLayout
@@ -42,6 +50,7 @@ export const Input = ({
         )}
         maxLength={maxLength}
         value={value}
+        onChange={handleChange}
         {...props}
       />
     </InputLayout>
