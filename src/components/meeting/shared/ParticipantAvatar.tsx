@@ -8,14 +8,26 @@ import type { Participant } from "@/types/meeting";
 
 export interface ParticipantAvatarProps {
   participant: Participant;
-  isMe: boolean;
+  hostId?: number;
+  myId?: number;
 }
 
 export const ParticipantAvatar = ({
   participant,
-  isMe,
+  hostId,
+  myId,
 }: ParticipantAvatarProps) => {
   const [hasError, setHasError] = useState(false);
+
+  const isMe = myId !== undefined && participant.id === myId;
+  const isHost = hostId !== undefined && participant.id === hostId;
+
+  const getDisplayName = () => {
+    if (isMe && isHost) return `${participant.name}(나/방장)`;
+    if (isMe) return `${participant.name}(나)`;
+    if (isHost) return `${participant.name}(방장)`;
+    return participant.name;
+  };
 
   return (
     <div className="flex flex-col items-center gap-1">
@@ -33,9 +45,7 @@ export const ParticipantAvatar = ({
           onError={() => setHasError(true)}
         />
       </div>
-      <span className="body6 text-primary">
-        {isMe ? `${participant.name}(나)` : participant.name}
-      </span>
+      <span className="body6 text-primary">{getDisplayName()}</span>
     </div>
   );
 };

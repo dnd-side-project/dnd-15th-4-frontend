@@ -158,7 +158,7 @@ const DepartureSetupPage = () => {
               <ParticipantAvatar
                 key={participant.id}
                 participant={participant}
-                isMe={participant.id === currentUserId}
+                myId={currentUserId}
               />
             ))}
           </div>
