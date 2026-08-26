@@ -14,7 +14,6 @@ import { ImageUploadBox } from "@/components/meeting/create/ImageUploadBox";
 import { useJoinMeetingMutation } from "@/hooks/meeting/participate/useJoinMeeting";
 import { useMeetingImageSelection } from "@/hooks/meeting/shared/useMeetingImageSelection";
 import { HttpError } from "@/lib/api/http-error";
-import { useAuthStore } from "@/stores/useAuthStore";
 import { urlToFile } from "@/utils/file";
 
 const DEFAULT_JOIN_ERROR_MESSAGE = "약속 참여에 실패했어요. 다시 시도해주세요.";
@@ -32,9 +31,6 @@ export default function MeetingParticipatePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const inviteCode = searchParams.get("code")?.trim() ?? "";
-
-  const user = useAuthStore((state) => state.user);
-  const userName = user?.nickname || "";
 
   const {
     selectedImage,
@@ -59,7 +55,7 @@ export default function MeetingParticipatePage() {
   const canSubmit = selectedImage !== null && isNicknameValid;
 
   const handleSubmit = async () => {
-    if (!canSubmit || isSubmitting) return;
+    if (!canSubmit || isSubmitting || joinMeetingMutation.isPending) return;
 
     setIsSubmitting(true);
 
@@ -71,9 +67,7 @@ export default function MeetingParticipatePage() {
           request: {
             inviteCode,
             nickname:
-              nicknameParticipation && nickname.trim()
-                ? nickname.trim()
-                : userName,
+              nicknameParticipation && nickname.trim() ? nickname.trim() : null,
           },
           image,
         },
@@ -124,7 +118,10 @@ export default function MeetingParticipatePage() {
               label="닉네임으로 참여"
               isBold={true}
               checked={nicknameParticipation}
-              onCheckedChange={setNicknameParticipation}
+              onCheckedChange={(checked) => {
+                setNicknameParticipation(checked);
+                if (!checked) setNickname("");
+              }}
             />
             {nicknameParticipation && (
               <Input
