@@ -59,6 +59,8 @@ export const PlaceConfirmSheet = ({
         open
         onOpenChange={(open) => !open && onClose()}
         shouldShowBackdrop={false}
+        modal={false}
+        disablePointerDismissal
       >
         <Drawer.Title className="sr-only">
           {place.placeName} 장소 확인
