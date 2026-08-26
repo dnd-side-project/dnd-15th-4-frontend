@@ -36,7 +36,12 @@ const withAuthState = (
 
 export const LoggedIn: Story = {
   render: withAuthState({
-    user: { id: 1, nickname: "퍼즐밋 유저", profileImageUrl: null },
+    user: {
+      id: 1,
+      email: "puzzlemeet@example.com",
+      nickname: "퍼즐밋 유저",
+      profileImageUrl: null,
+    },
     _hasHydrated: true,
   }),
 };

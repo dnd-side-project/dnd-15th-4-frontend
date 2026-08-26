@@ -26,10 +26,10 @@ const MenuButton = ({ label, className, onClick }: MenuButtonProps) => (
 );
 
 interface AccountSectionProps {
-  kakaoId?: string;
+  email?: string;
 }
 
-export const AccountSection = ({ kakaoId }: AccountSectionProps) => {
+export const AccountSection = ({ email }: AccountSectionProps) => {
   const router = useRouter();
   const logout = useLogout();
   const withdraw = useWithdraw();
@@ -53,7 +53,7 @@ export const AccountSection = ({ kakaoId }: AccountSectionProps) => {
     <div className="flex flex-col">
       <div className="flex items-center justify-between px-4 py-4">
         <p className="body2 text-primary">카카오 아이디</p>
-        <p className="body3 text-secondary-3">{kakaoId}</p>
+        <p className="body3 text-secondary-3">{email}</p>
       </div>
       <MenuButton
         label="로그아웃"
