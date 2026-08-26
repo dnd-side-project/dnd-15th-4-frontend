@@ -4,10 +4,8 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { BottomSheet } from "./BottomSheet";
 import { MeetingProgressSheet } from "@/components/meeting/progress/MeetingProgressSheet";
-import {
-  mockMeetingParticipants,
-  mockMeetingSummary,
-} from "@/mocks/mockMeetings";
+import { MOCK_MEETING_RESULT } from "@/mocks/mockMeetings";
+import type { PuzzleGroupParticipant } from "@/types/meeting";
 
 const meta = {
   title: "Common/BottomSheet",
@@ -113,6 +111,14 @@ export const WithSnapPoints: Story = {
 
 const MEETING_DETAIL_SNAP_POINTS = [100, 270, 9999];
 
+const MOCK_PUZZLE_GROUPS = MOCK_MEETING_RESULT.puzzleGroups ?? [];
+const MOCK_PARTICIPANTS = MOCK_PUZZLE_GROUPS.flatMap(
+  (group) => group.members
+).filter(
+  (member): member is PuzzleGroupParticipant & { userId: number } =>
+    member.userId !== null
+);
+
 const MeetingDetailPagePreview = () => {
   const [snapPoint, setSnapPoint] = useState<number>(270);
 
@@ -132,11 +138,8 @@ const MeetingDetailPagePreview = () => {
         }}
       >
         <MeetingProgressSheet
-          participants={mockMeetingParticipants.participants}
-          meetingPlaceLocation={{
-            latitude: mockMeetingSummary.latitude,
-            longitude: mockMeetingSummary.longitude,
-          }}
+          puzzleGroups={MOCK_PUZZLE_GROUPS}
+          participants={MOCK_PARTICIPANTS}
         />
       </BottomSheet>
     </div>
