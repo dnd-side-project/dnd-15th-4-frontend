@@ -21,7 +21,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="relative mx-auto h-176 w-full max-w-md border border-gray-200">
+      <div className="relative mx-auto flex h-176 w-full max-w-md flex-col border border-gray-200">
         <Story />
       </div>
     ),
