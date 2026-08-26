@@ -5,16 +5,17 @@ import { useRouter } from "next/navigation";
 
 import { Header } from "@/components/common/Header";
 import { SummaryRow } from "@/components/common/SummaryRow";
-import { getCharacterImage } from "@/constants/character-images";
+import { CHARACTER_FALLBACK_IMAGE } from "@/constants/character-images";
 import { AccountSection } from "@/components/mypage/AccountSection";
 import { NotificationSettingsSection } from "@/components/mypage/NotificationSettingsSection";
 import { useFavoriteSearchesQuery } from "@/hooks/mypage/useFavoriteSearches";
 import { usePuzzlesQuery } from "@/hooks/mypage/usePuzzles";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
-import { MOCK_USER } from "@/mocks/mockUser";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const MyPage = () => {
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
   const { data: puzzles } = usePuzzlesQuery();
   const collectedPuzzleCount =
     puzzles?.reduce((sum, puzzle) => sum + puzzle.puzzleImageUrls.length, 0) ??
@@ -33,12 +34,14 @@ const MyPage = () => {
       />
       <div className="mt-5.5 flex flex-col items-center gap-2.75">
         <Image
-          src={getCharacterImage(MOCK_USER.profileImageNumber)}
-          alt={MOCK_USER.nickname}
+          src={user?.profileImageUrl?.trim() || CHARACTER_FALLBACK_IMAGE}
+          alt={user?.nickname ?? ""}
+          width={102}
+          height={102}
           priority
           className="rounded-12 size-25.5 border-[0.1875rem] border-black object-cover"
         />
-        <p className="h4 text-primary">{MOCK_USER.nickname}</p>
+        <p className="h4 text-primary">{user?.nickname}</p>
       </div>
       <SummaryRow
         className="mx-4 mt-8.75 mb-8"
@@ -60,11 +63,9 @@ const MyPage = () => {
           },
         ]}
       />
-      <NotificationSettingsSection
-        notificationSettings={MOCK_USER.notificationSettings}
-      />
+      <NotificationSettingsSection />
       <div className="bg-divider-2 mt-6 h-2 w-full" />
-      <AccountSection kakaoId={MOCK_USER.kakaoId} />
+      <AccountSection email={user?.email} />
     </div>
   );
 };
