@@ -17,6 +17,8 @@ export interface MeetingData {
   place: string;
   latitude: number;
   longitude: number;
+  capacity: number;
+  currentParticipantCount: number;
   participants: Participant[];
   status: MeetingStatus;
 }
@@ -126,11 +128,14 @@ export interface MeetingImageSelection {
 }
 
 export interface MeetingCreateRequest {
+  imageSet: boolean;
+  nicknameSet: boolean;
   title: string;
   dateTime: string;
   destination: string;
   latitude: number;
   longitude: number;
+  capacity: number;
   memo?: string | null;
   nickname?: string | null;
 }
@@ -161,12 +166,16 @@ export interface MeetingPreviewResponse {
   latitude: number;
   longitude: number;
   status: MeetingStatus;
+  capacity: number;
+  currentMemberCount: number;
   participants: MeetingPreviewParticipant[];
 }
 
 export interface MeetingJoinRequest {
   inviteCode: string;
   nickname?: string | null;
+  nicknameSet: boolean;
+  imageSet: boolean;
 }
 
 export interface MeetingJoinResponse {

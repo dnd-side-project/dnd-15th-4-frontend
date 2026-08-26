@@ -14,6 +14,8 @@ export const MOCK_MEETINGS: MeetingData[] = [
     place: "서울 여의도 한강공원 이벤트 광장",
     latitude: 37.5283,
     longitude: 126.932,
+    capacity: 6,
+    currentParticipantCount: 4,
     participants: [
       { id: 1, name: "소정", profileImageUrl: "/character-1.png" },
       { id: 2, name: "민지", profileImageUrl: "/character-1.png" },
@@ -29,6 +31,8 @@ export const MOCK_MEETINGS: MeetingData[] = [
     place: "강남역 카페 알베르",
     latitude: 37.5008,
     longitude: 127.0279,
+    capacity: 4,
+    currentParticipantCount: 2,
     participants: [
       { id: 1, name: "소정", profileImageUrl: "/character-1.png" },
       { id: 5, name: "준혁", profileImageUrl: "/character-1.png" },
@@ -42,6 +46,8 @@ export const MOCK_MEETINGS: MeetingData[] = [
     place: "성수동 히어로보드게임카페",
     latitude: 37.5445,
     longitude: 127.0557,
+    capacity: 5,
+    currentParticipantCount: 3,
     participants: [
       { id: 2, name: "민지", profileImageUrl: "/character-1.png" },
       { id: 3, name: "현우", profileImageUrl: "/character-1.png" },

@@ -8,6 +8,7 @@ import {
   fetchMeetings,
 } from "@/apis/meeting/meetings";
 import { meetingKeys } from "@/apis/meeting/keys";
+import { useAuthStore } from "@/stores/useAuthStore";
 import type { MeetingCreateRequest, MeetingData } from "@/types/meeting";
 
 export interface CreateMeetingVariables {
@@ -17,6 +18,7 @@ export interface CreateMeetingVariables {
 
 export const useCreateMeetingMutation = () => {
   const queryClient = useQueryClient();
+  const user = useAuthStore((state) => state.user);
 
   return useMutation({
     mutationFn: ({ request, image }: CreateMeetingVariables) =>
@@ -33,8 +35,18 @@ export const useCreateMeetingMutation = () => {
           place: request.destination,
           latitude: request.latitude,
           longitude: request.longitude,
+          capacity: request.capacity,
+          currentParticipantCount: 1,
           status: "WAITING",
-          participants: [],
+          participants: user
+            ? [
+                {
+                  id: user.id,
+                  name: request.nickname?.trim() || user.nickname,
+                  profileImageUrl: user.profileImageUrl ?? "",
+                },
+              ]
+            : [],
         }
       );
     },

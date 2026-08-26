@@ -3,11 +3,11 @@
 import { useRouter } from "next/navigation";
 
 import { AvatarStack } from "@/components/home/AvatarStack";
-import type { MeetingData } from "@/types/meeting";
+import type { MeetingData, MeetingPreviewResponse } from "@/types/meeting";
 import { formatMeetingDateTime } from "@/utils/date";
 
 interface ScheduleCardProps {
-  meeting: MeetingData;
+  meeting: MeetingData | MeetingPreviewResponse;
   participantLimit?: number;
   onClick?: () => void;
   showDDay?: boolean;
@@ -60,7 +60,7 @@ export const ScheduleCard = ({
 };
 
 interface ScheduleCardContentProps {
-  meeting: MeetingData;
+  meeting: MeetingData | MeetingPreviewResponse;
   participantLimit?: number;
   showDDay: boolean;
   dateFormatted: string;
