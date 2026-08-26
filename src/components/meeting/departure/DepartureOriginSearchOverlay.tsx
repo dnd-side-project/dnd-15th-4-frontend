@@ -85,6 +85,8 @@ export const DepartureOriginSearchOverlay = ({
     ? { lat: selectedPlace.latitude, lng: selectedPlace.longitude }
     : getMapCenter(results);
 
+  const isSingleSelected = mapPlaces.length === 1;
+
   return (
     <div
       data-testid="departure-origin-search-overlay"
@@ -142,6 +144,7 @@ export const DepartureOriginSearchOverlay = ({
                 <PlaceMarker
                   key={place.placeId}
                   position={{ lat: place.latitude, lng: place.longitude }}
+                  placeName={isSingleSelected ? place.placeName : undefined}
                 />
               ))}
             </MeetingMap>

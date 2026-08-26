@@ -51,7 +51,7 @@ export const PlaceConfirmSheet = ({
     <div className="absolute inset-0 flex flex-col">
       <div className="relative flex-1">
         <MeetingMap center={position} zoom={16} className="size-full">
-          <PlaceMarker position={position} />
+          <PlaceMarker position={position} placeName={place.placeName} />
         </MeetingMap>
       </div>
 
