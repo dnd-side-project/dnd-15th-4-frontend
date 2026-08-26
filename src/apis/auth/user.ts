@@ -8,5 +8,5 @@ export const fetchCurrentUser = async (): Promise<UserDto> => {
 };
 
 export const withdrawUser = async (): Promise<void> => {
-  await api.delete<ApiResult<null>>("/api/v1/users/me");
+  await api.delete<ApiResult<null>>("/users/me");
 };
