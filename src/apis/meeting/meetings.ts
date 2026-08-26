@@ -51,7 +51,7 @@ export const fetchMeetingInProgress = async (
   meetingId: number
 ): Promise<MeetingInProgressResponse> => {
   const result = await api.get<ApiResult<MeetingInProgressResponse>>(
-    `/api/v1/meetings/${meetingId}/in-progress`
+    `/meetings/${meetingId}/in-progress`
   );
   return result.data;
 };

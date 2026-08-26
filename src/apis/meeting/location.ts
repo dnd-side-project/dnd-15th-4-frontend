@@ -10,7 +10,7 @@ export const updateMemberLocation = async (
   meetingId: number,
   location: UserLocation
 ): Promise<void> => {
-  await api.patch(`/api/v1/meetings/${meetingId}/members/location`, location);
+  await api.patch(`/meetings/${meetingId}/members/location`, location);
 };
 
 /**
