@@ -25,7 +25,6 @@ import { useCreateMeetingMutation } from "@/hooks/meeting/create/useCreateMeetin
 import { useDateTimeSelection } from "@/hooks/meeting/create/useDateTimeSelection";
 import { useMeetingImageSelection } from "@/hooks/meeting/shared/useMeetingImageSelection";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
-import { useAuthStore } from "@/stores/useAuthStore";
 import { formatDateTimeForApi } from "@/utils/date";
 import { urlToFile } from "@/utils/file";
 
@@ -37,8 +36,6 @@ const DEFAULT_CREATE_ERROR_MESSAGE =
 
 export default function CreateMeetingPage() {
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
-  const userName = user?.nickname || "";
 
   const {
     selectedImage,
@@ -91,6 +88,7 @@ export default function CreateMeetingPage() {
     if (
       !canSubmit ||
       isSubmitting ||
+      createMeetingMutation.isPending ||
       !selectedImage ||
       !dateTimeSelection.dateTime ||
       !place ||
@@ -109,7 +107,7 @@ export default function CreateMeetingPage() {
         longitude: place.longitude,
         memo: memo.trim() || null,
         nickname:
-          nicknameParticipation && nickname.trim() ? nickname.trim() : userName,
+          nicknameParticipation && nickname.trim() ? nickname.trim() : null,
       };
 
       const image = await urlToFile(selectedImage.src, "meeting-image.jpg");
