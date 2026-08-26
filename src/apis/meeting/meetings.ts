@@ -22,7 +22,7 @@ const STATUS_QUERY_PARAM: Record<MeetingStatus, string> = {
 export const fetchMeetings = async (
   status?: MeetingStatus
 ): Promise<MeetingData[]> => {
-  const result = await api.get<ApiResult<MeetingData[]>>("/api/v1/meetings", {
+  const result = await api.get<ApiResult<MeetingData[]>>("/meetings", {
     params: status ? { status: STATUS_QUERY_PARAM[status] } : undefined,
   });
   return result.data;
@@ -40,7 +40,7 @@ export const createMeeting = async (
   formData.append("image", image);
 
   const result = await api.post<ApiResult<MeetingCreateResponse>>(
-    "/api/v1/meetings",
+    "/meetings",
     formData
   );
   return result.data;
@@ -50,7 +50,7 @@ export const fetchInviteCode = async (
   meetingId: number
 ): Promise<MeetingInviteCodeResponse> => {
   const result = await api.get<ApiResult<MeetingInviteCodeResponse>>(
-    `/api/v1/meetings/${meetingId}/invite-code`
+    `/meetings/${meetingId}/invite-code`
   );
   return result.data;
 };
@@ -59,7 +59,7 @@ export const previewMeeting = async (
   request: MeetingPreviewRequest
 ): Promise<MeetingPreviewResponse> => {
   const result = await api.post<ApiResult<MeetingPreviewResponse>>(
-    "/api/v1/meetings/preview",
+    "/meetings/preview",
     request
   );
   return result.data;
@@ -77,7 +77,7 @@ export const joinMeeting = async (
   if (image) formData.append("image", image);
 
   const result = await api.post<ApiResult<MeetingJoinResponse>>(
-    "/api/v1/meetings/members",
+    "/meetings/members",
     formData
   );
   return result.data;

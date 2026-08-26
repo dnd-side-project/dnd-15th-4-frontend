@@ -11,7 +11,7 @@ export const searchMeetingRoutes = async (
   request: MeetingRouteSearchRequest
 ): Promise<MeetingRoute[]> => {
   const result = await api.post<ApiResult<MeetingRouteSearchResponse>>(
-    `/api/v1/meetings/${meetingId}/routes`,
+    `/meetings/${meetingId}/routes`,
     request
   );
   return result.data.routes;

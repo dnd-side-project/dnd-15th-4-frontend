@@ -13,7 +13,7 @@ interface PlaceSearchResult {
 export const searchPlaces = async (keyword: string): Promise<PlaceDto[]> => {
   if (!keyword.trim()) return [];
 
-  const result = await api.get<ApiResult<PlaceSearchResult>>("/api/v1/places", {
+  const result = await api.get<ApiResult<PlaceSearchResult>>("/places", {
     params: { keyword },
   });
 

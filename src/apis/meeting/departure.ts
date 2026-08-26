@@ -11,7 +11,7 @@ export const getMemberDeparture = async (
 ): Promise<MeetingMemberDepartureResponse | null> => {
   try {
     const result = await api.get<ApiResult<MeetingMemberDepartureResponse>>(
-      `/api/v1/meetings/${meetingId}/members/me/departure`
+      `/meetings/${meetingId}/members/me/departure`
     );
     return result.data;
   } catch (error) {
@@ -25,7 +25,7 @@ export const createMemberDeparture = async (
   request: MeetingMemberDepartureCreateRequest
 ): Promise<MeetingMemberDepartureResponse> => {
   const result = await api.post<ApiResult<MeetingMemberDepartureResponse>>(
-    `/api/v1/meetings/${meetingId}/members/me/departure`,
+    `/meetings/${meetingId}/members/me/departure`,
     request
   );
   return result.data;
