@@ -23,7 +23,7 @@ export const fetchMeetings = async (
   status?: MeetingStatus
 ): Promise<MeetingData[]> => {
   const result = await api.get<ApiResult<MeetingData[]>>("/meetings", {
-    params: status ? { status: STATUS_QUERY_PARAM[status] } : undefined,
+    params: status ? { status: MEETING_STATUS_QUERY_PARAM[status] } : undefined,
   });
   return result.data;
 };

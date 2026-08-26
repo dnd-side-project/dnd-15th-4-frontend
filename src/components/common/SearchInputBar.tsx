@@ -1,7 +1,6 @@
 "use client";
 
 import { IcArrowBack, IcClose, IcSearch } from "@/components/icons";
-import type { IconProps } from "@/components/icons/icon.types";
 import { cn } from "@/lib/utils";
 
 interface SearchInputBarProps {
@@ -18,15 +17,10 @@ export const SearchInputBar = ({
   onBack,
   placeholder,
   className,
-  TrailingIcon,
 }: SearchInputBarProps) => {
-  const isClearable = !TrailingIcon && value.length > 0;
-  const ResolvedIcon = TrailingIcon ?? (isClearable ? IcClose : IcSearch);
-  const handleTrailingIconClick = TrailingIcon
-    ? onTrailingIconClick
-    : isClearable
-      ? () => onChange("")
-      : onTrailingIconClick;
+  const isClearable = value.length > 0;
+  const ResolvedIcon = isClearable ? IcClose : IcSearch;
+  const handleTrailingIconClick = isClearable ? () => onChange("") : undefined;
 
   return (
     <div
