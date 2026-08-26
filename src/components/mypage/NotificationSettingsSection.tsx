@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 import { Toggle } from "@/components/common/Toggle";
 import { IcInfo } from "@/components/icons/IcInfo";
 import {
@@ -19,12 +21,26 @@ export const NotificationSettingsSection = () => {
   const updateNotificationSettingsMutation =
     useUpdateNotificationSettingsMutation();
 
+  const [draft, setDraft] = useState<NotificationSettings | null>(null);
+  const draftRef = useRef<NotificationSettings | null>(null);
+  const requestQueueRef = useRef<Promise<unknown>>(Promise.resolve());
+
+  useEffect(() => {
+    if (!notificationSettings || draftRef.current) return;
+    draftRef.current = notificationSettings;
+    setDraft(notificationSettings);
+  }, [notificationSettings]);
+
   const handleToggle = (key: keyof NotificationSettings, checked: boolean) => {
-    if (!notificationSettings) return;
-    updateNotificationSettingsMutation.mutate({
-      ...notificationSettings,
-      [key]: checked,
-    });
+    if (!draftRef.current) return;
+
+    const next = { ...draftRef.current, [key]: checked };
+    draftRef.current = next;
+    setDraft(next);
+
+    requestQueueRef.current = requestQueueRef.current.then(() =>
+      updateNotificationSettingsMutation.mutateAsync(next).catch(() => {})
+    );
   };
 
   return (
@@ -42,7 +58,7 @@ export const NotificationSettingsSection = () => {
             <p className="body2 text-primary">{label}</p>
             <Toggle
               aria-label={label}
-              checked={notificationSettings?.[key] ?? false}
+              checked={draft?.[key] ?? false}
               onCheckedChange={(checked) => handleToggle(key, checked)}
             />
           </div>
