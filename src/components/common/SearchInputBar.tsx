@@ -34,7 +34,7 @@ export const SearchInputBar = ({
   return (
     <div
       className={cn(
-        "border-border-2 rounded-16 flex h-13.75 items-center gap-1.75 border pl-4 pr-4.75",
+        "border-border-2 rounded-16 flex h-13.75 items-center gap-1.75 border bg-white pl-4 pr-4.75",
         className
       )}
     >
