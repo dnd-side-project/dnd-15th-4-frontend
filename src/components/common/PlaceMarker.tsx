@@ -14,7 +14,10 @@ export const PlaceMarker = ({ position, placeName }: PlaceMarkerProps) => (
     <div className="relative">
       <Image src={pinImage} alt="" width={42} height={42} />
       {placeName && (
-        <p className="body5 text-primary absolute top-full left-1/2 -translate-x-1/2 py-1 whitespace-nowrap">
+        <p
+          className="body3 text-primary absolute top-full left-1/2 -translate-x-1/2 py-1 whitespace-nowrap [-webkit-text-stroke:4px_#ffffff]"
+          style={{ paintOrder: "stroke fill" }}
+        >
           {placeName}
         </p>
       )}
