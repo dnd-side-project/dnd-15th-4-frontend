@@ -105,9 +105,12 @@ export default function CreateMeetingPage() {
         destination: place.placeName,
         latitude: place.latitude,
         longitude: place.longitude,
+        capacity: capacitySelection.capacity,
         memo: memo.trim() || null,
         nickname:
           nicknameParticipation && nickname.trim() ? nickname.trim() : null,
+        nicknameSet: nicknameParticipation,
+        imageSet: selectedImage.type === "default",
       };
 
       const image = await urlToFile(selectedImage.src, "meeting-image.jpg");

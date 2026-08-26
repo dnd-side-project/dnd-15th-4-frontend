@@ -126,11 +126,14 @@ export interface MeetingImageSelection {
 }
 
 export interface MeetingCreateRequest {
+  imageSet: boolean;
+  nicknameSet: boolean;
   title: string;
   dateTime: string;
   destination: string;
   latitude: number;
   longitude: number;
+  capacity: number;
   memo?: string | null;
   nickname?: string | null;
 }
