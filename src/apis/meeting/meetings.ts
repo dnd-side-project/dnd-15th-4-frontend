@@ -4,6 +4,7 @@ import type {
   MeetingCreateRequest,
   MeetingCreateResponse,
   MeetingData,
+  MeetingInProgressResponse,
   MeetingInviteCodeResponse,
   MeetingJoinRequest,
   MeetingJoinResponse,
@@ -42,6 +43,15 @@ export const createMeeting = async (
   const result = await api.post<ApiResult<MeetingCreateResponse>>(
     "/meetings",
     formData
+  );
+  return result.data;
+};
+
+export const fetchMeetingInProgress = async (
+  meetingId: number
+): Promise<MeetingInProgressResponse> => {
+  const result = await api.get<ApiResult<MeetingInProgressResponse>>(
+    `/api/v1/meetings/${meetingId}/in-progress`
   );
   return result.data;
 };

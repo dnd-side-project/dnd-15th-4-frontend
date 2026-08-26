@@ -7,9 +7,10 @@ import { useArrivalConfirmation } from "@/hooks/meeting/progress/useArrivalConfi
 import { cn } from "@/lib/utils";
 
 export interface ParticipantStackItemProps {
-  image: StaticImageData;
+  image: string | StaticImageData;
   nickname: string;
-  remainingMinutes: number;
+  hasDeparted: boolean;
+  elapsedMinutes: number;
   isHighlighted?: boolean;
   isArrived?: boolean;
 }
@@ -17,12 +18,13 @@ export interface ParticipantStackItemProps {
 export const ParticipantStackItem = ({
   image,
   nickname,
-  remainingMinutes,
+  hasDeparted,
+  elapsedMinutes,
   isHighlighted = false,
   isArrived = false,
 }: ParticipantStackItemProps) => {
-  const hours = Math.floor(remainingMinutes / 60);
-  const minutes = remainingMinutes % 60;
+  const hours = Math.floor(elapsedMinutes / 60);
+  const minutes = elapsedMinutes % 60;
 
   const {
     confirmationStep,
@@ -48,6 +50,9 @@ export const ParticipantStackItem = ({
         <div className="flex flex-col">
           <p className="body1 text-primary">{nickname}</p>
           {isConfirmed && <p className="body6 text-secondary-2">도착</p>}
+          {!hasDeparted && !isConfirmed && (
+            <p className="body6 text-secondary-2">출발 전</p>
+          )}
         </div>
       </div>
 
@@ -72,7 +77,7 @@ export const ParticipantStackItem = ({
         />
       )}
 
-      {!isArrived && (
+      {!isArrived && hasDeparted && (
         <div className="flex h-13.5 items-end gap-1">
           {hours > 0 && (
             <div className="flex items-baseline">

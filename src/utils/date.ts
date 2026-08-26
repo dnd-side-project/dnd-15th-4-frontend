@@ -9,6 +9,9 @@ export const getTimeLabel = (dateTime: string): string => {
   return `${hours}:${minutes}`;
 };
 
+export const getElapsedMinutes = (dateTime: string): number =>
+  Math.max(0, Math.floor((Date.now() - new Date(dateTime).getTime()) / 60_000));
+
 export const getRemainingTimeLabel = (dateTime: string): string => {
   const remainingMinutes = Math.max(
     0,

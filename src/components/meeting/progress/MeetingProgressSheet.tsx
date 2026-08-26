@@ -6,21 +6,24 @@ import { ParticipantStatusRow } from "./ParticipantStatusRow";
 import { PuzzleEtaCarousel } from "./PuzzleEtaCarousel";
 import { useMeasuredHeight } from "@/hooks/common/useMeasuredHeight";
 import { cn } from "@/lib/utils";
-import type { MeetingLocation, MeetingParticipant } from "@/types/meeting";
+import type {
+  MeetingPuzzleGroup,
+  PuzzleGroupParticipant,
+} from "@/types/meeting";
 
 export interface MeetingProgressSheetProps {
-  participants: MeetingParticipant[];
-  meetingPlaceLocation: MeetingLocation;
-  onParticipantFocus?: (participant: MeetingParticipant) => void;
+  puzzleGroups: MeetingPuzzleGroup[];
+  participants: PuzzleGroupParticipant[];
+  onParticipantFocus?: (participant: PuzzleGroupParticipant) => void;
 }
 
 export const MeetingProgressSheet = ({
+  puzzleGroups,
   participants,
-  meetingPlaceLocation,
   onParticipantFocus,
 }: MeetingProgressSheetProps) => {
   const [isStackView, setIsStackView] = useState(false);
-  const completedCount = participants.filter((p) => p.arrivalStatus).length;
+  const completedCount = participants.filter((p) => p.arrived).length;
 
   const gridViewRef = useRef<HTMLDivElement>(null);
   const gridViewHeight = useMeasuredHeight(gridViewRef);
@@ -45,7 +48,6 @@ export const MeetingProgressSheet = ({
       {isStackView && (
         <ParticipantStackList
           participants={participants}
-          meetingPlaceLocation={meetingPlaceLocation}
           height={gridViewHeight}
         />
       )}
@@ -57,10 +59,7 @@ export const MeetingProgressSheet = ({
           isStackView && "invisible absolute inset-x-0 pointer-events-none"
         )}
       >
-        <PuzzleEtaCarousel
-          participants={participants}
-          meetingPlaceLocation={meetingPlaceLocation}
-        />
+        <PuzzleEtaCarousel puzzleGroups={puzzleGroups} />
       </div>
     </div>
   );

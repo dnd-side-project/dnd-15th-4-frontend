@@ -1,9 +1,17 @@
+import { api } from "@/lib/api/http-client";
 import { MOCK_PARTICIPANT_LOCATIONS } from "@/mocks/mockParticipantLocations";
 import type { UserLocation } from "@/types/meeting";
 
 export interface ParticipantLocationDto extends UserLocation {
   userId: number;
 }
+
+export const updateMemberLocation = async (
+  meetingId: number,
+  location: UserLocation
+): Promise<void> => {
+  await api.patch(`/api/v1/meetings/${meetingId}/members/location`, location);
+};
 
 /**
  * 참여자 위치 조회 API가 아직 배포되지 않아서 임시로 mock 데이터를 반환합니다.

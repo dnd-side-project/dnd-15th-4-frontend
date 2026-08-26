@@ -1,12 +1,9 @@
 import { PuzzleEtaCard } from "./PuzzleEtaCard";
 import type { PuzzleEtaCardPosition } from "./PuzzleEtaCard";
 import { PuzzleEtaEmptyCard } from "./PuzzleEtaEmptyCard";
-import { getCharacterImage } from "@/constants/character-images";
-import {
-  ARRIVAL_DISTANCE_THRESHOLD_METERS,
-  getMeetingDistanceInMeters,
-} from "@/utils/geo";
-import type { MeetingLocation, MeetingParticipant } from "@/types/meeting";
+import { CHARACTER_FALLBACK_IMAGE } from "@/constants/character-images";
+import { getElapsedMinutes } from "@/utils/date";
+import type { PuzzleGroupParticipant } from "@/types/meeting";
 
 interface PuzzleCardStyle {
   position: PuzzleEtaCardPosition;
@@ -35,23 +32,19 @@ const GRID_STYLES: PuzzleCardStyle[] = [
 ];
 
 export interface PuzzleEtaGridProps {
-  participants: MeetingParticipant[];
-  meetingPlaceLocation: MeetingLocation;
+  members: PuzzleGroupParticipant[];
 }
 
-export const PuzzleEtaGrid = ({
-  participants,
-  meetingPlaceLocation,
-}: PuzzleEtaGridProps) => {
+export const PuzzleEtaGrid = ({ members }: PuzzleEtaGridProps) => {
   return (
     <div className="grid aspect-square w-full grid-cols-2 grid-rows-2">
       {GRID_STYLES.map((style, index) => {
-        const puzzleNumber = index + 1;
-        const participant = participants.find(
-          (candidate) => candidate.puzzlePosition.number === puzzleNumber
+        const pieceIndex = index + 1;
+        const member = members.find(
+          (candidate) => candidate.pieceIndex === pieceIndex
         );
 
-        if (!participant) {
+        if (!member || member.userId === null) {
           return (
             <PuzzleEtaEmptyCard
               key={style.position}
@@ -61,22 +54,19 @@ export const PuzzleEtaGrid = ({
           );
         }
 
-        const isArrived =
-          getMeetingDistanceInMeters(
-            participant.currentLocation,
-            meetingPlaceLocation
-          ) <= ARRIVAL_DISTANCE_THRESHOLD_METERS;
-
         return (
           <PuzzleEtaCard
-            key={participant.id}
+            key={member.userId}
             position={style.position}
             backgroundClassName={style.backgroundClassName}
             textClassName={style.textClassName}
-            image={getCharacterImage(participant.profileImageNumber)}
-            nickname={participant.nickname}
-            remainingMinutes={participant.estimatedArrivalTime}
-            isArrived={isArrived}
+            image={member.profileImageUrl?.trim() || CHARACTER_FALLBACK_IMAGE}
+            nickname={member.nickname ?? ""}
+            hasDeparted={member.departed}
+            elapsedMinutes={
+              member.departedAt ? getElapsedMinutes(member.departedAt) : 0
+            }
+            isArrived={member.arrived}
           />
         );
       })}

@@ -5,7 +5,7 @@ import { IcArrowOutward } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 export interface ParticipantStatusAvatarProps {
-  image: StaticImageData;
+  image: string | StaticImageData;
   nickname: string;
   minutesAgoLabel?: string;
   onClick?: () => void;
