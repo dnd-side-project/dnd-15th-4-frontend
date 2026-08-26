@@ -30,6 +30,11 @@ import { urlToFile } from "@/utils/file";
 
 import type { MeetingCreateRequest } from "@/types/meeting";
 import type { SelectedPlace } from "@/types/place";
+import {
+  MEMO_MAX_LENGTH,
+  NICKNAME_MAX_LENGTH,
+  TITLE_MAX_LENGTH,
+} from "@/constants/validation";
 
 const DEFAULT_CREATE_ERROR_MESSAGE =
   "약속방 생성에 실패했어요. 다시 시도해주세요.";
@@ -177,7 +182,7 @@ export default function CreateMeetingPage() {
               <Input
                 value={nickname}
                 onChange={(event) => setNickname(event.target.value)}
-                maxLength={5}
+                maxLength={NICKNAME_MAX_LENGTH}
                 placeholder="닉네임을 입력하세요"
               />
             )}
@@ -189,7 +194,7 @@ export default function CreateMeetingPage() {
               label="약속 이름"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              maxLength={12}
+              maxLength={TITLE_MAX_LENGTH}
               placeholder="약속 이름을 입력하세요"
             />
             <DateTimeTrigger
@@ -228,7 +233,7 @@ export default function CreateMeetingPage() {
               label="메모"
               value={memo}
               onChange={(event) => setMemo(event.target.value)}
-              maxLength={12}
+              maxLength={MEMO_MAX_LENGTH}
               placeholder="메모를 남겨보세요"
             />
           </div>
