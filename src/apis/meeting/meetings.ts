@@ -75,6 +75,10 @@ export const previewMeeting = async (
   return result.data;
 };
 
+export const deleteMeeting = async (meetingId: number): Promise<void> => {
+  await api.delete(`/meetings/${meetingId}`);
+};
+
 export const leaveMeeting = async (meetingId: number): Promise<void> => {
   await api.delete(`/meetings/${meetingId}/members/me`);
 };
