@@ -1,30 +1,34 @@
-import { formatDateTimeTrigger } from "@/utils/date";
 import { InputLayout } from "@/components/common/InputLayout";
 
-export interface DateTimeFieldProps {
+export interface RouteSelectTriggerProps {
   label?: string;
-  value: Date | null;
+  value: string | null;
   placeholder: string;
+  disabled?: boolean;
   onClick: () => void;
   containerClassName?: string;
 }
 
-export const DateTimeTrigger = ({
+export const RouteSelectTrigger = ({
   label,
   value,
   placeholder,
+  disabled,
   onClick,
   containerClassName,
-}: DateTimeFieldProps) => {
+}: RouteSelectTriggerProps) => {
   return (
     <InputLayout
       label={label}
       hasValue={Boolean(value)}
+      disabled={disabled}
       containerClassName={containerClassName}
       onClick={onClick}
     >
-      <span className={`body3 ${value ? "text-primary" : "text-disable"}`}>
-        {value ? formatDateTimeTrigger(value) : placeholder}
+      <span
+        className={`body3 break-all ${value ? "text-primary" : "text-disable"}`}
+      >
+        {value ?? placeholder}
       </span>
     </InputLayout>
   );

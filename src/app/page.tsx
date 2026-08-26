@@ -23,7 +23,7 @@ const LandingPage = () => {
   }, [isReady, isAuthenticated, router]);
 
   const handleLogin = () => {
-    window.location.href = `${API_BASE_URL}/api/v1/auth/kakao/authorize`;
+    window.location.href = `${API_BASE_URL}/auth/kakao/authorize`;
   };
 
   if (!isReady || isAuthenticated) {

@@ -149,7 +149,7 @@ export const ImageCropModal = ({
         />
       </div>
 
-      <div className="flex flex-col items-center gap-9 pt-10 pb-14">
+      <div className="flex flex-col items-center gap-9 pt-10 pb-10">
         <span className="body2 rounded-pill bg-white px-3 py-1 text-black">
           1:1
         </span>

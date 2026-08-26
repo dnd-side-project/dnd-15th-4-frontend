@@ -2,6 +2,9 @@
 
 import { useRef, useState } from "react";
 
+import { Drawer } from "@base-ui/react/drawer";
+
+import { BottomSheet } from "@/components/common/BottomSheet";
 import { Button } from "@/components/common/Button";
 import { MonthCalendar } from "@/components/common/MonthCalendar";
 import { ScheduleCard } from "@/components/common/ScheduleCard";
@@ -88,21 +91,13 @@ export const DateSelectModal = ({
   };
 
   return (
-    <div
-      data-testid="date-select-modal"
-      aria-label="날짜 선택"
-      className="fixed inset-0 z-50 mx-auto flex w-full max-w-md flex-col justify-end"
-    >
-      <button
-        data-testid="data-select-backdrop"
-        type="button"
-        aria-label="닫기"
-        onClick={onClose}
-        className="absolute inset-0 bg-black/63 backdrop-blur-[2px]"
-      />
-
-      <div className="relative flex flex-col">
-        {meetingsOnSelectedDate.length > 0 && (
+    <BottomSheet
+      open
+      onOpenChange={(open) => !open && onClose()}
+      backdropTestId="data-select-backdrop"
+      className="px-4 pb-3"
+      aboveContent={
+        meetingsOnSelectedDate.length > 0 ? (
           <div className="relative z-10 mb-3 w-full min-w-0 px-4">
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/no-noninteractive-element-interactions */}
             <section
@@ -145,35 +140,30 @@ export const DateSelectModal = ({
               </div>
             )}
           </div>
-        )}
+        ) : undefined
+      }
+    >
+      <Drawer.Title className="sr-only">날짜 선택</Drawer.Title>
 
-        <div className="rounded-t-20 relative z-10 flex flex-col bg-white px-4 pt-3 pb-8">
-          <div className="rounded-pill bg-border-1 mx-auto mb-5 h-1 w-9" />
+      <MonthCalendar
+        viewYear={viewYear}
+        viewMonth={viewMonth}
+        selectedDate={selectedDate}
+        today={today}
+        onSelectDate={handleSelectDate}
+        onPrevMonth={goToPrevMonth}
+        onNextMonth={goToNextMonth}
+        hasEventOnDate={(date) => getMeetingsOnDate(meetings, date).length > 0}
+        isDateDisabled={(date) => isPastDay(date, today)}
+      />
 
-          <MonthCalendar
-            viewYear={viewYear}
-            viewMonth={viewMonth}
-            selectedDate={selectedDate}
-            today={today}
-            onSelectDate={handleSelectDate}
-            onPrevMonth={goToPrevMonth}
-            onNextMonth={goToNextMonth}
-            hasEventOnDate={(date) =>
-              getMeetingsOnDate(meetings, date).length > 0
-            }
-            isDateDisabled={(date) => isPastDay(date, today)}
-          />
-
-          <Button
-            type="button"
-            size="cta"
-            className="bg-sub2-normal hover:bg-sub2-normal-hover mt-6"
-            onClick={handleConfirm}
-          >
-            확인
-          </Button>
-        </div>
-      </div>
-    </div>
+      <Button
+        type="button"
+        className="bg-sub2-normal hover:bg-sub2-normal-hover mt-6"
+        onClick={handleConfirm}
+      >
+        확인
+      </Button>
+    </BottomSheet>
   );
 };

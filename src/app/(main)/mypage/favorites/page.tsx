@@ -155,7 +155,7 @@ const FavoritesPage = () => {
         <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md bg-white px-3 py-4">
           <Button
             type="button"
-            size="cta"
+            disabled={!selectedPlace}
             onClick={handleAddClick}
             className="bg-sub2-normal hover:bg-transport rounded-16 h-14"
           >

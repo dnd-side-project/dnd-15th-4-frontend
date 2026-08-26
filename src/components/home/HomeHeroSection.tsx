@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import heroEmptyImage from "@/assets/images/home-empty-hero.png";
-import heroProcessImage from "@/assets/images/home-process-hero.png";
 
 import { AlertModal } from "@/components/common/AlertModal";
+import { getRandomBrandImage } from "@/constants/branding-images";
 import { AvatarStack } from "@/components/home/AvatarStack";
 import { IcProfile } from "@/components/icons/IcProfile";
 import { IcArrivalDot, IcPuzzlePiece } from "@/components/icons";
@@ -129,6 +129,8 @@ const HomeHeroSectionActive = ({
     latitude: meeting.latitude,
     longitude: meeting.longitude,
   };
+
+  const [heroProcessImage] = useState(() => getRandomBrandImage());
 
   return (
     <button

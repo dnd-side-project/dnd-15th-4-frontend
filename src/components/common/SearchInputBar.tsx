@@ -17,34 +17,42 @@ export const SearchInputBar = ({
   onBack,
   placeholder,
   className,
-}: SearchInputBarProps) => (
-  <div
-    className={cn(
-      "border-border-2 rounded-16 flex h-13.75 items-center gap-1.75 border pl-4 pr-4.75",
-      className
-    )}
-  >
-    {onBack && (
-      <button type="button" onClick={onBack} aria-label="뒤로 가기">
-        <IcArrowBack size={24} className="text-disable" />
-      </button>
-    )}
-    <input
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-      placeholder={placeholder}
-      className="body3 text-primary placeholder:text-disable flex-1 bg-transparent outline-none"
-    />
-    {value ? (
-      <button
-        type="button"
-        onClick={() => onChange("")}
-        aria-label="검색어 지우기"
-      >
-        <IcClose size={24} className="text-border-4" />
-      </button>
-    ) : (
-      <IcSearch size={24} className="text-border-4" />
-    )}
-  </div>
-);
+}: SearchInputBarProps) => {
+  const isClearable = value.length > 0;
+  const ResolvedIcon = isClearable ? IcClose : IcSearch;
+  const handleTrailingIconClick = isClearable ? () => onChange("") : undefined;
+
+  return (
+    <div
+      className={cn(
+        "border-border-2 rounded-16 flex h-13.75 items-center gap-1.75 border bg-white pl-4 pr-4.75",
+        className
+      )}
+    >
+      {onBack && (
+        <button type="button" onClick={onBack} aria-label="뒤로 가기">
+          <IcArrowBack size={24} className="text-disable" />
+        </button>
+      )}
+
+      <input
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        className="body3 text-primary placeholder:text-disable flex-1 bg-transparent outline-none"
+      />
+
+      {handleTrailingIconClick ? (
+        <button
+          type="button"
+          onClick={handleTrailingIconClick}
+          aria-label={isClearable ? "검색어 지우기" : "검색"}
+        >
+          <ResolvedIcon size={24} className="text-border-4" />
+        </button>
+      ) : (
+        <ResolvedIcon size={24} className="text-border-4" />
+      )}
+    </div>
+  );
+};

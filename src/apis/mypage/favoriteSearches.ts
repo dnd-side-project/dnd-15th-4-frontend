@@ -7,7 +7,7 @@ import type {
 
 export const fetchFavoriteSearches = async (): Promise<FavoriteSearchDto[]> => {
   const result = await api.get<ApiResult<FavoriteSearchDto[]>>(
-    "/api/v1/users/me/favorite-searches"
+    "/users/me/favorite-searches"
   );
   return result.data;
 };
@@ -16,7 +16,7 @@ export const addFavoriteSearch = async (
   request: AddFavoriteSearchRequest
 ): Promise<FavoriteSearchDto> => {
   const result = await api.post<ApiResult<FavoriteSearchDto>>(
-    "/api/v1/users/me/favorite-searches",
+    "/users/me/favorite-searches",
     request
   );
   return result.data;
@@ -25,5 +25,5 @@ export const addFavoriteSearch = async (
 export const deleteFavoriteSearch = async (
   favoriteSearchId: number
 ): Promise<void> => {
-  await api.delete(`/api/v1/users/me/favorite-searches/${favoriteSearchId}`);
+  await api.delete(`/users/me/favorite-searches/${favoriteSearchId}`);
 };

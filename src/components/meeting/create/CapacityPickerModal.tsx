@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 
+import { Drawer } from "@base-ui/react/drawer";
+
+import { BottomSheet } from "@/components/common/BottomSheet";
 import { Button } from "@/components/common/Button";
 import { WheelPicker } from "@/components/common/WheelPicker";
 
@@ -20,8 +23,6 @@ export const CapacityPickerModal = ({
   onConfirm,
   onClose,
 }: CapacityPickerModalProps) => {
-  const handleClose = onClose;
-
   const items = Array.from({ length: max - min + 1 }, (_, index) =>
     String(min + index)
   );
@@ -32,46 +33,33 @@ export const CapacityPickerModal = ({
   );
 
   return (
-    <div
-      data-testid="capacity-picker-modal"
-      aria-label="참여 인원 선택"
-      className="fixed inset-0 z-60 mx-auto w-full max-w-md"
+    <BottomSheet
+      open
+      onOpenChange={(open) => !open && onClose()}
+      backdropTestId="capacity-picker-backdrop"
+      className="px-5 pb-3"
     >
-      <button
-        data-testid="capacity-picker-backdrop"
-        type="button"
-        aria-label="닫기"
-        onClick={handleClose}
-        className="absolute inset-0 bg-black/63 backdrop-blur-[2px]"
-      />
+      <Drawer.Title className="sr-only">참여 인원 선택</Drawer.Title>
 
-      <div className="rounded-tl-20 rounded-tr-20 absolute inset-x-0 bottom-0 flex flex-col gap-6 bg-white pt-3 pb-8">
-        <div className="bg-border-1 rounded-pill mx-auto h-1 w-18" />
+      <h2 className="h3 text-primary mb-6 text-center">참여 인원</h2>
 
-        <div className="h3 text-primary text-center font-semibold">
-          참여 인원
-        </div>
+      <div className="relative my-6 flex items-center justify-center">
+        <div className="bg-primary-light-hover rounded-16 pointer-events-none absolute inset-x-0 top-1/2 h-11 -translate-y-1/2" />
 
-        <div className="relative flex items-center justify-center">
-          <div className="bg-primary-light-hover rounded-16 pointer-events-none absolute inset-x-0 top-1/2 h-11 -translate-y-1/2" />
-          <WheelPicker
-            items={items}
-            initialIndex={pendingValue - min}
-            onChange={(index) => setPendingValue(min + index)}
-          />
-        </div>
-
-        <div className="px-4">
-          <Button
-            type="button"
-            size="cta"
-            className="bg-sub2-normal hover:bg-sub2-normal-hover"
-            onClick={() => onConfirm(pendingValue)}
-          >
-            확인
-          </Button>
-        </div>
+        <WheelPicker
+          items={items}
+          initialIndex={pendingValue - min}
+          onChange={(index) => setPendingValue(min + index)}
+        />
       </div>
-    </div>
+
+      <Button
+        type="button"
+        className="mt-6"
+        onClick={() => onConfirm(pendingValue)}
+      >
+        확인
+      </Button>
+    </BottomSheet>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { AlertModal } from "@/components/common/AlertModal";
@@ -8,6 +8,8 @@ import { Button } from "@/components/common/Button";
 import { Header } from "@/components/common/Header";
 import { InfoBanner } from "@/components/common/InfoBanner";
 import { Input } from "@/components/common/Input";
+import { PlaceMarker } from "@/components/common/PlaceMarker";
+import { PlaceSearchTrigger } from "@/components/common/PlaceSearchTrigger";
 import { ToggleField } from "@/components/common/ToggleField";
 import { CapacityField } from "@/components/meeting/create/CapacityField";
 import { CapacityPickerModal } from "@/components/meeting/create/CapacityPickerModal";
@@ -16,10 +18,8 @@ import { DateSelectModal } from "@/components/meeting/create/DateSelectModal";
 import { ImageCropModal } from "@/components/meeting/create/ImageCropModal";
 import { ImageUploadBox } from "@/components/meeting/create/ImageUploadBox";
 import { PlaceSearchModal } from "@/components/meeting/create/PlaceSearchModal";
-import { PlaceSearchTrigger } from "@/components/meeting/create/PlaceSearchTrigger";
 import { TimeSelectModal } from "@/components/meeting/create/TimeSelectModal";
 import { MeetingMap } from "@/components/meeting/progress/MeetingMap";
-import { AdvancedMarker } from "@vis.gl/react-google-maps";
 import { useCapacitySelection } from "@/hooks/meeting/create/useCapacitySelection";
 import { useCreateMeetingMutation } from "@/hooks/meeting/create/useCreateMeeting";
 import { useDateTimeSelection } from "@/hooks/meeting/create/useDateTimeSelection";
@@ -65,6 +65,15 @@ export default function CreateMeetingPage() {
 
   const createMeetingMutation = useCreateMeetingMutation();
   const { data: existingMeetings = [] } = useMeetingsQuery();
+
+  useEffect(() => {
+    document.documentElement.classList.add("scrollbar-none");
+    document.body.classList.add("scrollbar-none");
+    return () => {
+      document.documentElement.classList.remove("scrollbar-none");
+      document.body.classList.remove("scrollbar-none");
+    };
+  }, []);
 
   const isNicknameValid = !nicknameParticipation || nickname.trim().length > 0;
   const isCapacitySelected =
@@ -131,9 +140,11 @@ export default function CreateMeetingPage() {
 
   return (
     <div className="relative min-h-dvh bg-white">
-      <div className="sticky top-0 z-20 bg-white">
-        <Header title="약속방 만들기" onBack={() => router.back()} />
-      </div>
+      <Header
+        title="약속방 만들기"
+        onBack={() => router.back()}
+        className="sticky top-0 z-10 bg-white"
+      />
 
       <main className="flex flex-col items-center gap-7 px-4 pt-2 pb-32">
         <InfoBanner text="다 같이 사진 올리면, 그 중 랜덤으로 퍼즐을 맞출 수 있어요!" />
@@ -200,7 +211,7 @@ export default function CreateMeetingPage() {
                   zoom={16}
                   className="size-full"
                 >
-                  <AdvancedMarker
+                  <PlaceMarker
                     position={{ lat: place.latitude, lng: place.longitude }}
                   />
                 </MeetingMap>
@@ -248,10 +259,9 @@ export default function CreateMeetingPage() {
         </div>
       </main>
 
-      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md bg-white px-4 pt-4 pb-8">
+      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md bg-white px-4 pt-4 pb-3">
         <Button
           type="button"
-          size="cta"
           disabled={
             !canSubmit || isSubmitting || createMeetingMutation.isPending
           }

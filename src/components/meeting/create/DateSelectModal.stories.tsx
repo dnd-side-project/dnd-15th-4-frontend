@@ -1,14 +1,49 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { expect, fn, screen, userEvent, waitFor } from "storybook/test";
 
 import { DateSelectModal } from "./DateSelectModal";
 import type { MeetingData } from "@/types/meeting";
+
+const getFutureDates = () => {
+  const now = new Date();
+  const currentMonthDate = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1
+  );
+  const nextMonthDate = new Date(now.getFullYear(), now.getMonth() + 1, 10);
+
+  const nextMonthConfirmDate = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    20
+  );
+
+  const formatDateIso = (d: Date, hour: number) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const h = String(hour).padStart(2, "0");
+    return `${year}-${month}-${day}T${h}:00:00+09:00`;
+  };
+
+  return {
+    now,
+    currentMonthDate,
+    nextMonthDate,
+    nextMonthConfirmDate,
+    isoSchedule1: formatDateIso(currentMonthDate, 18),
+    isoSchedule2: formatDateIso(currentMonthDate, 20),
+  };
+};
+
+const futureDates = getFutureDates();
 
 const MOCK_MEETINGS: MeetingData[] = [
   {
     meetingId: 1,
     title: "성수동 약속",
-    dateTime: "2026-08-21T18:00:00+09:00",
+    dateTime: futureDates.isoSchedule1,
     place: "성수 상상플래닛",
     latitude: 37.5445,
     longitude: 127.0557,
@@ -21,7 +56,7 @@ const MOCK_MEETINGS: MeetingData[] = [
   {
     meetingId: 2,
     title: "저녁 약속",
-    dateTime: "2026-08-21T20:00:00+09:00",
+    dateTime: futureDates.isoSchedule2,
     place: "성수동 카페",
     latitude: 37.5445,
     longitude: 127.0557,
@@ -60,62 +95,82 @@ export const Default: Story = {
 
 export const SelectedDateHasSchedules: Story = {
   args: {
-    initialDate: new Date(2026, 7, 21),
+    initialDate: futureDates.currentMonthDate,
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
+  play: async () => {
     await waitFor(() =>
-      expect(canvas.getByText("성수동 약속")).toBeInTheDocument()
+      expect(screen.getByText("성수동 약속")).toBeInTheDocument()
     );
-    expect(canvas.getByText("저녁 약속")).toBeInTheDocument();
+    expect(screen.getByText("저녁 약속")).toBeInTheDocument();
   },
 };
 
 export const SelectDateAndConfirm: Story = {
   args: {
-    initialDate: new Date(2026, 7, 20),
+    initialDate: futureDates.currentMonthDate,
   },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    const day25 = await canvas.findByRole("button", { name: "8월 25일" });
+  play: async ({ args }) => {
+    const targetMonth = futureDates.nextMonthConfirmDate.getMonth() + 1;
+    const targetDay = futureDates.nextMonthConfirmDate.getDate();
+    const dayAriaLabel = `${targetMonth}월 ${targetDay}일`;
 
-    await userEvent.click(day25);
+    const nextButton = await screen.findByRole("button", { name: "다음 달" });
+    await userEvent.click(nextButton);
 
-    const confirmButton = await canvas.findByRole("button", { name: "확인" });
+    const targetDayButton = await screen.findByRole("button", {
+      name: dayAriaLabel,
+    });
+
+    await userEvent.click(targetDayButton);
+    await waitFor(() =>
+      expect(targetDayButton).toHaveAccessibleName(`${dayAriaLabel}, 선택됨`)
+    );
+
+    const confirmButton = await screen.findByRole("button", { name: "확인" });
     await userEvent.click(confirmButton);
 
     await waitFor(() => expect(args.onConfirm).toHaveBeenCalled());
 
     const confirmedDate = (args.onConfirm as ReturnType<typeof fn>).mock
       .calls[0][0] as Date;
-    expect(confirmedDate.getDate()).toBe(25);
+    expect(confirmedDate.getDate()).toBe(targetDay);
   },
 };
 
 export const NavigateMonth: Story = {
   args: {
-    initialDate: new Date(2026, 7, 20),
+    initialDate: futureDates.currentMonthDate,
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    expect(canvas.getByText("2026년 8월")).toBeInTheDocument();
+  play: async () => {
+    const currentYear = futureDates.currentMonthDate.getFullYear();
+    const currentMonth = futureDates.currentMonthDate.getMonth() + 1;
 
-    const nextButton = await canvas.findByRole("button", { name: "다음 달" });
+    expect(
+      screen.getByText(`${currentYear}년 ${currentMonth}월`)
+    ).toBeInTheDocument();
+
+    const nextButton = await screen.findByRole("button", { name: "다음 달" });
     await userEvent.click(nextButton);
 
+    const nextMonthDate = new Date(
+      currentYear,
+      futureDates.currentMonthDate.getMonth() + 1,
+      1
+    );
+    const nextYear = nextMonthDate.getFullYear();
+    const nextMonth = nextMonthDate.getMonth() + 1;
+
     await waitFor(() =>
-      expect(canvas.getByText("2026년 9월")).toBeInTheDocument()
+      expect(
+        screen.getByText(`${nextYear}년 ${nextMonth}월`)
+      ).toBeInTheDocument()
     );
   },
 };
 
 export const CloseOnBackdropClick: Story = {
-  play: async ({ canvasElement, args }) => {
-    const backdrop = canvasElement.querySelector<HTMLElement>(
-      '[data-testid="data-select-backdrop"]'
-    );
-    if (!backdrop) throw new Error("Backdrop element not found");
+  play: async ({ args }) => {
+    const backdrop = screen.getByTestId("data-select-backdrop");
 
     await userEvent.click(backdrop);
 

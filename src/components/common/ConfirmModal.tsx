@@ -39,7 +39,6 @@ export const ConfirmModal = ({
         <Button
           type="button"
           variant="outline"
-          size="cta"
           onClick={onCancel}
           className="text-red hover:bg-bg-normal rounded-16 bottom-button hover:text-red h-14 flex-1 border-1"
         >
@@ -48,7 +47,6 @@ export const ConfirmModal = ({
       )}
       <Button
         type="button"
-        size="cta"
         onClick={onConfirm}
         className="bg-sub2-normal hover:bg-sub2-normal rounded-16 text-surface-0 bottom-button h-14 flex-1"
       >

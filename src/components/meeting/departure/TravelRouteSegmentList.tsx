@@ -3,6 +3,7 @@ import { IcBus, IcSubway, IcWalk } from "@/components/icons";
 import type { IconProps } from "@/components/icons/icon.types";
 import { cn } from "@/lib/utils";
 import type { MeetingRouteStep } from "@/types/meeting";
+import { getRoParticle } from "@/utils/korean";
 
 const STEP_ICON_MAP: Record<
   MeetingRouteStep["type"],
@@ -19,24 +20,6 @@ const MOVEMENT_SUFFIX_PATTERN = /\s*이동$/;
 const stripMovementSuffix = (text: string): string =>
   text.replace(MOVEMENT_SUFFIX_PATTERN, "");
 
-const getEuroParticle = (text: string): "로" | "으로" => {
-  const trimmed = text.trim();
-  const lastChar = trimmed.at(-1);
-  if (!lastChar) return "으로";
-
-  if (/\d/.test(lastChar)) {
-    return ["1", "2", "4", "5", "7", "8", "9"].includes(lastChar)
-      ? "로"
-      : "으로";
-  }
-
-  const code = lastChar.charCodeAt(0);
-  if (code < 0xac00 || code > 0xd7a3) return "으로";
-
-  const jongseongIndex = (code - 0xac00) % 28;
-  return jongseongIndex === 0 || jongseongIndex === 8 ? "로" : "으로";
-};
-
 const getBoardingStopLabel = (step: MeetingRouteStep): string =>
   step.type === "BUS"
     ? `${step.station?.start} 정거장`
@@ -45,6 +28,7 @@ const getBoardingStopLabel = (step: MeetingRouteStep): string =>
 interface RouteRow {
   key: string;
   label: string;
+  particle?: string;
   icon: React.ComponentType<IconProps>;
 }
 
@@ -81,7 +65,8 @@ const buildStepRows = (
     return [
       {
         key: `${index}`,
-        label: `${target}${getEuroParticle(target)} 이동`,
+        label: target,
+        particle: getRoParticle(target),
         icon,
       },
     ];
@@ -91,7 +76,8 @@ const buildStepRows = (
     return [
       {
         key: `${index}`,
-        label: `${destinationName}${getEuroParticle(destinationName)} 이동`,
+        label: destinationName,
+        particle: getRoParticle(destinationName),
         icon,
       },
     ];
@@ -177,7 +163,15 @@ export const TravelRouteSegmentList = ({
             </div>
 
             <div className={cn("flex-1 pt-0.5", !isLast && "pb-6")}>
-              <p className="body6 text-secondary-1">{row.label}</p>
+              <p
+                className={cn(
+                  "body6",
+                  row.particle ? "text-disable" : "text-secondary-1"
+                )}
+              >
+                {row.label}
+                {row.particle && `${row.particle} 이동`}
+              </p>
             </div>
           </div>
         );

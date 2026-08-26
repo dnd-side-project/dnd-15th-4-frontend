@@ -9,7 +9,7 @@ export const exchangeKakaoCode = async (
   state: string
 ): Promise<void> => {
   try {
-    await api.get("/api/v1/auth/kakao/callback", {
+    await api.get("/auth/kakao/callback", {
       params: { code, state },
       redirect: "manual",
     });
@@ -20,7 +20,7 @@ export const exchangeKakaoCode = async (
 
 export const reissueAccessToken = async (): Promise<string> => {
   const result = await api.post<ApiResult<ReissueResponseDto>>(
-    "/api/v1/auth/reissue",
+    "/auth/reissue",
     undefined,
     { headers: JSON_CONTENT_TYPE_HEADERS }
   );
@@ -28,7 +28,7 @@ export const reissueAccessToken = async (): Promise<string> => {
 };
 
 export const logoutRequest = async (): Promise<void> => {
-  await api.post<ApiResult<null>>("/api/v1/auth/logout", undefined, {
+  await api.post<ApiResult<null>>("/auth/logout", undefined, {
     headers: JSON_CONTENT_TYPE_HEADERS,
   });
 };

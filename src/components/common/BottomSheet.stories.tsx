@@ -3,6 +3,11 @@ import type { ComponentProps } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { BottomSheet } from "./BottomSheet";
+import { MeetingProgressSheet } from "@/components/meeting/progress/MeetingProgressSheet";
+import {
+  mockMeetingParticipants,
+  mockMeetingSummary,
+} from "@/mocks/mockMeetings";
 
 const meta = {
   title: "Common/BottomSheet",
@@ -104,4 +109,40 @@ export const WithSnapPoints: Story = {
       </div>
     </SheetPreview>
   ),
+};
+
+const MEETING_DETAIL_SNAP_POINTS = [100, 270, 9999];
+
+const MeetingDetailPagePreview = () => {
+  const [snapPoint, setSnapPoint] = useState<number>(270);
+
+  return (
+    <div className="bg-bg-gray relative h-screen w-full overflow-hidden">
+      <BottomSheet
+        open
+        onOpenChange={() => {}}
+        modal={false}
+        shouldShowBackdrop={false}
+        disablePointerDismissal
+        snapPoints={MEETING_DETAIL_SNAP_POINTS}
+        snapPoint={snapPoint}
+        onSnapPointChange={(point) => {
+          if (typeof point !== "number") return;
+          setSnapPoint(point);
+        }}
+      >
+        <MeetingProgressSheet
+          participants={mockMeetingParticipants.participants}
+          meetingPlaceLocation={{
+            latitude: mockMeetingSummary.latitude,
+            longitude: mockMeetingSummary.longitude,
+          }}
+        />
+      </BottomSheet>
+    </div>
+  );
+};
+
+export const MeetingDetailPage: Story = {
+  render: () => <MeetingDetailPagePreview />,
 };

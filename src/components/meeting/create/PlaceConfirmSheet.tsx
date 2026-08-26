@@ -3,18 +3,19 @@
 import { useState } from "react";
 
 import { Drawer } from "@base-ui/react/drawer";
-import { AdvancedMarker } from "@vis.gl/react-google-maps";
 
 import { AlertModal } from "@/components/common/AlertModal";
 import { BottomSheet } from "@/components/common/BottomSheet";
 import { Button } from "@/components/common/Button";
-import { IcArrowBack, IcStar } from "@/components/icons";
+import { PlaceMarker } from "@/components/common/PlaceMarker";
+import { IcStar } from "@/components/icons";
 import { MeetingMap } from "@/components/meeting/progress/MeetingMap";
 import {
   MAX_FAVORITE_PLACE_COUNT,
   usePlaceSearchFavorites,
 } from "@/hooks/place/usePlaceSearchFavorites";
 import type { PlaceDto } from "@/types/place";
+import { getRoParticle } from "@/utils/korean";
 
 export interface PlaceConfirmSheetProps {
   place: PlaceDto;
@@ -47,35 +48,29 @@ export const PlaceConfirmSheet = ({
   };
 
   return (
-    <div className="absolute inset-0 z-10 flex flex-col bg-white">
-      <div className="flex items-center gap-3 px-4 pt-5 pb-3">
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="뒤로 가기"
-          className="text-title flex size-6 shrink-0 items-center justify-center"
-        >
-          <IcArrowBack size={24} />
-        </button>
-        <span className="body2 text-primary truncate">{place.placeName}</span>
-      </div>
-
+    <div className="absolute inset-0 flex flex-col">
       <div className="relative flex-1">
         <MeetingMap center={position} zoom={16} className="size-full">
-          <AdvancedMarker position={position} />
+          <PlaceMarker position={position} placeName={place.placeName} />
         </MeetingMap>
       </div>
 
-      <BottomSheet open onOpenChange={(open) => !open && onClose()}>
+      <BottomSheet
+        open
+        onOpenChange={(open) => !open && onClose()}
+        shouldShowBackdrop={false}
+        modal={false}
+        disablePointerDismissal
+      >
         <Drawer.Title className="sr-only">
           {place.placeName} 장소 확인
         </Drawer.Title>
-        <div className="flex w-full flex-col gap-5 px-4 pb-8">
+        <div className="flex w-full flex-col gap-5 px-4 pb-3">
           <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 flex-col gap-1">
               <p className="h4 text-primary wrap-break-word break-keep">
-                <span className="text-primary-normal">{place.placeName}</span>로
-                모일까요?
+                <span className="text-primary-normal">{place.placeName}</span>
+                {getRoParticle(place.placeName)} 모일까요?
               </p>
               <p className="body6 text-disable">
                 {place.roadAddressName || place.addressName}
@@ -98,7 +93,6 @@ export const PlaceConfirmSheet = ({
 
           <Button
             type="button"
-            size="cta"
             onClick={() => onConfirm(place)}
             className="bg-sub2-normal hover:bg-sub2-normal-hover"
           >

@@ -5,12 +5,12 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { AlertModal } from "@/components/common/AlertModal";
-import { Button } from "@/components/common/Button";
 import { Header } from "@/components/common/Header";
 import { InfoBanner } from "@/components/common/InfoBanner";
-import { InputLayout } from "@/components/common/InputLayout";
+import { PlaceSearchTrigger } from "@/components/common/PlaceSearchTrigger";
 import { ToggleField } from "@/components/common/ToggleField";
 import { DepartureOriginSearchOverlay } from "@/components/meeting/departure/DepartureOriginSearchOverlay";
+import { RouteSelectTrigger } from "@/components/meeting/departure/RouteSelectTrigger";
 import { TravelRouteList } from "@/components/meeting/departure/TravelRouteList";
 import { TravelRouteSummaryCard } from "@/components/meeting/departure/TravelRouteSummaryCard";
 import { getRouteSummary } from "@/components/meeting/departure/TravelRouteSegmentList";
@@ -25,6 +25,7 @@ import type {
   Participant,
 } from "@/types/meeting";
 import { formatMeetingDateTime } from "@/utils/date";
+import { DoubleButton } from "@/components/common/DoubleButton";
 
 interface ParticipantAvatarProps {
   participant: Participant;
@@ -145,7 +146,11 @@ const DepartureSetupPage = () => {
   if (!meeting) {
     return (
       <div className="flex min-h-dvh flex-col">
-        <Header title="출발설정" onBack={() => router.back()} />
+        <Header
+          title="출발 설정"
+          onBack={() => router.back()}
+          className="bg-primary-light-active sticky top-0 z-10"
+        />
         <p className="body3 text-disable flex flex-1 items-center justify-center">
           {isMeetingLoading
             ? "약속 정보를 불러오고 있어요"
@@ -165,10 +170,13 @@ const DepartureSetupPage = () => {
   });
 
   return (
-    <div className="relative min-h-dvh bg-white pb-30">
+    <div className="h-screen scrollbar-none overflow-y-auto pb-12">
+      <Header
+        title="출발 설정"
+        onBack={() => router.back()}
+        className="bg-primary-light-active sticky top-0 z-10"
+      />
       <div className="bg-primary-light-active">
-        <Header title="출발설정" onBack={() => router.back()} />
-
         <div className="flex flex-col gap-6 px-4 pt-2 pb-7">
           <div className="flex flex-col gap-2">
             <h2 className="h1 text-primary wrap-break-word">
@@ -194,50 +202,30 @@ const DepartureSetupPage = () => {
       </div>
 
       <div className="flex flex-col gap-6 px-4 pt-6">
-        <InputLayout label="출발지" hasValue={Boolean(origin)}>
-          <button
-            type="button"
-            onClick={() => setIsOriginSearchOpen(true)}
-            className="flex w-full items-center text-left outline-none"
-          >
-            {origin ? (
-              <span className="body3 text-primary break-all">
-                {origin.placeName}
-              </span>
-            ) : (
-              <span className="body3 text-disable">출발지를 선택해주세요</span>
-            )}
-          </button>
-        </InputLayout>
+        <PlaceSearchTrigger
+          label="출발지"
+          place={origin}
+          placeholder="출발지를 선택해주세요"
+          onClick={() => setIsOriginSearchOpen(true)}
+        />
 
-        <InputLayout
+        <RouteSelectTrigger
           label={selectedRoute ? "이동경로 요약" : "이동 경로"}
-          hasValue={Boolean(selectedRoute)}
-          disabled={!origin}
-        >
-          <button
-            type="button"
-            onClick={handleRouteFieldClick}
-            disabled={!origin}
-            className="flex w-full items-center text-left outline-none disabled:cursor-not-allowed"
-          >
-            {selectedRoute ? (
-              <span className="body3 text-primary break-all">
-                {getRouteSummary(
+          value={
+            selectedRoute
+              ? getRouteSummary(
                   selectedRoute.steps,
                   originName,
                   destinationName
-                )}
-              </span>
-            ) : (
-              <span className="body3 text-disable">
-                {origin
-                  ? "이동 경로를 선택해주세요"
-                  : "출발지를 먼저 선택해주세요"}
-              </span>
-            )}
-          </button>
-        </InputLayout>
+                )
+              : null
+          }
+          placeholder={
+            origin ? "이동 경로를 선택해주세요" : "출발지를 먼저 선택해주세요"
+          }
+          disabled={!origin}
+          onClick={handleRouteFieldClick}
+        />
 
         {isRouteListOpen &&
           (searchRoutesMutation.isPending ? (
@@ -296,28 +284,15 @@ const DepartureSetupPage = () => {
       )}
 
       <div className="fixed inset-x-0 bottom-0 z-20 mx-auto flex w-full max-w-md gap-3 bg-white px-4 pt-4 pb-3">
-        <Button
-          type="button"
-          variant="outline"
-          size="cta"
-          onClick={handleReset}
-          className="rounded-16 h-14 flex-1"
-        >
-          초기화
-        </Button>
-        <Button
-          type="button"
-          size="cta"
-          disabled={!canDepart || createDepartureMutation.isPending}
-          onClick={handleDepart}
-          className={
-            canDepart
-              ? "bg-sub2-normal hover:bg-sub2-normal-hover rounded-16 h-14 flex-1"
-              : "bg-disable rounded-16 h-14 flex-1"
+        <DoubleButton
+          secondaryLabel="초기화"
+          onSecondaryClick={handleReset}
+          primaryLabel={
+            createDepartureMutation.isPending ? "출발 설정 중..." : "출발하기"
           }
-        >
-          {createDepartureMutation.isPending ? "출발 설정 중..." : "출발하기"}
-        </Button>
+          onPrimaryClick={handleDepart}
+          isPrimaryDisabled={!canDepart || createDepartureMutation.isPending}
+        />
       </div>
 
       {isOriginSearchOpen && (
