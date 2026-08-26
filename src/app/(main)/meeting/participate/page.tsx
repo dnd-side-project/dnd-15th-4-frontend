@@ -68,6 +68,8 @@ export default function MeetingParticipatePage() {
             inviteCode,
             nickname:
               nicknameParticipation && nickname.trim() ? nickname.trim() : null,
+            nicknameSet: nicknameParticipation,
+            imageSet: selectedImage.type === "default",
           },
           image,
         },

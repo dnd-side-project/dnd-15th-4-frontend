@@ -174,6 +174,8 @@ export interface MeetingPreviewResponse {
 export interface MeetingJoinRequest {
   inviteCode: string;
   nickname?: string | null;
+  nicknameSet: boolean;
+  imageSet: boolean;
 }
 
 export interface MeetingJoinResponse {
