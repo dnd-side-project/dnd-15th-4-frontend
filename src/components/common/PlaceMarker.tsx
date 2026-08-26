@@ -11,10 +11,12 @@ export interface PlaceMarkerProps {
 
 export const PlaceMarker = ({ position, placeName }: PlaceMarkerProps) => (
   <AdvancedMarker position={position}>
-    <div className="flex flex-col items-center">
+    <div className="relative">
       <Image src={pinImage} alt="" width={42} height={42} />
       {placeName && (
-        <p className="body5 text-primary py-1 whitespace-nowrap">{placeName}</p>
+        <p className="body5 text-primary absolute top-full left-1/2 -translate-x-1/2 py-1 whitespace-nowrap">
+          {placeName}
+        </p>
       )}
     </div>
   </AdvancedMarker>
