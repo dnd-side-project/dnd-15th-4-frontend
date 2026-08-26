@@ -11,7 +11,6 @@ import { NotificationSettingsSection } from "@/components/mypage/NotificationSet
 import { useFavoriteSearchesQuery } from "@/hooks/mypage/useFavoriteSearches";
 import { usePuzzlesQuery } from "@/hooks/mypage/usePuzzles";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
-import { MOCK_USER } from "@/mocks/mockUser";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 const MyPage = () => {
@@ -64,9 +63,7 @@ const MyPage = () => {
           },
         ]}
       />
-      <NotificationSettingsSection
-        notificationSettings={MOCK_USER.notificationSettings}
-      />
+      <NotificationSettingsSection />
       <div className="bg-divider-2 mt-6 h-2 w-full" />
       <AccountSection email={user?.email} />
     </div>
