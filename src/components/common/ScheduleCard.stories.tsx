@@ -21,6 +21,8 @@ const mockMeeting: MeetingData = {
   ).toISOString(),
   place: "강남역 11번 출구",
   status: "WAITING",
+  capacity: 4,
+  currentParticipantCount: 2,
   participants: [
     { id: 1, name: "김철수", profileImageUrl: "/character-1.png" },
     { id: 2, name: "이영희", profileImageUrl: "/character-1.png" },

@@ -17,6 +17,8 @@ export interface MeetingData {
   place: string;
   latitude: number;
   longitude: number;
+  capacity: number;
+  currentParticipantCount: number;
   participants: Participant[];
   status: MeetingStatus;
 }
@@ -164,6 +166,8 @@ export interface MeetingPreviewResponse {
   latitude: number;
   longitude: number;
   status: MeetingStatus;
+  capacity: number;
+  currentMemberCount: number;
   participants: MeetingPreviewParticipant[];
 }
 

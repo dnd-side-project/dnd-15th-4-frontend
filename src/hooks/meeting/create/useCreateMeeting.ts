@@ -33,6 +33,8 @@ export const useCreateMeetingMutation = () => {
           place: request.destination,
           latitude: request.latitude,
           longitude: request.longitude,
+          capacity: request.capacity,
+          currentParticipantCount: 1,
           status: "WAITING",
           participants: [],
         }

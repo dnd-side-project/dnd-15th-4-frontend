@@ -11,6 +11,8 @@ const mockSchedules: MeetingData[] = [
     title: "강남역 모임 약속",
     dateTime: "2026-08-20T19:00:00+09:00",
     place: "강남역 11번 출구",
+    capacity: 4,
+    currentParticipantCount: 2,
     participants: [
       { id: 1, name: "김철수", profileImageUrl: "/character-1.png" },
       { id: 2, name: "이영희", profileImageUrl: "/character-1.png" },
@@ -24,6 +26,8 @@ const mockSchedules: MeetingData[] = [
     title: "성수동 보드게임 모임",
     dateTime: "2026-08-23T14:30:00+09:00",
     place: "성수동 히어로보드게임카페",
+    capacity: 4,
+    currentParticipantCount: 1,
     participants: [
       { id: 3, name: "박민수", profileImageUrl: "/character-1.png" },
     ],
