@@ -15,6 +15,7 @@ import {
   usePlaceSearchFavorites,
 } from "@/hooks/place/usePlaceSearchFavorites";
 import type { PlaceDto } from "@/types/place";
+import { getRoParticle } from "@/utils/korean";
 
 export interface PlaceConfirmSheetProps {
   place: PlaceDto;
@@ -66,8 +67,8 @@ export const PlaceConfirmSheet = ({
           <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 flex-col gap-1">
               <p className="h4 text-primary wrap-break-word break-keep">
-                <span className="text-primary-normal">{place.placeName}</span>로
-                모일까요?
+                <span className="text-primary-normal">{place.placeName}</span>
+                {getRoParticle(place.placeName)} 모일까요?
               </p>
               <p className="body6 text-disable">
                 {place.roadAddressName || place.addressName}

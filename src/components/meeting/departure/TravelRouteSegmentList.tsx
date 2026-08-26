@@ -3,6 +3,7 @@ import { IcBus, IcSubway, IcWalk } from "@/components/icons";
 import type { IconProps } from "@/components/icons/icon.types";
 import { cn } from "@/lib/utils";
 import type { MeetingRouteStep } from "@/types/meeting";
+import { getRoParticle } from "@/utils/korean";
 
 const STEP_ICON_MAP: Record<
   MeetingRouteStep["type"],
@@ -18,24 +19,6 @@ const MOVEMENT_SUFFIX_PATTERN = /\s*이동$/;
 
 const stripMovementSuffix = (text: string): string =>
   text.replace(MOVEMENT_SUFFIX_PATTERN, "");
-
-const getEuroParticle = (text: string): "로" | "으로" => {
-  const trimmed = text.trim();
-  const lastChar = trimmed.at(-1);
-  if (!lastChar) return "으로";
-
-  if (/\d/.test(lastChar)) {
-    return ["1", "2", "4", "5", "7", "8", "9"].includes(lastChar)
-      ? "로"
-      : "으로";
-  }
-
-  const code = lastChar.charCodeAt(0);
-  if (code < 0xac00 || code > 0xd7a3) return "으로";
-
-  const jongseongIndex = (code - 0xac00) % 28;
-  return jongseongIndex === 0 || jongseongIndex === 8 ? "로" : "으로";
-};
 
 const getBoardingStopLabel = (step: MeetingRouteStep): string =>
   step.type === "BUS"
@@ -83,7 +66,7 @@ const buildStepRows = (
       {
         key: `${index}`,
         label: target,
-        particle: getEuroParticle(target),
+        particle: getRoParticle(target),
         icon,
       },
     ];
@@ -94,7 +77,7 @@ const buildStepRows = (
       {
         key: `${index}`,
         label: destinationName,
-        particle: getEuroParticle(destinationName),
+        particle: getRoParticle(destinationName),
         icon,
       },
     ];
