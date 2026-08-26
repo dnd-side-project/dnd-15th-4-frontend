@@ -8,6 +8,7 @@ import { Button } from "@/components/common/Button";
 import { Header } from "@/components/common/Header";
 import { InfoBanner } from "@/components/common/InfoBanner";
 import { Input } from "@/components/common/Input";
+import { PlaceMarker } from "@/components/common/PlaceMarker";
 import { PlaceSearchTrigger } from "@/components/common/PlaceSearchTrigger";
 import { ToggleField } from "@/components/common/ToggleField";
 import { CapacityField } from "@/components/meeting/create/CapacityField";
@@ -19,7 +20,6 @@ import { ImageUploadBox } from "@/components/meeting/create/ImageUploadBox";
 import { PlaceSearchModal } from "@/components/meeting/create/PlaceSearchModal";
 import { TimeSelectModal } from "@/components/meeting/create/TimeSelectModal";
 import { MeetingMap } from "@/components/meeting/progress/MeetingMap";
-import { AdvancedMarker } from "@vis.gl/react-google-maps";
 import { useCapacitySelection } from "@/hooks/meeting/create/useCapacitySelection";
 import { useCreateMeetingMutation } from "@/hooks/meeting/create/useCreateMeeting";
 import { useDateTimeSelection } from "@/hooks/meeting/create/useDateTimeSelection";
@@ -211,7 +211,7 @@ export default function CreateMeetingPage() {
                   zoom={16}
                   className="size-full"
                 >
-                  <AdvancedMarker
+                  <PlaceMarker
                     position={{ lat: place.latitude, lng: place.longitude }}
                   />
                 </MeetingMap>

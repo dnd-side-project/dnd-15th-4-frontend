@@ -3,10 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { AdvancedMarker } from "@vis.gl/react-google-maps";
-
 import { Button } from "@/components/common/Button";
 import { Header } from "@/components/common/Header";
+import { PlaceMarker } from "@/components/common/PlaceMarker";
 import { SearchInputBar } from "@/components/common/SearchInputBar";
 import { IcSearch } from "@/components/icons";
 import { PlaceResultList } from "@/components/meeting/create/PlaceResultList";
@@ -140,7 +139,7 @@ export const DepartureOriginSearchOverlay = ({
               className="size-full"
             >
               {mapPlaces.map((place) => (
-                <AdvancedMarker
+                <PlaceMarker
                   key={place.placeId}
                   position={{ lat: place.latitude, lng: place.longitude }}
                 />

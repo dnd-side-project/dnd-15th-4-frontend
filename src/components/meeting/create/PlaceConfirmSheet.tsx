@@ -3,11 +3,11 @@
 import { useState } from "react";
 
 import { Drawer } from "@base-ui/react/drawer";
-import { AdvancedMarker } from "@vis.gl/react-google-maps";
 
 import { AlertModal } from "@/components/common/AlertModal";
 import { BottomSheet } from "@/components/common/BottomSheet";
 import { Button } from "@/components/common/Button";
+import { PlaceMarker } from "@/components/common/PlaceMarker";
 import { IcStar } from "@/components/icons";
 import { MeetingMap } from "@/components/meeting/progress/MeetingMap";
 import {
@@ -50,7 +50,7 @@ export const PlaceConfirmSheet = ({
     <div className="absolute inset-0 flex flex-col">
       <div className="relative flex-1">
         <MeetingMap center={position} zoom={16} className="size-full">
-          <AdvancedMarker position={position} />
+          <PlaceMarker position={position} />
         </MeetingMap>
       </div>
 
