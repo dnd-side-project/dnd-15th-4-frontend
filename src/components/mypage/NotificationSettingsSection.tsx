@@ -59,6 +59,7 @@ export const NotificationSettingsSection = () => {
             <Toggle
               aria-label={label}
               checked={draft?.[key] ?? false}
+              disabled={!draft}
               onCheckedChange={(checked) => handleToggle(key, checked)}
             />
           </div>
