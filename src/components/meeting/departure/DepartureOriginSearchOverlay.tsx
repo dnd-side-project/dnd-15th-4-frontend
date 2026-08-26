@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { searchPlaces } from "@/apis/place/place";
 import { Button } from "@/components/common/Button";
 import { Header } from "@/components/common/Header";
 import { PlaceMarker } from "@/components/common/PlaceMarker";
@@ -11,10 +12,10 @@ import { IcSearch } from "@/components/icons";
 import { PlaceResultList } from "@/components/meeting/create/PlaceResultList";
 import type { PlaceResultStatus } from "@/components/meeting/create/PlaceResultList";
 import { MeetingMap } from "@/components/meeting/progress/MeetingMap";
-import { usePlaceSearchFavorites } from "@/hooks/place/usePlaceSearchFavorites";
+import { useFavoriteSearchesQuery } from "@/hooks/mypage/useFavoriteSearches";
 import { usePlaceSearchQuery } from "@/hooks/place/usePlaceSearch";
 import type { DepartureOrigin } from "@/types/meeting";
-import type { PlaceDto } from "@/types/place";
+import type { FavoriteSearchDto, PlaceDto } from "@/types/place";
 
 export interface DepartureOriginSearchOverlayProps {
   onClose: () => void;
@@ -51,15 +52,17 @@ export const DepartureOriginSearchOverlay = ({
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const [selectedPlace, setSelectedPlace] = useState<PlaceDto | null>(null);
-  const { favorites } = usePlaceSearchFavorites();
-  const { data, isLoading, isError } = usePlaceSearchQuery(keyword);
+  const { data: favoriteSearchData } = useFavoriteSearchesQuery();
+  const favoriteSearches = favoriteSearchData ?? [];
+  const { data, isLoading, isError, isDebouncing } =
+    usePlaceSearchQuery(keyword);
 
   const results = data ?? [];
 
   const status: PlaceResultStatus =
     keyword.trim().length === 0
       ? "idle"
-      : isLoading
+      : isLoading || isDebouncing
         ? "loading"
         : isError
           ? "error"
@@ -75,9 +78,22 @@ export const DepartureOriginSearchOverlay = ({
     setSelectedPlace(null);
   };
 
-  const handleFavoriteClick = (place: PlaceDto) => {
-    setKeyword(place.placeName);
-    setSelectedPlace(place);
+  const handleFavoriteClick = async (favoriteSearch: FavoriteSearchDto) => {
+    setKeyword(favoriteSearch.keyword);
+
+    try {
+      const [matchedPlace] = await searchPlaces(favoriteSearch.roadAddressName);
+
+      if (matchedPlace) {
+        setSelectedPlace({
+          ...matchedPlace,
+          placeName: favoriteSearch.keyword,
+          roadAddressName: favoriteSearch.roadAddressName,
+        });
+      }
+    } catch {
+      // 검색 실패 시 목록에서 직접 선택하도록 둔다
+    }
   };
 
   const mapPlaces = selectedPlace ? [selectedPlace] : results;
@@ -101,19 +117,19 @@ export const DepartureOriginSearchOverlay = ({
           placeholder="출발지를 검색하세요"
         />
 
-        {favorites.length > 0 && (
+        {favoriteSearches.length > 0 && (
           <div className="flex h-9.5 items-center gap-5">
             <div className="relative flex flex-1 items-center overflow-hidden">
               <div className="flex w-full scrollbar-none items-center gap-2 overflow-x-auto pr-8">
-                {favorites.map((place) => (
+                {favoriteSearches.map((favoriteSearch) => (
                   <button
-                    key={place.placeId}
+                    key={favoriteSearch.id}
                     type="button"
-                    onClick={() => handleFavoriteClick(place)}
+                    onClick={() => handleFavoriteClick(favoriteSearch)}
                     className="bg-primary-light border-primary-normal text-primary-dark speech-bubble flex shrink-0 items-center gap-px rounded-full border px-4 py-2.25 tracking-[-0.3px]"
                   >
                     <IcSearch size={20} />
-                    {place.placeName}
+                    {favoriteSearch.keyword}
                   </button>
                 ))}
               </div>
@@ -179,7 +195,7 @@ export const DepartureOriginSearchOverlay = ({
               : "bg-disable"
           }
         >
-          선택완료
+          확인
         </Button>
       </div>
     </div>
