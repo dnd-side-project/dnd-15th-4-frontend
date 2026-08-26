@@ -45,6 +45,7 @@ const getBoardingStopLabel = (step: MeetingRouteStep): string =>
 interface RouteRow {
   key: string;
   label: string;
+  particle?: string;
   icon: React.ComponentType<IconProps>;
 }
 
@@ -81,7 +82,8 @@ const buildStepRows = (
     return [
       {
         key: `${index}`,
-        label: `${target}${getEuroParticle(target)} 이동`,
+        label: target,
+        particle: getEuroParticle(target),
         icon,
       },
     ];
@@ -91,7 +93,8 @@ const buildStepRows = (
     return [
       {
         key: `${index}`,
-        label: `${destinationName}${getEuroParticle(destinationName)} 이동`,
+        label: destinationName,
+        particle: getEuroParticle(destinationName),
         icon,
       },
     ];
@@ -177,7 +180,15 @@ export const TravelRouteSegmentList = ({
             </div>
 
             <div className={cn("flex-1 pt-0.5", !isLast && "pb-6")}>
-              <p className="body6 text-secondary-1">{row.label}</p>
+              <p
+                className={cn(
+                  "body6",
+                  row.particle ? "text-disable" : "text-secondary-1"
+                )}
+              >
+                {row.label}
+                {row.particle && `${row.particle} 이동`}
+              </p>
             </div>
           </div>
         );
