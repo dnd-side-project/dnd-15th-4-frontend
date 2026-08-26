@@ -88,6 +88,12 @@ export interface MeetingInProgressResponse {
   completed: boolean;
 }
 
+export interface QuickMessageOption {
+  // 서버 프리셋이면 presetId, 프리셋이 없어 로컬로만 보여주는 문구면 null
+  id: number | null;
+  content: string;
+}
+
 export interface MeetingImageSelection {
   type: "user" | "default";
   src: string;

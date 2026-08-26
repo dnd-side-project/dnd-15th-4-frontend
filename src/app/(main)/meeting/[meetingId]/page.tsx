@@ -10,16 +10,20 @@ import type { MeetingMapFocusLocation } from "@/components/meeting/progress/Meet
 import { MeetingProgressSheet } from "@/components/meeting/progress/MeetingProgressSheet";
 import { MeetingSummaryCard } from "@/components/meeting/progress/MeetingSummaryCard";
 import { ParticipantMarker } from "@/components/meeting/progress/ParticipantMarker";
-import {
-  CURRENT_PARTICIPANT_ID,
-  SPEECH_BUBBLE_MESSAGES,
-} from "@/constants/message";
+import { SPEECH_BUBBLE_MESSAGES } from "@/constants/message";
 import { useMeetingQuery } from "@/hooks/meeting/create/useCreateMeeting";
 import { useMemberDepartureQuery } from "@/hooks/meeting/departure/useMemberDeparture";
 import { useMeetingInProgressQuery } from "@/hooks/meeting/progress/useMeetingInProgress";
+import { useReactionPresetsQuery } from "@/hooks/meeting/progress/useReactionPresets";
 import { useSendMemberLocation } from "@/hooks/meeting/progress/useSendMemberLocation";
+import { useSendReactionMessageMutation } from "@/hooks/meeting/progress/useSendReactionMessage";
+import { usePushSubscription } from "@/hooks/notification/usePushSubscription";
+import { useAuthStore } from "@/stores/useAuthStore";
 import { getRemainingTimeLabel, getTimeLabel } from "@/utils/date";
-import type { PuzzleGroupParticipant } from "@/types/meeting";
+import type {
+  PuzzleGroupParticipant,
+  QuickMessageOption,
+} from "@/types/meeting";
 
 const SHEET_COLLAPSED_HEIGHT = 100;
 const SHEET_HALF_HEIGHT = 270;
@@ -35,9 +39,20 @@ const MeetingDetailPage = () => {
   const { data: meeting } = useMeetingQuery(numericMeetingId);
   const { data: inProgress } = useMeetingInProgressQuery(numericMeetingId);
 
+  const { data: reactionPresets } = useReactionPresetsQuery();
+
   const { data: myDeparture } = useMemberDepartureQuery(numericMeetingId);
+  const currentUserId = useAuthStore((state) => state.user?.id);
 
   useSendMemberLocation(numericMeetingId, Boolean(myDeparture));
+
+  const sendReactionMessageMutation =
+    useSendReactionMessageMutation(numericMeetingId);
+  const { subscribe: subscribeToPush } = usePushSubscription();
+
+  useEffect(() => {
+    subscribeToPush();
+  }, [subscribeToPush]);
 
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [sheetSnapPoint, setSheetSnapPoint] = useState<number>(
@@ -66,9 +81,12 @@ const MeetingDetailPage = () => {
       (member): member is PuzzleGroupParticipant & { userId: number } =>
         member.userId !== null
     );
-  const quickMessages = inProgress?.quickMessages.length
-    ? inProgress.quickMessages.map((message) => message.content)
-    : [...SPEECH_BUBBLE_MESSAGES];
+  const quickMessages: QuickMessageOption[] = reactionPresets?.length
+    ? reactionPresets.map((preset) => ({
+        id: preset.id,
+        content: preset.content,
+      }))
+    : SPEECH_BUBBLE_MESSAGES.map((content) => ({ id: null, content }));
 
   const handleParticipantFocus = (participant: PuzzleGroupParticipant) => {
     if (participant.latitude === null || participant.longitude === null) {
@@ -101,23 +119,33 @@ const MeetingDetailPage = () => {
     );
   }
 
-  const mapCenter = { lat: meeting.latitude, lng: meeting.longitude };
+  const locatedParticipants = participants.filter(
+    (
+      participant
+    ): participant is PuzzleGroupParticipant & {
+      userId: number;
+      latitude: number;
+      longitude: number;
+    } => participant.latitude !== null && participant.longitude !== null
+  );
 
-  const locatedParticipantsWithBubbles = participants
-    .filter(
-      (
-        participant
-      ): participant is PuzzleGroupParticipant & {
-        userId: number;
-        latitude: number;
-        longitude: number;
-      } => participant.latitude !== null && participant.longitude !== null
-    )
-    .map((participant) =>
-      participant.userId === CURRENT_PARTICIPANT_ID
+  const myLocatedParticipant = locatedParticipants.find(
+    (participant) => participant.userId === currentUserId
+  );
+
+  const mapCenter = myLocatedParticipant
+    ? {
+        lat: myLocatedParticipant.latitude,
+        lng: myLocatedParticipant.longitude,
+      }
+    : { lat: meeting.latitude, lng: meeting.longitude };
+
+  const locatedParticipantsWithBubbles = locatedParticipants.map(
+    (participant) =>
+      participant.userId === currentUserId
         ? { ...participant, speechBubbleMessage: myMessage ?? undefined }
         : participant
-    );
+  );
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-black">
@@ -156,8 +184,11 @@ const MeetingDetailPage = () => {
         isOpen={isBubblePickerOpen}
         onOpenChange={setIsBubblePickerOpen}
         onSelectMessage={(message) => {
-          setMyMessage(message);
+          setMyMessage(message.content);
           setIsBubblePickerOpen(false);
+          if (message.id !== null) {
+            sendReactionMessageMutation.mutate(message.id);
+          }
         }}
         messages={quickMessages}
         className="absolute right-4 bottom-45 cursor-pointer"

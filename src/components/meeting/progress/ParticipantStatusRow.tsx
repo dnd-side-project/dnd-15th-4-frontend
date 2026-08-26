@@ -3,7 +3,9 @@ import { Fragment } from "react";
 import { ParticipantStatusAvatar } from "./ParticipantStatusAvatar";
 import { CHARACTER_FALLBACK_IMAGE } from "@/constants/character-images";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/stores/useAuthStore";
 import { getElapsedMinutes } from "@/utils/date";
+import { sortParticipantsByProgress } from "@/utils/participant-order";
 import type { PuzzleGroupParticipant } from "@/types/meeting";
 
 export interface ParticipantStatusRowProps {
@@ -13,9 +15,10 @@ export interface ParticipantStatusRowProps {
 }
 
 const getMinutesAgoLabel = (participant: PuzzleGroupParticipant) => {
-  if (participant.arrived || !participant.departedAt) return undefined;
+  if (participant.arrived || !participant.locationUpdatedAt) return undefined;
 
-  const elapsedMinutes = Math.max(1, getElapsedMinutes(participant.departedAt));
+  const elapsedMinutes = getElapsedMinutes(participant.locationUpdatedAt);
+  if (elapsedMinutes < 1) return undefined;
 
   return `${elapsedMinutes}분전`;
 };
@@ -25,6 +28,12 @@ export const ParticipantStatusRow = ({
   onParticipantFocus,
   className,
 }: ParticipantStatusRowProps) => {
+  const currentUserId = useAuthStore((state) => state.user?.id);
+  const sortedParticipants = sortParticipantsByProgress(
+    participants,
+    currentUserId
+  );
+
   return (
     <div
       className={cn(
@@ -32,7 +41,7 @@ export const ParticipantStatusRow = ({
         className
       )}
     >
-      {participants.map((participant, index) => (
+      {sortedParticipants.map((participant, index) => (
         <Fragment key={participant.userId}>
           {index === 1 && (
             <span className="bg-border-1 h-9 w-px shrink-0" aria-hidden />
@@ -43,6 +52,7 @@ export const ParticipantStatusRow = ({
             }
             nickname={participant.nickname ?? ""}
             minutesAgoLabel={getMinutesAgoLabel(participant)}
+            hasDeparted={participant.departed}
             onClick={() => onParticipantFocus?.(participant)}
           />
         </Fragment>

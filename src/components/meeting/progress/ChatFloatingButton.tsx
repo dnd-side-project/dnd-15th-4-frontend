@@ -3,12 +3,13 @@ import type { CSSProperties } from "react";
 import { SpeechBubble } from "@/components/common/SpeechBubble";
 import { IcMessengerFill } from "@/components/icons";
 import { cn } from "@/lib/utils";
+import type { QuickMessageOption } from "@/types/meeting";
 
-export interface ChatFloatingButtonProps {
+interface ChatFloatingButtonProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSelectMessage: (message: string) => void;
-  messages: string[];
+  onSelectMessage: (message: QuickMessageOption) => void;
+  messages: QuickMessageOption[];
   className?: string;
   style?: CSSProperties;
 }
@@ -27,11 +28,11 @@ export const ChatFloatingButton = ({
         <div className="absolute right-0 bottom-full mb-3 flex max-w-[calc(100vw-2rem)] flex-col items-end gap-2">
           {messages.map((message) => (
             <button
-              key={message}
+              key={message.id ?? message.content}
               type="button"
               onClick={() => onSelectMessage(message)}
             >
-              <SpeechBubble message={message} />
+              <SpeechBubble message={message.content} />
             </button>
           ))}
         </div>

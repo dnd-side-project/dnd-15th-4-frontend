@@ -40,7 +40,7 @@ export const PuzzleEtaGrid = ({ members }: PuzzleEtaGridProps) => {
     <div className="grid aspect-square w-full grid-cols-2 grid-rows-2">
       {GRID_STYLES.map((style, index) => {
         const pieceIndex = index + 1;
-        const member = members.find(
+        const member = members.findLast(
           (candidate) => candidate.pieceIndex === pieceIndex
         );
 

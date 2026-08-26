@@ -6,7 +6,7 @@ import { IcAlarm } from "@/components/icons";
 import { useArrivalConfirmation } from "@/hooks/meeting/progress/useArrivalConfirmation";
 import { cn } from "@/lib/utils";
 
-export interface ParticipantStackItemProps {
+interface ParticipantStackItemProps {
   image: string | StaticImageData;
   nickname: string;
   hasDeparted: boolean;

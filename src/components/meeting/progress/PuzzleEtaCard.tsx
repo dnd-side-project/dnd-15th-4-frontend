@@ -26,7 +26,7 @@ const QUADRANT_OFFSET_CLASS: Record<PuzzleEtaCardPosition, string> = {
   "bottom-right": "-top-full -left-full",
 };
 
-export interface PuzzleEtaCardProps {
+interface PuzzleEtaCardProps {
   position: PuzzleEtaCardPosition;
   backgroundClassName: string;
   textClassName?: string;

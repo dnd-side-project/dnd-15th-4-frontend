@@ -22,4 +22,5 @@ export const meetingKeys = {
     ] as const,
   preview: (inviteCode: string) =>
     [...meetingKeys.all, "preview", inviteCode] as const,
+  reactionPresets: () => [...meetingKeys.all, "reaction-presets"] as const,
 };
