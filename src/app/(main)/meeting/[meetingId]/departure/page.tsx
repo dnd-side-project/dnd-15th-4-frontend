@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -14,49 +13,14 @@ import { RouteSelectTrigger } from "@/components/meeting/departure/RouteSelectTr
 import { TravelRouteList } from "@/components/meeting/departure/TravelRouteList";
 import { TravelRouteSummaryCard } from "@/components/meeting/departure/TravelRouteSummaryCard";
 import { getRouteSummary } from "@/components/meeting/departure/TravelRouteSegmentList";
-import { CHARACTER_FALLBACK_IMAGE } from "@/constants/character-images";
+import { ParticipantAvatar } from "@/components/meeting/shared/ParticipantAvatar";
 import { useMeetingQuery } from "@/hooks/meeting/create/useCreateMeeting";
 import { useCreateMemberDepartureMutation } from "@/hooks/meeting/departure/useMemberDeparture";
 import { useSearchMeetingRoutesMutation } from "@/hooks/meeting/departure/useMeetingRoutes";
 import { useAuthStore } from "@/stores/useAuthStore";
-import type {
-  DepartureOrigin,
-  MeetingRoute,
-  Participant,
-} from "@/types/meeting";
+import type { DepartureOrigin, MeetingRoute } from "@/types/meeting";
 import { formatMeetingDateTime } from "@/utils/date";
 import { DoubleButton } from "@/components/common/DoubleButton";
-
-interface ParticipantAvatarProps {
-  participant: Participant;
-  isMe: boolean;
-}
-
-const ParticipantAvatar = ({ participant, isMe }: ParticipantAvatarProps) => {
-  const [hasError, setHasError] = useState(false);
-
-  return (
-    <div className="flex flex-col items-center gap-1">
-      <div className="border-border-4 rounded-16 size-13.5 overflow-hidden border-2 bg-white">
-        <Image
-          src={
-            hasError || !participant.profileImageUrl?.trim()
-              ? CHARACTER_FALLBACK_IMAGE
-              : participant.profileImageUrl
-          }
-          alt={participant.name}
-          width={54}
-          height={54}
-          className="size-full object-cover"
-          onError={() => setHasError(true)}
-        />
-      </div>
-      <span className="body6 text-primary">
-        {isMe ? `${participant.name}(나)` : participant.name}
-      </span>
-    </div>
-  );
-};
 
 const DepartureSetupPage = () => {
   const router = useRouter();
