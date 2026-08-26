@@ -59,9 +59,6 @@ export default function CreateMeetingPage() {
   const [isPlaceSearchOpen, setIsPlaceSearchOpen] = useState(false);
   const capacitySelection = useCapacitySelection();
   const [memo, setMemo] = useState("");
-  const [notifyLocation, setNotifyLocation] = useState(false);
-  const [notifyFriendArrival, setNotifyFriendArrival] = useState(false);
-  const [notifySpeechBubble, setNotifySpeechBubble] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -236,31 +233,6 @@ export default function CreateMeetingPage() {
               maxLength={MEMO_MAX_LENGTH}
               placeholder="메모를 남겨보세요"
             />
-          </div>
-
-          <div className="flex w-full flex-col gap-5">
-            <div className="flex flex-col gap-3">
-              <h2 className="h4 text-primary">알림 설정</h2>
-              <InfoBanner text="출발하면 설정된 내 도착 상황을 친구들에게 공유할게요" />
-            </div>
-
-            <div className="flex w-full flex-col gap-6">
-              <ToggleField
-                label="위치권한"
-                checked={notifyLocation}
-                onCheckedChange={setNotifyLocation}
-              />
-              <ToggleField
-                label="친구도착"
-                checked={notifyFriendArrival}
-                onCheckedChange={setNotifyFriendArrival}
-              />
-              <ToggleField
-                label="말풍선"
-                checked={notifySpeechBubble}
-                onCheckedChange={setNotifySpeechBubble}
-              />
-            </div>
           </div>
         </div>
       </main>
