@@ -9,7 +9,7 @@ const WEEKDAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 interface MonthCalendarProps {
   viewYear: number;
   viewMonth: number;
-  selectedDate: Date;
+  selectedDate: Date | null;
   today?: Date;
   onSelectDate: (date: Date) => void;
   onPrevMonth: () => void;
@@ -70,7 +70,9 @@ export const MonthCalendar = ({
               if (!date) return <div key={dayIndex} />;
 
               const hasEvent = hasEventOnDate?.(date) ?? false;
-              const isSelected = isSameDay(date, selectedDate);
+              const isSelected = selectedDate
+                ? isSameDay(date, selectedDate)
+                : false;
               const isToday = isSameDay(date, today);
               const disabled = isDateDisabled?.(date) ?? false;
 

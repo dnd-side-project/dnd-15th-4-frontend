@@ -12,7 +12,7 @@ import type {
   MeetingStatus,
 } from "@/types/meeting";
 
-const STATUS_QUERY_PARAM: Record<MeetingStatus, string> = {
+const MEETING_STATUS_QUERY_PARAM: Record<MeetingStatus, string> = {
   WAITING: "waiting",
   IN_PROGRESS: "in-progress",
   COMPLETED: "completed",

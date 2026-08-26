@@ -4,21 +4,18 @@ import { IcArrowBack, IcClose, IcSearch } from "@/components/icons";
 import type { IconProps } from "@/components/icons/icon.types";
 import { cn } from "@/lib/utils";
 
-export interface SearchInputBarProps {
+interface SearchInputBarProps {
   value: string;
   onChange: (value: string) => void;
   onBack?: () => void;
-  onTrailingIconClick?: () => void;
   placeholder?: string;
   className?: string;
-  TrailingIcon?: (props: IconProps) => React.ReactNode;
 }
 
 export const SearchInputBar = ({
   value,
   onChange,
   onBack,
-  onTrailingIconClick,
   placeholder,
   className,
   TrailingIcon,
