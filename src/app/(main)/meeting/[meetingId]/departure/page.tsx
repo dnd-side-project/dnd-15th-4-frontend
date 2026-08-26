@@ -134,7 +134,7 @@ const DepartureSetupPage = () => {
   });
 
   return (
-    <div className="h-screen scrollbar-none overflow-y-auto pb-12">
+    <div className="h-screen scrollbar-none overflow-y-auto pb-30">
       <Header
         title="출발 설정"
         onBack={() => router.back()}
