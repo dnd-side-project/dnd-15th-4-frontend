@@ -59,20 +59,6 @@ export const MOCK_MEETING_RESULT: MeetingResultResponse = {
       puzzleImageUrl: "/artwork-1.png",
       pageNumber: 1,
       members: [
-        // {
-        //   userId: 1,
-        //   nickname: "이소정",
-        //   profileImageUrl: "/character-1.png",
-        //   departed: false,
-        //   departedAt: null,
-        //   estimatedArrivalTime: null,
-        //   arrived: false,
-        //   latitude: null,
-        //   longitude: null,
-        //   locationUpdatedAt: null,
-        //   pieceIndex: 3,
-        //   revealed: false,
-        // },
         {
           userId: 1,
           nickname: "이소정",
