@@ -33,6 +33,7 @@ export const useArrivalConfirmation = (
 
   useEffect(() => {
     if (confirmationStep !== "confirming") return;
+    if (!canConfirm) return;
 
     if (remainingSeconds <= 0) {
       setConfirmationStep("confirmed");
@@ -51,7 +52,7 @@ export const useArrivalConfirmation = (
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [confirmationStep, remainingSeconds]);
+  }, [confirmationStep, remainingSeconds, canConfirm]);
 
   const handleStartConfirmation = () => {
     setRemainingSeconds(CONFIRMATION_COUNTDOWN_SECONDS);
