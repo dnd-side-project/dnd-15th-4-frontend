@@ -280,6 +280,14 @@ export interface MeetingMemberDepartureUpdateRequest {
   travelMode?: MeetingTravelMode | null;
 }
 
+export interface MeetingDepartureRouteSegment {
+  content: string | null;
+  transportType: "SUBWAY" | "BUS" | "WALK" | "ETC";
+  transportContent: string | null;
+  estimatedTime: number;
+  station: MeetingRouteStation | null;
+}
+
 export interface MeetingMemberDepartureResponse {
   meetingId: number;
   departure: MeetingMemberDepartureOrigin;
@@ -287,6 +295,6 @@ export interface MeetingMemberDepartureResponse {
   nicknameSetting: MeetingMemberNicknameSetting;
   totalEstimatedTime: number;
   recommendedDepartureTime: string;
-  routes: MeetingRoute[];
+  routes: MeetingDepartureRouteSegment[];
   travelMode?: MeetingTravelMode | null;
 }
