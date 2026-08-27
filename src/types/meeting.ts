@@ -4,6 +4,15 @@ export interface Participant {
   profileImageUrl: string;
 }
 
+export interface ParticipantDetail {
+  id: number;
+  name: string;
+  profileImageUrl: string;
+  puzzleImageUrl: string;
+  defaultNicknameUsed: boolean;
+  defaultImageUsed: boolean;
+}
+
 export type MeetingStatus =
   | "WAITING"
   | "IN_PROGRESS"
@@ -60,6 +69,9 @@ export interface PuzzleGroupParticipant {
   latitude: number | null;
   longitude: number | null;
   locationUpdatedAt: string | null;
+  departureLatitude: number | null;
+  departureLongitude: number | null;
+  estimatedArrivalTime: number | null;
   pieceIndex: number;
   revealed: boolean;
 }
@@ -118,6 +130,40 @@ export interface MeetingCreateRequest {
 
 export interface MeetingCreateResponse {
   meetingId: number;
+}
+
+export interface MeetingDetailResponse {
+  meetingId: number;
+  title: string;
+  dateTime: string;
+  place: string;
+  latitude: number;
+  longitude: number;
+  memo: string | null;
+  status: MeetingStatus;
+  inviteCode: string;
+  capacity: number;
+  currentParticipantCount: number;
+  participants: ParticipantDetail[];
+}
+
+export interface MeetingUpdateRequest {
+  title?: string;
+  dateTime?: string;
+  destination?: string;
+  latitude?: number;
+  longitude?: number;
+  memo?: string;
+}
+
+export interface MeetingMemberNicknameUpdateResponse {
+  meetingId: number;
+  nickname: string;
+}
+
+export interface MeetingMemberPuzzleImageUpdateResponse {
+  meetingId: number;
+  imageUrl: string;
 }
 
 export interface MeetingInviteCodeResponse {

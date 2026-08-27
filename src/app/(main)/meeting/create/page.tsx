@@ -26,10 +26,15 @@ import { useDateTimeSelection } from "@/hooks/meeting/create/useDateTimeSelectio
 import { useMeetingImageSelection } from "@/hooks/meeting/shared/useMeetingImageSelection";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
 import { formatDateTimeForApi } from "@/utils/date";
-import { urlToFile } from "@/utils/file";
+import { meetingImageSelectionToFile } from "@/utils/file";
 
 import type { MeetingCreateRequest } from "@/types/meeting";
 import type { SelectedPlace } from "@/types/place";
+import {
+  MEMO_MAX_LENGTH,
+  NICKNAME_MAX_LENGTH,
+  TITLE_MAX_LENGTH,
+} from "@/constants/validation";
 
 const DEFAULT_CREATE_ERROR_MESSAGE =
   "약속방 생성에 실패했어요. 다시 시도해주세요.";
@@ -54,9 +59,6 @@ export default function CreateMeetingPage() {
   const [isPlaceSearchOpen, setIsPlaceSearchOpen] = useState(false);
   const capacitySelection = useCapacitySelection();
   const [memo, setMemo] = useState("");
-  const [notifyLocation, setNotifyLocation] = useState(false);
-  const [notifyFriendArrival, setNotifyFriendArrival] = useState(false);
-  const [notifySpeechBubble, setNotifySpeechBubble] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -113,7 +115,10 @@ export default function CreateMeetingPage() {
         imageSet: selectedImage.type === "default",
       };
 
-      const image = await urlToFile(selectedImage.src, "meeting-image.jpg");
+      const image = await meetingImageSelectionToFile(
+        selectedImage,
+        "meeting-image.jpg"
+      );
 
       createMeetingMutation.mutate(
         { request, image },
@@ -177,7 +182,7 @@ export default function CreateMeetingPage() {
               <Input
                 value={nickname}
                 onChange={(event) => setNickname(event.target.value)}
-                maxLength={5}
+                maxLength={NICKNAME_MAX_LENGTH}
                 placeholder="닉네임을 입력하세요"
               />
             )}
@@ -189,7 +194,7 @@ export default function CreateMeetingPage() {
               label="약속 이름"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              maxLength={12}
+              maxLength={TITLE_MAX_LENGTH}
               placeholder="약속 이름을 입력하세요"
             />
             <DateTimeTrigger
@@ -228,34 +233,9 @@ export default function CreateMeetingPage() {
               label="메모"
               value={memo}
               onChange={(event) => setMemo(event.target.value)}
-              maxLength={12}
+              maxLength={MEMO_MAX_LENGTH}
               placeholder="메모를 남겨보세요"
             />
-          </div>
-
-          <div className="flex w-full flex-col gap-5">
-            <div className="flex flex-col gap-3">
-              <h2 className="h4 text-primary">알림 설정</h2>
-              <InfoBanner text="출발하면 설정된 내 도착 상황을 친구들에게 공유할게요" />
-            </div>
-
-            <div className="flex w-full flex-col gap-6">
-              <ToggleField
-                label="위치권한"
-                checked={notifyLocation}
-                onCheckedChange={setNotifyLocation}
-              />
-              <ToggleField
-                label="친구도착"
-                checked={notifyFriendArrival}
-                onCheckedChange={setNotifyFriendArrival}
-              />
-              <ToggleField
-                label="말풍선"
-                checked={notifySpeechBubble}
-                onCheckedChange={setNotifySpeechBubble}
-              />
-            </div>
           </div>
         </div>
       </main>

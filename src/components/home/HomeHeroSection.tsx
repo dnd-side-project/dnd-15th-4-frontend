@@ -12,10 +12,11 @@ import { AvatarStack } from "@/components/home/AvatarStack";
 import { IcProfile } from "@/components/icons/IcProfile";
 import { IcArrivalDot, IcPuzzlePiece } from "@/components/icons";
 import { useMemberDepartureQuery } from "@/hooks/meeting/departure/useMemberDeparture";
+import { useSendMemberLocation } from "@/hooks/meeting/progress/useSendMemberLocation";
 import { useParticipantLocationsQuery } from "@/hooks/meeting/shared/useParticipantLocations";
-import { MOCK_PARTICIPANT_LOCATIONS } from "@/mocks/mockParticipantLocations";
 import type { MeetingData, Participant, UserLocation } from "@/types/meeting";
 import { formatMeetingDateTime } from "@/utils/date";
+import { getDistanceInMeters } from "@/utils/geo";
 import {
   calculateParticipantProgress,
   groupOverlappingMarkers,
@@ -27,25 +28,25 @@ interface HomeHeroSectionProps {
 }
 
 interface ProgressTrackProps {
-  meetingId: number;
   participants: Participant[];
   destination: UserLocation;
   locationsByUserId: Map<number, UserLocation>;
+  departureLocationsByUserId: Map<number, UserLocation>;
 }
 
 const ProgressTrack = ({
-  meetingId,
   participants,
   destination,
   locationsByUserId,
+  departureLocationsByUserId,
 }: ProgressTrackProps) => {
   const movingMarkers = participants.flatMap((participant) => {
     const currentLocation = locationsByUserId.get(participant.id);
-    if (!currentLocation) return [];
+    const departureLocation = departureLocationsByUserId.get(participant.id);
+    if (!currentLocation || !departureLocation) return [];
 
-    const totalDistance =
-      MOCK_PARTICIPANT_LOCATIONS[meetingId]?.[participant.id]?.totalDistance ??
-      1000;
+    const totalDistance = getDistanceInMeters(departureLocation, destination);
+
     const { percent, isArrived } = calculateParticipantProgress(
       currentLocation,
       destination,
@@ -125,6 +126,26 @@ const HomeHeroSectionActive = ({
     ])
   );
 
+  const departureLocationsByUserId = new Map(
+    (locations ?? []).flatMap((location) => {
+      if (
+        location.departureLatitude === null ||
+        location.departureLongitude === null
+      ) {
+        return [];
+      }
+      return [
+        [
+          location.userId,
+          {
+            latitude: location.departureLatitude,
+            longitude: location.departureLongitude,
+          },
+        ] as const,
+      ];
+    })
+  );
+
   const destination: UserLocation = {
     latitude: meeting.latitude,
     longitude: meeting.longitude,
@@ -165,10 +186,10 @@ const HomeHeroSectionActive = ({
 
       <div className="mt-auto">
         <ProgressTrack
-          meetingId={meeting.meetingId}
           participants={meeting.participants}
           destination={destination}
           locationsByUserId={locationsByUserId}
+          departureLocationsByUserId={departureLocationsByUserId}
         />
       </div>
     </button>
@@ -206,6 +227,11 @@ export const HomeHeroSection = ({ meeting }: HomeHeroSectionProps) => {
     isError: isDepartureError,
   } = useMemberDepartureQuery(meeting?.meetingId ?? null);
   const [showDepartureError, setShowDepartureError] = useState(false);
+
+  useSendMemberLocation(
+    meeting?.meetingId ?? 0,
+    meeting?.status === "IN_PROGRESS" && Boolean(departure)
+  );
 
   const handleMeetingClick = () => {
     if (!meeting || isDepartureLoading) return;

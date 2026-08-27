@@ -1,6 +1,7 @@
 "use client";
 
 import { IcArrowRight, IcInfo } from "@/components/icons";
+import { CODE_MAX_LENGTH } from "@/constants/validation";
 import { cn } from "@/lib/utils";
 
 export interface InviteCodeInputCardProps {
@@ -28,7 +29,7 @@ export const InviteCodeInputCard = ({
       <input
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        maxLength={8}
+        maxLength={CODE_MAX_LENGTH}
         placeholder="초대 코드를 입력해 주세요"
         aria-label="초대 코드"
         className="body3 text-primary placeholder:text-disable flex-1 bg-transparent outline-none"

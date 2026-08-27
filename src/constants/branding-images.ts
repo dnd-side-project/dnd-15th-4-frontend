@@ -52,7 +52,6 @@ export const getRandomBrandImage = (): StaticImageData =>
   BRAND_IMAGES[Math.floor(Math.random() * BRAND_IMAGES.length)];
 
 const PROVIDED_IMAGE_BG_COLORS = [
-  "bg-point-normal",
   "bg-sub1-normal",
   "bg-surface-4",
   "bg-surface-1",
@@ -62,3 +61,13 @@ export const getRandomProvidedImageBgColor = (): string =>
   PROVIDED_IMAGE_BG_COLORS[
     Math.floor(Math.random() * PROVIDED_IMAGE_BG_COLORS.length)
   ];
+
+// 이미지 업로드 배경 색상 지정을 위한 부분입니다. 디자인 토큰이 바뀔 경우 해당 부분도 변경이 필요합니다.
+const PROVIDED_IMAGE_BG_COLOR_HEX: Record<string, string> = {
+  "bg-sub1-normal": "#a2ddff",
+  "bg-surface-4": "#3dbaff",
+  "bg-surface-1": "#e9ecf1",
+};
+
+export const getProvidedImageBgColorHex = (bgColorClassName: string): string =>
+  PROVIDED_IMAGE_BG_COLOR_HEX[bgColorClassName] ?? "#ffffff";

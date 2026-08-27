@@ -14,7 +14,8 @@ import { ImageUploadBox } from "@/components/meeting/create/ImageUploadBox";
 import { useJoinMeetingMutation } from "@/hooks/meeting/participate/useJoinMeeting";
 import { useMeetingImageSelection } from "@/hooks/meeting/shared/useMeetingImageSelection";
 import { HttpError } from "@/lib/api/http-error";
-import { urlToFile } from "@/utils/file";
+import { meetingImageSelectionToFile } from "@/utils/file";
+import { NICKNAME_MAX_LENGTH } from "@/constants/validation";
 
 const DEFAULT_JOIN_ERROR_MESSAGE = "약속 참여에 실패했어요. 다시 시도해주세요.";
 const INVALID_REQUEST_MESSAGE = "올바르지 않은 요청입니다.";
@@ -60,7 +61,10 @@ export default function MeetingParticipatePage() {
     setIsSubmitting(true);
 
     try {
-      const image = await urlToFile(selectedImage.src, "meeting-image.jpg");
+      const image = await meetingImageSelectionToFile(
+        selectedImage,
+        "meeting-image.jpg"
+      );
 
       joinMeetingMutation.mutate(
         {
@@ -129,7 +133,7 @@ export default function MeetingParticipatePage() {
               <Input
                 value={nickname}
                 onChange={(event) => setNickname(event.target.value)}
-                maxLength={5}
+                maxLength={NICKNAME_MAX_LENGTH}
                 placeholder="닉네임을 입력하세요"
               />
             )}
