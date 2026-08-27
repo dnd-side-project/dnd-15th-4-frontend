@@ -115,7 +115,7 @@ const MeetingDetailPage = () => {
     });
   };
 
-  if (isMeetingError) {
+  if (isMeetingError && !meeting) {
     return (
       <div className="flex min-h-screen w-full flex-col items-center justify-center gap-4 bg-black">
         <p className="body3 text-white/70">약속 정보를 불러오지 못했어요</p>
