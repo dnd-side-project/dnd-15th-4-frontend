@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { CHARACTER_FALLBACK_IMAGE } from "@/constants/character-images";
 import type { Participant } from "@/types/meeting";
@@ -18,6 +18,10 @@ export const ParticipantAvatar = ({
   myId,
 }: ParticipantAvatarProps) => {
   const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setHasError(false);
+  }, [participant.profileImageUrl]);
 
   const isMe = myId !== undefined && participant.id === myId;
   const isHost = hostId !== undefined && participant.id === hostId;
