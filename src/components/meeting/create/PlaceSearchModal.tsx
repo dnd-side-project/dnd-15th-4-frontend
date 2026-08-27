@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { searchPlaces } from "@/apis/place/place";
 import { IcSearch } from "@/components/icons";
 import { SearchInputBar } from "@/components/common/SearchInputBar";
 import { cn } from "@/lib/utils";
-import { usePlaceSearchFavorites } from "@/hooks/place/usePlaceSearchFavorites";
+import { useFavoriteSearchesQuery } from "@/hooks/mypage/useFavoriteSearches";
 import { usePlaceSearchQuery } from "@/hooks/place/usePlaceSearch";
-import type { PlaceDto, SelectedPlace } from "@/types/place";
+import type { FavoriteSearchDto, PlaceDto, SelectedPlace } from "@/types/place";
 
 import { PlaceConfirmSheet } from "./PlaceConfirmSheet";
 import { PlaceResultList, type PlaceResultStatus } from "./PlaceResultList";
@@ -32,7 +33,9 @@ export const PlaceSearchModal = ({
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const [pendingPlace, setPendingPlace] = useState<PlaceDto | null>(null);
-  const { favorites } = usePlaceSearchFavorites();
+  const favoriteRequestIdRef = useRef(0);
+  const { data: favoriteSearchData } = useFavoriteSearchesQuery();
+  const favoriteSearches = favoriteSearchData ?? [];
   const { data, isLoading, isError, isDebouncing } =
     usePlaceSearchQuery(keyword);
 
@@ -46,6 +49,7 @@ export const PlaceSearchModal = ({
           : "success";
 
   const handleKeywordChange = (value: string) => {
+    favoriteRequestIdRef.current += 1;
     setKeyword(value);
     setPendingPlace(null);
   };
@@ -55,9 +59,26 @@ export const PlaceSearchModal = ({
     setKeyword(place.placeName);
   };
 
-  const handleFavoriteClick = (place: PlaceDto) => {
-    setPendingPlace(place);
-    setKeyword(place.placeName);
+  const handleFavoriteClick = async (favoriteSearch: FavoriteSearchDto) => {
+    const requestId = ++favoriteRequestIdRef.current;
+
+    let matchedPlace: PlaceDto | undefined;
+    try {
+      [matchedPlace] = await searchPlaces(favoriteSearch.roadAddressName);
+    } catch {
+      // 검색 실패 시 아래에서 수동 검색으로 대체
+    }
+
+    if (favoriteRequestIdRef.current !== requestId) return;
+
+    if (matchedPlace) {
+      setPendingPlace({
+        ...matchedPlace,
+        placeName: favoriteSearch.keyword,
+        roadAddressName: favoriteSearch.roadAddressName,
+      });
+    }
+    setKeyword(favoriteSearch.keyword);
   };
 
   const handleConfirmPlace = (place: PlaceDto) => {
@@ -82,19 +103,19 @@ export const PlaceSearchModal = ({
           placeholder="장소 또는 지역을 검색하세요"
         />
 
-        {!pendingPlace && favorites.length > 0 && (
+        {!pendingPlace && favoriteSearches.length > 0 && (
           <div className="flex h-9.5 items-center gap-5">
             <div className="relative flex flex-1 items-center overflow-hidden">
               <div className="flex w-full scrollbar-none items-center gap-2 overflow-x-auto pr-8">
-                {favorites.map((place) => (
+                {favoriteSearches.map((favoriteSearch) => (
                   <button
-                    key={place.placeId}
+                    key={favoriteSearch.id}
                     type="button"
-                    onClick={() => handleFavoriteClick(place)}
+                    onClick={() => handleFavoriteClick(favoriteSearch)}
                     className="bg-primary-light border-primary-normal text-primary-dark speech-bubble flex shrink-0 items-center gap-px rounded-full border px-4 py-2.25 tracking-[-0.3px]"
                   >
                     <IcSearch size={20} />
-                    {place.placeName}
+                    {favoriteSearch.keyword}
                   </button>
                 ))}
               </div>
@@ -121,7 +142,7 @@ export const PlaceSearchModal = ({
       ) : (
         <div
           className={`flex-1 scrollbar-none overflow-y-auto px-5 ${
-            favorites.length === 0 ? "mt-6" : ""
+            favoriteSearches.length === 0 ? "mt-6" : ""
           }`}
         >
           <PlaceResultList

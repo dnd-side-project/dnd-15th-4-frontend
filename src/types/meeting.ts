@@ -32,50 +32,6 @@ export interface UserLocation {
   longitude: number;
 }
 
-export interface MeetingLocation {
-  latitude: number;
-  longitude: number;
-}
-
-export interface MeetingPuzzlePosition {
-  set: number;
-  number: number;
-  puzzleImageUrl: string;
-}
-
-export interface MeetingParticipant {
-  id: number;
-  nickname: string;
-  profileImageNumber: number;
-  currentLocation: MeetingLocation;
-  estimatedArrivalTime: number;
-  departureTime: string;
-  arrivalStatus: boolean;
-  puzzlePosition: MeetingPuzzlePosition;
-}
-
-export interface MeetingParticipantsDto {
-  meetingId: number;
-  participants: MeetingParticipant[];
-}
-
-export interface MeetingSummaryParticipant {
-  id: number;
-  name: string;
-  profileImageUrl: string;
-}
-
-export interface MeetingSummary {
-  meetingId: number;
-  title: string;
-  dateTime: string;
-  place: string;
-  latitude: number;
-  longitude: number;
-  status: MeetingStatus;
-  participants: MeetingSummaryParticipant[];
-}
-
 export interface MeetingRankingItem {
   userId: number;
   nickname: string;
@@ -119,6 +75,23 @@ export interface MeetingResultResponse {
   puzzleGroups?: MeetingPuzzleGroup[];
   rankings: MeetingRankingItem[];
   myDepartedAt: string | null;
+}
+
+export interface MeetingQuickMessage {
+  id: number;
+  content: string;
+}
+
+export interface MeetingInProgressResponse {
+  puzzleGroups: MeetingPuzzleGroup[];
+  quickMessages: MeetingQuickMessage[];
+  completed: boolean;
+}
+
+export interface QuickMessageOption {
+  // 서버 프리셋이면 presetId, 프리셋이 없어 로컬로만 보여주는 문구면 null
+  id: number | null;
+  content: string;
 }
 
 export interface MeetingImageSelection {

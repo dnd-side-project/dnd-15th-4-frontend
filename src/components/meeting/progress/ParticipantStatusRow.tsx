@@ -1,25 +1,24 @@
 import { Fragment } from "react";
 
 import { ParticipantStatusAvatar } from "./ParticipantStatusAvatar";
-import { getCharacterImage } from "@/constants/character-images";
+import { CHARACTER_FALLBACK_IMAGE } from "@/constants/character-images";
 import { cn } from "@/lib/utils";
-import type { MeetingParticipant } from "@/types/meeting";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { getElapsedMinutes } from "@/utils/date";
+import { sortParticipantsByProgress } from "@/utils/participant-order";
+import type { PuzzleGroupParticipant } from "@/types/meeting";
 
 export interface ParticipantStatusRowProps {
-  participants: MeetingParticipant[];
-  onParticipantFocus?: (participant: MeetingParticipant) => void;
+  participants: PuzzleGroupParticipant[];
+  onParticipantFocus?: (participant: PuzzleGroupParticipant) => void;
   className?: string;
 }
 
-const getMinutesAgoLabel = (participant: MeetingParticipant) => {
-  if (participant.arrivalStatus) return undefined;
+const getMinutesAgoLabel = (participant: PuzzleGroupParticipant) => {
+  if (participant.arrived || !participant.locationUpdatedAt) return undefined;
 
-  const elapsedMinutes = Math.max(
-    1,
-    Math.round(
-      (Date.now() - new Date(participant.departureTime).getTime()) / 60_000
-    )
-  );
+  const elapsedMinutes = getElapsedMinutes(participant.locationUpdatedAt);
+  if (elapsedMinutes < 1) return undefined;
 
   return `${elapsedMinutes}분전`;
 };
@@ -29,6 +28,12 @@ export const ParticipantStatusRow = ({
   onParticipantFocus,
   className,
 }: ParticipantStatusRowProps) => {
+  const currentUserId = useAuthStore((state) => state.user?.id);
+  const sortedParticipants = sortParticipantsByProgress(
+    participants,
+    currentUserId
+  );
+
   return (
     <div
       className={cn(
@@ -36,15 +41,18 @@ export const ParticipantStatusRow = ({
         className
       )}
     >
-      {participants.map((participant, index) => (
-        <Fragment key={participant.id}>
+      {sortedParticipants.map((participant, index) => (
+        <Fragment key={participant.userId}>
           {index === 1 && (
             <span className="bg-border-1 h-9 w-px shrink-0" aria-hidden />
           )}
           <ParticipantStatusAvatar
-            image={getCharacterImage(participant.profileImageNumber)}
-            nickname={participant.nickname}
+            image={
+              participant.profileImageUrl?.trim() || CHARACTER_FALLBACK_IMAGE
+            }
+            nickname={participant.nickname ?? ""}
             minutesAgoLabel={getMinutesAgoLabel(participant)}
+            hasDeparted={participant.departed}
             onClick={() => onParticipantFocus?.(participant)}
           />
         </Fragment>

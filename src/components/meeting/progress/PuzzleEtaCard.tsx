@@ -26,13 +26,14 @@ const QUADRANT_OFFSET_CLASS: Record<PuzzleEtaCardPosition, string> = {
   "bottom-right": "-top-full -left-full",
 };
 
-export interface PuzzleEtaCardProps {
+interface PuzzleEtaCardProps {
   position: PuzzleEtaCardPosition;
   backgroundClassName: string;
   textClassName?: string;
-  image: StaticImageData;
+  image: string | StaticImageData;
   nickname: string;
-  remainingMinutes: number;
+  hasDeparted: boolean;
+  elapsedMinutes: number;
   isArrived?: boolean;
 }
 
@@ -42,11 +43,12 @@ export const PuzzleEtaCard = ({
   textClassName = "text-primary",
   image,
   nickname,
-  remainingMinutes,
+  hasDeparted,
+  elapsedMinutes,
   isArrived = false,
 }: PuzzleEtaCardProps) => {
-  const hours = Math.floor(remainingMinutes / 60);
-  const minutes = remainingMinutes % 60;
+  const hours = Math.floor(elapsedMinutes / 60);
+  const minutes = elapsedMinutes % 60;
 
   const {
     confirmationStep,
@@ -87,10 +89,10 @@ export const PuzzleEtaCard = ({
             <p
               className={cn(
                 "body6 text-secondary-2",
-                !isConfirmed && "invisible"
+                hasDeparted && !isConfirmed && "invisible"
               )}
             >
-              도착
+              {hasDeparted ? "도착" : "출발전"}
             </p>
           </div>
         </div>
@@ -115,7 +117,7 @@ export const PuzzleEtaCard = ({
           />
         )}
 
-        {!isArrived && (
+        {!isArrived && hasDeparted && (
           <div className="flex items-end justify-end gap-2">
             {hours > 0 && (
               <div className="flex items-baseline">

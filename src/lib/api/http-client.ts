@@ -127,6 +127,6 @@ export const api = {
   patch: <T>(path: string, body?: unknown, options?: RequestOptions) =>
     requestWithAuthRetry<T>(path, { ...options, method: "PATCH", body }),
 
-  delete: <T>(path: string, options?: Omit<RequestOptions, "body">) =>
-    requestWithAuthRetry<T>(path, { ...options, method: "DELETE" }),
+  delete: <T>(path: string, body?: unknown, options?: RequestOptions) =>
+    requestWithAuthRetry<T>(path, { ...options, method: "DELETE", body }),
 };

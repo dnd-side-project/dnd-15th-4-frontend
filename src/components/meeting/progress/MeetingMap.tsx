@@ -7,7 +7,6 @@ import { APIProvider, Map, useMap } from "@vis.gl/react-google-maps";
 
 import { cn } from "@/lib/utils";
 
-// Google's public prototyping Map ID — required to render AdvancedMarker without provisioning a real Map ID in Cloud Console.
 const DEMO_MAP_ID = "DEMO_MAP_ID";
 
 export interface MeetingMapFocusLocation {

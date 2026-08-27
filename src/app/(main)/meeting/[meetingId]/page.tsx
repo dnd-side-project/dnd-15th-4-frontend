@@ -10,15 +10,20 @@ import type { MeetingMapFocusLocation } from "@/components/meeting/progress/Meet
 import { MeetingProgressSheet } from "@/components/meeting/progress/MeetingProgressSheet";
 import { MeetingSummaryCard } from "@/components/meeting/progress/MeetingSummaryCard";
 import { ParticipantMarker } from "@/components/meeting/progress/ParticipantMarker";
-import { CURRENT_PARTICIPANT_ID } from "@/constants/message";
+import { SPEECH_BUBBLE_MESSAGES } from "@/constants/message";
+import { useMeetingQuery } from "@/hooks/meeting/create/useCreateMeeting";
+import { useMemberDepartureQuery } from "@/hooks/meeting/departure/useMemberDeparture";
+import { useMeetingInProgressQuery } from "@/hooks/meeting/progress/useMeetingInProgress";
+import { useReactionPresetsQuery } from "@/hooks/meeting/progress/useReactionPresets";
+import { useSendMemberLocation } from "@/hooks/meeting/progress/useSendMemberLocation";
+import { useSendReactionMessageMutation } from "@/hooks/meeting/progress/useSendReactionMessage";
+import { usePushSubscription } from "@/hooks/notification/usePushSubscription";
+import { useAuthStore } from "@/stores/useAuthStore";
 import { getRemainingTimeLabel, getTimeLabel } from "@/utils/date";
-import {
-  mockMeetingParticipants,
-  mockMeetingSummary,
-} from "@/mocks/mockMeetings";
-import type { MeetingParticipant } from "@/types/meeting";
-
-const MEETING_PLACE_CENTER = { lat: 37.534, lng: 127.058 };
+import type {
+  PuzzleGroupParticipant,
+  QuickMessageOption,
+} from "@/types/meeting";
 
 const SHEET_COLLAPSED_HEIGHT = 100;
 const SHEET_HALF_HEIGHT = 270;
@@ -26,29 +31,33 @@ const SHEET_EXPANDED_HEIGHT = 9999;
 
 const MAP_FOCUS_TOP_PADDING = 16;
 
-const MAX_TIMEOUT_MS = 2_147_483_647;
-
-const scheduleAt = (targetTime: number, callback: () => void) => {
-  let timerId: ReturnType<typeof setTimeout>;
-
-  const tick = () => {
-    const remainingMs = targetTime - Date.now();
-
-    timerId =
-      remainingMs <= MAX_TIMEOUT_MS
-        ? setTimeout(callback, Math.max(0, remainingMs))
-        : setTimeout(tick, MAX_TIMEOUT_MS);
-  };
-
-  tick();
-
-  return () => clearTimeout(timerId);
-};
-
 const MeetingDetailPage = () => {
   const router = useRouter();
   const { meetingId } = useParams<{ meetingId: string }>();
-  const { participants } = mockMeetingParticipants;
+  const numericMeetingId = Number(meetingId);
+
+  const {
+    data: meeting,
+    isError: isMeetingError,
+    refetch: refetchMeeting,
+  } = useMeetingQuery(numericMeetingId);
+  const { data: inProgress } = useMeetingInProgressQuery(numericMeetingId);
+
+  const { data: reactionPresets } = useReactionPresetsQuery();
+
+  const { data: myDeparture } = useMemberDepartureQuery(numericMeetingId);
+  const currentUserId = useAuthStore((state) => state.user?.id);
+
+  useSendMemberLocation(numericMeetingId, Boolean(myDeparture));
+
+  const sendReactionMessageMutation =
+    useSendReactionMessageMutation(numericMeetingId);
+  const { subscribe: subscribeToPush } = usePushSubscription();
+
+  useEffect(() => {
+    subscribeToPush();
+  }, [subscribeToPush]);
+
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [sheetSnapPoint, setSheetSnapPoint] = useState<number>(
     SHEET_EXPANDED_HEIGHT
@@ -65,14 +74,29 @@ const MeetingDetailPage = () => {
   }, []);
 
   useEffect(() => {
-    const targetTime = new Date(mockMeetingSummary.dateTime).getTime();
+    if (!inProgress?.completed) return;
+    router.replace(`/meeting/${meetingId}/completed`);
+  }, [inProgress?.completed, meetingId, router]);
 
-    return scheduleAt(targetTime, () => {
-      router.replace(`/meeting/${meetingId}/completed`);
-    });
-  }, [meetingId, router]);
+  const puzzleGroups = inProgress?.puzzleGroups ?? [];
+  const participants = puzzleGroups
+    .flatMap((group) => group.members)
+    .filter(
+      (member): member is PuzzleGroupParticipant & { userId: number } =>
+        member.userId !== null
+    );
+  const quickMessages: QuickMessageOption[] = reactionPresets?.length
+    ? reactionPresets.map((preset) => ({
+        id: preset.id,
+        content: preset.content,
+      }))
+    : SPEECH_BUBBLE_MESSAGES.map((content) => ({ id: null, content }));
 
-  const handleParticipantFocus = (participant: MeetingParticipant) => {
+  const handleParticipantFocus = (participant: PuzzleGroupParticipant) => {
+    if (participant.latitude === null || participant.longitude === null) {
+      return;
+    }
+
     const sheetTop = sheetPopupRef.current?.getBoundingClientRect().top;
     const summaryCardBottom =
       summaryCardRef.current?.getBoundingClientRect().bottom;
@@ -85,28 +109,76 @@ const MeetingDetailPage = () => {
         : 0;
 
     setFocusedLocation({
-      lat: participant.currentLocation.latitude,
-      lng: participant.currentLocation.longitude,
+      lat: participant.latitude,
+      lng: participant.longitude,
       offsetY: (bottomInset - topInset) / 2,
     });
   };
 
-  const participantsWithBubbles = participants.map((participant) =>
-    participant.id === CURRENT_PARTICIPANT_ID
-      ? { ...participant, speechBubbleMessage: myMessage ?? undefined }
-      : participant
+  if (isMeetingError && !meeting) {
+    return (
+      <div className="flex min-h-screen w-full flex-col items-center justify-center gap-4 bg-black">
+        <p className="body3 text-white/70">약속 정보를 불러오지 못했어요</p>
+        <button
+          type="button"
+          onClick={() => refetchMeeting()}
+          className="bg-sub2-normal rounded-16 px-4 py-2 text-white"
+        >
+          다시 시도
+        </button>
+      </div>
+    );
+  }
+
+  if (!meeting) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-black">
+        <p className="body3 text-white/70">약속 정보를 불러오고 있어요</p>
+      </div>
+    );
+  }
+
+  const locatedParticipants = participants.filter(
+    (
+      participant
+    ): participant is PuzzleGroupParticipant & {
+      userId: number;
+      latitude: number;
+      longitude: number;
+    } => participant.latitude !== null && participant.longitude !== null
+  );
+
+  const myLocatedParticipant = locatedParticipants.find(
+    (participant) => participant.userId === currentUserId
+  );
+
+  const mapCenter = myLocatedParticipant
+    ? {
+        lat: myLocatedParticipant.latitude,
+        lng: myLocatedParticipant.longitude,
+      }
+    : { lat: meeting.latitude, lng: meeting.longitude };
+
+  const locatedParticipantsWithBubbles = locatedParticipants.map(
+    (participant) =>
+      participant.userId === currentUserId
+        ? { ...participant, speechBubbleMessage: myMessage ?? undefined }
+        : participant
   );
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-black">
       <div className="absolute inset-x-0 top-0 h-full">
         <MeetingMap
-          center={MEETING_PLACE_CENTER}
+          center={mapCenter}
           zoom={12}
           focusLocation={focusedLocation}
         >
-          {participantsWithBubbles.map((participant) => (
-            <ParticipantMarker key={participant.id} participant={participant} />
+          {locatedParticipantsWithBubbles.map((participant) => (
+            <ParticipantMarker
+              key={participant.userId}
+              participant={participant}
+            />
           ))}
         </MeetingMap>
         <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-white from-[-3.01%] to-white/0 to-[20%]" />
@@ -121,19 +193,23 @@ const MeetingDetailPage = () => {
       </div>
       <MeetingSummaryCard
         ref={summaryCardRef}
-        title={mockMeetingSummary.title}
-        location={mockMeetingSummary.place}
-        time={getTimeLabel(mockMeetingSummary.dateTime)}
-        remainingTime={getRemainingTimeLabel(mockMeetingSummary.dateTime)}
+        title={meeting.title}
+        location={meeting.place}
+        time={getTimeLabel(meeting.dateTime)}
+        remainingTime={getRemainingTimeLabel(meeting.dateTime)}
         className="absolute inset-x-4 top-3"
       />
       <ChatFloatingButton
         isOpen={isBubblePickerOpen}
         onOpenChange={setIsBubblePickerOpen}
         onSelectMessage={(message) => {
-          setMyMessage(message);
+          setMyMessage(message.content);
           setIsBubblePickerOpen(false);
+          if (message.id !== null) {
+            sendReactionMessageMutation.mutate(message.id);
+          }
         }}
+        messages={quickMessages}
         className="absolute right-4 bottom-45 cursor-pointer"
         style={
           sheetSnapPoint !== SHEET_EXPANDED_HEIGHT
@@ -160,11 +236,8 @@ const MeetingDetailPage = () => {
         }}
       >
         <MeetingProgressSheet
+          puzzleGroups={puzzleGroups}
           participants={participants}
-          meetingPlaceLocation={{
-            latitude: mockMeetingSummary.latitude,
-            longitude: mockMeetingSummary.longitude,
-          }}
           onParticipantFocus={handleParticipantFocus}
         />
       </BottomSheet>
