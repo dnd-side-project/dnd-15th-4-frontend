@@ -276,6 +276,12 @@ export interface MeetingRouteSearchRequest {
   travelMode?: MeetingTravelMode | null;
 }
 
+export interface MeetingRouteGuide {
+  code: string;
+  message: string;
+  travelMode: MeetingTravelMode;
+}
+
 export interface MeetingRouteRequest {
   totalTime: number;
   steps: MeetingRouteStep[];
@@ -289,6 +295,22 @@ export interface MeetingMemberDepartureCreateRequest {
   travelMode?: MeetingTravelMode | null;
 }
 
+export interface MeetingMemberDepartureUpdateRequest {
+  departure?: MeetingMemberDepartureOrigin | null;
+  notificationSettings?: MeetingMemberNotificationSettings | null;
+  nicknameSetting?: MeetingMemberNicknameSetting | null;
+  route?: MeetingRouteRequest | null;
+  travelMode?: MeetingTravelMode | null;
+}
+
+export interface MeetingDepartureRouteSegment {
+  content: string | null;
+  transportType: "SUBWAY" | "BUS" | "WALK" | "ETC";
+  transportContent: string | null;
+  estimatedTime: number;
+  station: MeetingRouteStation | null;
+}
+
 export interface MeetingMemberDepartureResponse {
   meetingId: number;
   departure: MeetingMemberDepartureOrigin;
@@ -296,6 +318,6 @@ export interface MeetingMemberDepartureResponse {
   nicknameSetting: MeetingMemberNicknameSetting;
   totalEstimatedTime: number;
   recommendedDepartureTime: string;
-  routes: MeetingRoute[];
+  routes: MeetingDepartureRouteSegment[];
   travelMode?: MeetingTravelMode | null;
 }
