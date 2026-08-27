@@ -9,6 +9,7 @@ export interface DoubleButtonProps {
   isSecondaryDisabled?: boolean;
   isPrimaryDisabled?: boolean;
   className?: string;
+  secondaryClassName?: string;
 }
 
 export const DoubleButton = ({
@@ -19,12 +20,13 @@ export const DoubleButton = ({
   isSecondaryDisabled,
   isPrimaryDisabled,
   className,
+  secondaryClassName,
 }: DoubleButtonProps) => {
   return (
     <div className={cn("flex w-full items-center gap-2", className)}>
       <Button
         variant="secondary"
-        className="w-29.25"
+        className={cn("w-29.25", secondaryClassName)}
         onClick={onSecondaryClick}
         disabled={isSecondaryDisabled}
       >
