@@ -138,6 +138,7 @@ const MeetingDetailPagePreview = () => {
         }}
       >
         <MeetingProgressSheet
+          meetingId={1}
           puzzleGroups={MOCK_PUZZLE_GROUPS}
           participants={MOCK_PARTICIPANTS}
         />

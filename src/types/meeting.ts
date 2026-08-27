@@ -64,13 +64,13 @@ export interface PuzzleGroupParticipant {
   profileImageUrl: string | null;
   departed: boolean;
   departedAt: string | null;
+  estimatedArrivalTime: string | null;
   arrived: boolean;
   latitude: number | null;
   longitude: number | null;
   locationUpdatedAt: string | null;
   departureLatitude: number | null;
   departureLongitude: number | null;
-  estimatedArrivalTime: number | null;
   pieceIndex: number;
   revealed: boolean;
 }
@@ -98,6 +98,8 @@ export interface MeetingInProgressResponse {
   puzzleGroups: MeetingPuzzleGroup[];
   quickMessages: MeetingQuickMessage[];
   completed: boolean;
+  destinationLatitude: number;
+  destinationLongitude: number;
 }
 
 export interface QuickMessageOption {
