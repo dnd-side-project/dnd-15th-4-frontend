@@ -272,6 +272,14 @@ export interface MeetingMemberDepartureCreateRequest {
   travelMode?: MeetingTravelMode | null;
 }
 
+export interface MeetingMemberDepartureUpdateRequest {
+  departure?: MeetingMemberDepartureOrigin | null;
+  notificationSettings?: MeetingMemberNotificationSettings | null;
+  nicknameSetting?: MeetingMemberNicknameSetting | null;
+  route?: MeetingRouteRequest | null;
+  travelMode?: MeetingTravelMode | null;
+}
+
 export interface MeetingMemberDepartureResponse {
   meetingId: number;
   departure: MeetingMemberDepartureOrigin;
