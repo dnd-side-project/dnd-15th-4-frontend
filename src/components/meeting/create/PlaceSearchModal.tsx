@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { searchPlaces } from "@/apis/place/place";
@@ -33,6 +33,7 @@ export const PlaceSearchModal = ({
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const [pendingPlace, setPendingPlace] = useState<PlaceDto | null>(null);
+  const favoriteRequestIdRef = useRef(0);
   const { data: favoriteSearchData } = useFavoriteSearchesQuery();
   const favoriteSearches = favoriteSearchData ?? [];
   const { data, isLoading, isError, isDebouncing } =
@@ -48,6 +49,7 @@ export const PlaceSearchModal = ({
           : "success";
 
   const handleKeywordChange = (value: string) => {
+    favoriteRequestIdRef.current += 1;
     setKeyword(value);
     setPendingPlace(null);
   };
@@ -58,22 +60,24 @@ export const PlaceSearchModal = ({
   };
 
   const handleFavoriteClick = async (favoriteSearch: FavoriteSearchDto) => {
-    try {
-      const [matchedPlace] = await searchPlaces(favoriteSearch.roadAddressName);
+    const requestId = ++favoriteRequestIdRef.current;
 
-      if (matchedPlace) {
-        setPendingPlace({
-          ...matchedPlace,
-          placeName: favoriteSearch.keyword,
-          roadAddressName: favoriteSearch.roadAddressName,
-        });
-        setKeyword(favoriteSearch.keyword);
-        return;
-      }
+    let matchedPlace: PlaceDto | undefined;
+    try {
+      [matchedPlace] = await searchPlaces(favoriteSearch.roadAddressName);
     } catch {
       // 검색 실패 시 아래에서 수동 검색으로 대체
     }
 
+    if (favoriteRequestIdRef.current !== requestId) return;
+
+    if (matchedPlace) {
+      setPendingPlace({
+        ...matchedPlace,
+        placeName: favoriteSearch.keyword,
+        roadAddressName: favoriteSearch.roadAddressName,
+      });
+    }
     setKeyword(favoriteSearch.keyword);
   };
 

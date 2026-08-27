@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { searchPlaces } from "@/apis/place/place";
 import { Button } from "@/components/common/Button";
@@ -52,6 +52,7 @@ export const DepartureOriginSearchOverlay = ({
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const [selectedPlace, setSelectedPlace] = useState<PlaceDto | null>(null);
+  const favoriteRequestIdRef = useRef(0);
   const { data: favoriteSearchData } = useFavoriteSearchesQuery();
   const favoriteSearches = favoriteSearchData ?? [];
   const { data, isLoading, isError, isDebouncing } =
@@ -74,15 +75,18 @@ export const DepartureOriginSearchOverlay = ({
   };
 
   const handleKeywordChange = (value: string) => {
+    favoriteRequestIdRef.current += 1;
     setKeyword(value);
     setSelectedPlace(null);
   };
 
   const handleFavoriteClick = async (favoriteSearch: FavoriteSearchDto) => {
+    const requestId = ++favoriteRequestIdRef.current;
     setKeyword(favoriteSearch.keyword);
 
     try {
       const [matchedPlace] = await searchPlaces(favoriteSearch.roadAddressName);
+      if (favoriteRequestIdRef.current !== requestId) return;
 
       if (matchedPlace) {
         setSelectedPlace({
