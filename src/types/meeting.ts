@@ -51,7 +51,7 @@ export interface MeetingRankingItem {
   late: boolean;
 }
 
-export interface CompletedPuzzleFeedItem {
+export interface MeetingUnselectedImage {
   imageUrl: string;
   uploaderId: number;
   uploaderNickname: string;
@@ -82,9 +82,24 @@ export interface MeetingPuzzleGroup {
   members: PuzzleGroupParticipant[];
 }
 
+export interface MeetingResultPuzzlePiece {
+  pieceIndex: number;
+  success: boolean;
+  uploaderId: number | null;
+  uploaderNickname: string | null;
+  uploaderProfileImageUrl: string | null;
+}
+
+export interface MeetingResultPuzzlePage {
+  puzzlePageId: number;
+  imageUrl: string;
+  completed: boolean;
+  pieces: MeetingResultPuzzlePiece[];
+}
+
 export interface MeetingResultResponse {
-  puzzleFeed: CompletedPuzzleFeedItem[];
-  puzzleGroups?: MeetingPuzzleGroup[];
+  puzzleFeed: MeetingResultPuzzlePage[];
+  unselectedImages: MeetingUnselectedImage[];
   rankings: MeetingRankingItem[];
   myDepartedAt: string | null;
 }

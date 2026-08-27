@@ -146,6 +146,25 @@ export const formatDateTimeForApi = (date: Date): string => {
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 };
 
+export const formatDotDate = (dateTimeString: string): string => {
+  const date = new Date(dateTimeString);
+  if (Number.isNaN(date.getTime())) return "-";
+
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${date.getFullYear()}.${month}.${day}`;
+};
+
+export const formatDotDateWithWeekday = (dateTimeString: string): string => {
+  const date = new Date(dateTimeString);
+  if (Number.isNaN(date.getTime())) return "-";
+
+  const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"][date.getDay()];
+
+  return `${formatDotDate(dateTimeString)} (${dayOfWeek}요일)`;
+};
+
 export const formatMeetingDateTime = (dateTimeString: string) => {
   const date = new Date(dateTimeString);
 

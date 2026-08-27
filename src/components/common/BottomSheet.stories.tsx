@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { BottomSheet } from "./BottomSheet";
 import { MeetingProgressSheet } from "@/components/meeting/progress/MeetingProgressSheet";
-import { MOCK_MEETING_RESULT } from "@/mocks/mockMeetings";
+import { MOCK_PROGRESS_PUZZLE_GROUPS } from "@/mocks/mockMeetings";
 import type { PuzzleGroupParticipant } from "@/types/meeting";
 
 const meta = {
@@ -111,7 +111,7 @@ export const WithSnapPoints: Story = {
 
 const MEETING_DETAIL_SNAP_POINTS = [100, 270, 9999];
 
-const MOCK_PUZZLE_GROUPS = MOCK_MEETING_RESULT.puzzleGroups ?? [];
+const MOCK_PUZZLE_GROUPS = MOCK_PROGRESS_PUZZLE_GROUPS;
 const MOCK_PARTICIPANTS = MOCK_PUZZLE_GROUPS.flatMap(
   (group) => group.members
 ).filter(

@@ -9,6 +9,8 @@ export const meetingKeys = {
   detail: (meetingId: number) => [...meetingKeys.details(), meetingId] as const,
   inProgress: (meetingId: number) =>
     [...meetingKeys.detail(meetingId), "in-progress"] as const,
+  result: (meetingId: number) =>
+    [...meetingKeys.detail(meetingId), "result"] as const,
   fullDetail: (meetingId: number) =>
     [...meetingKeys.detail(meetingId), "full"] as const,
   inviteCode: (meetingId: number) =>

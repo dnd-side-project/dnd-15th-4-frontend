@@ -1,38 +1,70 @@
 "use client";
 
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { ImageDetailModal } from "@/components/meeting/completed/ImageDetailModal";
 import { MeetingResultTabSection } from "@/components/meeting/completed/MeetingResultTabSection";
 import { PuzzleResultSection } from "@/components/meeting/completed/PuzzleResultSection";
-import { MOCK_MEETING_RESULT } from "@/mocks/mockMeetings";
-import type { MeetingPuzzleGroup } from "@/types/meeting";
+import { useMeetingDetailQuery } from "@/hooks/meeting/detail/useMeetingDetail";
+import { useMeetingResultQuery } from "@/hooks/meeting/completed/useMeetingResult";
+import { formatDotDate } from "@/utils/date";
+import type { MeetingResultPuzzlePage } from "@/types/meeting";
 
 const MeetingCompletedPage = () => {
-  const [selectedPuzzleGroup, setSelectedPuzzleGroup] =
-    useState<MeetingPuzzleGroup | null>(null);
+  const { meetingId } = useParams<{ meetingId: string }>();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const numericMeetingId = Number(meetingId);
+  const isHistoryView = searchParams.get("view") === "history";
+
+  const { data: result } = useMeetingResultQuery(numericMeetingId);
+  const { data: meetingDetail } = useMeetingDetailQuery(
+    numericMeetingId,
+    isHistoryView
+  );
+
+  const [selectedPuzzlePage, setSelectedPuzzlePage] =
+    useState<MeetingResultPuzzlePage | null>(null);
+
+  const puzzleFeed = result?.puzzleFeed ?? [];
+  const unselectedImages = result?.unselectedImages ?? [];
+  const rankings = result?.rankings ?? [];
+  const myDepartedAt = result?.myDepartedAt ?? null;
 
   return (
-    <div className="h-screen [scrollbar-width:none] overflow-y-auto [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <div className="flex h-screen flex-col overflow-hidden">
       <PuzzleResultSection
-        puzzleGroups={MOCK_MEETING_RESULT.puzzleGroups ?? []}
-        onGoHome={() => window.location.replace("/")}
-        onViewDetail={setSelectedPuzzleGroup}
+        puzzleFeed={puzzleFeed}
+        onIconClick={
+          isHistoryView
+            ? () => router.back()
+            : () => window.location.replace("/")
+        }
+        onViewDetail={setSelectedPuzzlePage}
+        meetingDateLabel={
+          isHistoryView && meetingDetail
+            ? formatDotDate(meetingDetail.dateTime)
+            : undefined
+        }
+        isHistoryView={isHistoryView}
       />
       <MeetingResultTabSection
-        rankings={MOCK_MEETING_RESULT.rankings}
-        myDepartedAt={MOCK_MEETING_RESULT.myDepartedAt}
-        puzzleFeed={MOCK_MEETING_RESULT.puzzleFeed}
+        rankings={rankings}
+        myDepartedAt={myDepartedAt}
+        unselectedImages={unselectedImages}
+        meeting={isHistoryView ? meetingDetail : undefined}
+        className="min-h-0 flex-1"
       />
 
-      {selectedPuzzleGroup && (
+      {selectedPuzzlePage && (
         <ImageDetailModal
           open
-          onOpenChange={(open) => !open && setSelectedPuzzleGroup(null)}
+          onOpenChange={(open) => !open && setSelectedPuzzlePage(null)}
           images={[
             {
-              imageUrl: selectedPuzzleGroup.puzzleImageUrl,
-              alt: `퍼즐 세트 ${selectedPuzzleGroup.pageNumber}`,
+              imageUrl: selectedPuzzlePage.imageUrl,
+              alt: `퍼즐 세트 ${selectedPuzzlePage.puzzlePageId}`,
             },
           ]}
         />

@@ -1,15 +1,18 @@
 import { ArrivalRankingRow, MEDAL_ICONS } from "./ArrivalRankingRow";
 import { MeetingArrivalSummary } from "./MeetingArrivalSummary";
-import type { MeetingRankingItem } from "@/types/meeting";
+import { ScheduleCard } from "@/components/common/ScheduleCard";
+import type { MeetingData, MeetingRankingItem } from "@/types/meeting";
 
 interface MeetingArrivalPanelProps {
   rankings: MeetingRankingItem[];
   myDepartedAt: string | null;
+  meeting?: MeetingData;
 }
 
 export const MeetingArrivalPanel = ({
   rankings,
   myDepartedAt,
+  meeting,
 }: MeetingArrivalPanelProps) => {
   const onTimeRankings = rankings.filter((ranking) => !ranking.late);
   const lateRankings = rankings.filter((ranking) => ranking.late);
@@ -21,7 +24,20 @@ export const MeetingArrivalPanel = ({
 
   return (
     <div className="mb-12 flex w-full flex-col px-4">
-      <MeetingArrivalSummary rankings={rankings} myDepartedAt={myDepartedAt} />
+      {meeting ? (
+        <ScheduleCard
+          meeting={meeting}
+          interactive={false}
+          showDDay={false}
+          showParticipants={false}
+          showFullDate
+        />
+      ) : (
+        <MeetingArrivalSummary
+          rankings={rankings}
+          myDepartedAt={myDepartedAt}
+        />
+      )}
 
       <div className="mt-6 flex flex-col gap-6">
         {onTimeRankings.length > 0 && (
