@@ -4,6 +4,8 @@ import type { UserLocation } from "@/types/meeting";
 
 export interface ParticipantLocationDto extends UserLocation {
   userId: number;
+  departureLatitude: number | null;
+  departureLongitude: number | null;
 }
 
 export const updateMemberLocation = async (
@@ -36,6 +38,8 @@ export const fetchParticipantLocations = async (
           userId: member.userId,
           latitude: member.latitude,
           longitude: member.longitude,
+          departureLatitude: member.departureLatitude,
+          departureLongitude: member.departureLongitude,
         },
       ];
     })
