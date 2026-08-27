@@ -2,7 +2,9 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
+import { meetingKeys } from "@/apis/meeting/keys";
 import { AlertModal } from "@/components/common/AlertModal";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { DoubleButton } from "@/components/common/DoubleButton";
@@ -32,17 +34,26 @@ import {
   useDeleteMeetingMutation,
   useMeetingDetailQuery,
   useUpdateMeetingMutation,
+  useUpdateMemberNicknameMutation,
+  useUpdateMemberPuzzleImageMutation,
 } from "@/hooks/meeting/detail/useMeetingDetail";
 import { useLeaveMeetingMutation } from "@/hooks/meeting/participate/useLeaveMeeting";
 import { useMeetingImageSelection } from "@/hooks/meeting/shared/useMeetingImageSelection";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
 import { useAuthStore } from "@/stores/useAuthStore";
-import type { MeetingUpdateRequest } from "@/types/meeting";
+import type {
+  MeetingDetailResponse,
+  MeetingMemberNicknameUpdateResponse,
+  MeetingMemberPuzzleImageUpdateResponse,
+  MeetingUpdateRequest,
+} from "@/types/meeting";
 import type { SelectedPlace } from "@/types/place";
 import { formatDateTimeForApi, formatMeetingDateTime } from "@/utils/date";
+import { meetingImageSelectionToFile } from "@/utils/file";
 
 const MeetingInfoPage = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { meetingId } = useParams<{ meetingId: string }>();
   const user = useAuthStore((state) => state.user);
   const currentUserId = user?.id;
@@ -58,6 +69,10 @@ const MeetingInfoPage = () => {
   const updateMeetingMutation = useUpdateMeetingMutation(numericMeetingId);
   const deleteMeetingMutation = useDeleteMeetingMutation(numericMeetingId);
   const leaveMeetingMutation = useLeaveMeetingMutation(numericMeetingId);
+  const updateNicknameMutation =
+    useUpdateMemberNicknameMutation(numericMeetingId);
+  const updatePuzzleImageMutation =
+    useUpdateMemberPuzzleImageMutation(numericMeetingId);
 
   const {
     selectedImage,
@@ -66,6 +81,7 @@ const MeetingInfoPage = () => {
     handleCropCancel,
     handleCropConfirm,
     handleProvidedImageToggle,
+    resetImage,
   } = useMeetingImageSelection();
   const [hasClearedProvidedImage, setHasClearedProvidedImage] = useState(false);
 
@@ -186,6 +202,10 @@ const MeetingInfoPage = () => {
   const isAnyFieldChanged = isHost
     ? isMeetingFieldsChanged || isPersonalFieldsChanged
     : isPersonalFieldsChanged;
+  const isSaving =
+    updateMeetingMutation.isPending ||
+    updateNicknameMutation.isPending ||
+    updatePuzzleImageMutation.isPending;
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -195,29 +215,104 @@ const MeetingInfoPage = () => {
     setMemo(event.target.value);
   };
 
-  const handleSaveChanges = () => {
-    if (!isMeetingFieldsChanged) {
+  const handleSaveChanges = async () => {
+    if (!isAnyFieldChanged) {
       router.back();
       return;
     }
 
-    const request: MeetingUpdateRequest = {};
-    if (isTitleChanged) request.title = title;
-    if (isDateTimeChanged) {
-      request.dateTime = formatDateTimeForApi(displayDateTime);
-    }
-    if (isPlaceChanged) {
-      request.destination = displayPlace.placeName;
-      request.latitude = displayPlace.latitude;
-      request.longitude = displayPlace.longitude;
-    }
-    if (isMemoChanged) request.memo = memo;
+    try {
+      let nicknameResult: MeetingMemberNicknameUpdateResponse | undefined;
+      let imageResult: MeetingMemberPuzzleImageUpdateResponse | undefined;
+      const tasks: Promise<void>[] = [];
 
-    updateMeetingMutation.mutate(request, {
-      onSuccess: () => router.back(),
-      onError: () =>
-        setActionError("약속 정보 저장에 실패했어요. 다시 시도해주세요."),
-    });
+      if (isHost && isMeetingFieldsChanged) {
+        const request: MeetingUpdateRequest = {};
+        if (isTitleChanged) request.title = title;
+        if (isDateTimeChanged) {
+          request.dateTime = formatDateTimeForApi(displayDateTime);
+        }
+        if (isPlaceChanged) {
+          request.destination = displayPlace.placeName;
+          request.latitude = displayPlace.latitude;
+          request.longitude = displayPlace.longitude;
+        }
+        if (isMemoChanged) request.memo = memo;
+        tasks.push(
+          updateMeetingMutation.mutateAsync(request).then(() => undefined)
+        );
+      }
+
+      if (isNicknameChanged) {
+        const nextNickname = nicknameParticipation
+          ? nickname.trim()
+          : (user?.nickname ?? "");
+        tasks.push(
+          updateNicknameMutation.mutateAsync(nextNickname).then((result) => {
+            nicknameResult = result;
+          })
+        );
+      }
+
+      if (isImageChanged && selectedImage) {
+        tasks.push(
+          meetingImageSelectionToFile(selectedImage, "puzzle-image.jpg")
+            .then((image) => updatePuzzleImageMutation.mutateAsync(image))
+            .then((result) => {
+              imageResult = result;
+            })
+        );
+      }
+
+      await Promise.all(tasks);
+
+      queryClient.setQueryData<MeetingDetailResponse>(
+        meetingKeys.fullDetail(numericMeetingId),
+        (old) => {
+          if (!old) return old;
+
+          const next: MeetingDetailResponse = { ...old };
+
+          if (isHost && isMeetingFieldsChanged) {
+            if (isTitleChanged) next.title = title;
+            if (isDateTimeChanged) {
+              next.dateTime = formatDateTimeForApi(displayDateTime);
+            }
+            if (isPlaceChanged) {
+              next.place = displayPlace.placeName;
+              next.latitude = displayPlace.latitude;
+              next.longitude = displayPlace.longitude;
+            }
+            if (isMemoChanged) next.memo = memo;
+          }
+
+          if (nicknameResult || imageResult) {
+            next.participants = next.participants.map((participant) =>
+              participant.id === currentUserId
+                ? {
+                    ...participant,
+                    ...(nicknameResult && {
+                      name: nicknameResult.nickname,
+                      defaultNicknameUsed: !nicknameParticipation,
+                    }),
+                    ...(imageResult && {
+                      puzzleImageUrl: imageResult.imageUrl,
+                      defaultImageUsed: selectedImage?.type === "default",
+                    }),
+                  }
+                : participant
+            );
+          }
+
+          return next;
+        }
+      );
+
+      resetImage();
+      setHasClearedProvidedImage(false);
+    } catch {
+      setActionError("약속 정보 저장에 실패했어요. 다시 시도해주세요.");
+    }
   };
 
   const handleConfirmDelete = () => {
@@ -270,7 +365,11 @@ const MeetingInfoPage = () => {
               checked={nicknameParticipation}
               onCheckedChange={(checked) => {
                 setNicknameParticipation(checked);
-                setNickname(checked ? originalNickname : "");
+                setNickname(
+                  checked && originalNicknameParticipation
+                    ? originalNickname
+                    : ""
+                );
               }}
             />
             {nicknameParticipation && (
@@ -396,13 +495,9 @@ const MeetingInfoPage = () => {
               ? deleteMeetingMutation.isPending
               : leaveMeetingMutation.isPending
           }
-          primaryLabel={
-            updateMeetingMutation.isPending ? "저장 중..." : "수정 저장"
-          }
+          primaryLabel={isSaving ? "저장 중..." : "수정 저장"}
           onPrimaryClick={handleSaveChanges}
-          isPrimaryDisabled={
-            !isAnyFieldChanged || updateMeetingMutation.isPending
-          }
+          isPrimaryDisabled={!isAnyFieldChanged || isSaving}
           secondaryClassName="text-red"
         />
       </div>

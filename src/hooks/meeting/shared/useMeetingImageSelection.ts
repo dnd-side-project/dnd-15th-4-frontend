@@ -60,6 +60,10 @@ export const useMeetingImageSelection = () => {
     );
   };
 
+  const resetImage = () => {
+    replaceSelectedImage(null);
+  };
+
   return {
     selectedImage,
     pendingCropImage,
@@ -67,5 +71,6 @@ export const useMeetingImageSelection = () => {
     handleCropCancel,
     handleCropConfirm,
     handleProvidedImageToggle,
+    resetImage,
   };
 };

@@ -9,6 +9,8 @@ import type {
   MeetingInviteCodeResponse,
   MeetingJoinRequest,
   MeetingJoinResponse,
+  MeetingMemberNicknameUpdateResponse,
+  MeetingMemberPuzzleImageUpdateResponse,
   MeetingPreviewRequest,
   MeetingPreviewResponse,
   MeetingStatus,
@@ -95,6 +97,29 @@ export const updateMeeting = async (
 
 export const deleteMeeting = async (meetingId: number): Promise<void> => {
   await api.delete(`/meetings/${meetingId}`);
+};
+
+export const updateMemberNickname = async (
+  meetingId: number,
+  nickname: string
+): Promise<MeetingMemberNicknameUpdateResponse> => {
+  const result = await api.patch<
+    ApiResult<MeetingMemberNicknameUpdateResponse>
+  >(`/meetings/${meetingId}/members/me/nickname`, { nickname });
+  return result.data;
+};
+
+export const updateMemberPuzzleImage = async (
+  meetingId: number,
+  image: File
+): Promise<MeetingMemberPuzzleImageUpdateResponse> => {
+  const formData = new FormData();
+  formData.append("image", image);
+
+  const result = await api.patch<
+    ApiResult<MeetingMemberPuzzleImageUpdateResponse>
+  >(`/meetings/${meetingId}/members/me/puzzle-image`, formData);
+  return result.data;
 };
 
 export const leaveMeeting = async (meetingId: number): Promise<void> => {

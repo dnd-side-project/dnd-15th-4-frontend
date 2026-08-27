@@ -150,6 +150,16 @@ export interface MeetingUpdateRequest {
   memo?: string;
 }
 
+export interface MeetingMemberNicknameUpdateResponse {
+  meetingId: number;
+  nickname: string;
+}
+
+export interface MeetingMemberPuzzleImageUpdateResponse {
+  meetingId: number;
+  imageUrl: string;
+}
+
 export interface MeetingInviteCodeResponse {
   inviteCode: string;
 }
