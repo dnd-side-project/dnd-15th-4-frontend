@@ -83,6 +83,7 @@ export const DepartureOriginSearchOverlay = ({
   const handleFavoriteClick = async (favoriteSearch: FavoriteSearchDto) => {
     const requestId = ++favoriteRequestIdRef.current;
     setKeyword(favoriteSearch.keyword);
+    setSelectedPlace(null);
 
     try {
       const [matchedPlace] = await searchPlaces(favoriteSearch.roadAddressName);
