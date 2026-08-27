@@ -17,7 +17,7 @@ export const MeetingArrivalPanel = ({
   const onTimeRankings = rankings.filter((ranking) => !ranking.late);
   const lateRankings = rankings.filter((ranking) => ranking.late);
   const medalIconByUserId = new Map(
-    rankings
+    onTimeRankings
       .slice(0, 3)
       .map((ranking, index) => [ranking.userId, MEDAL_ICONS[index]])
   );
