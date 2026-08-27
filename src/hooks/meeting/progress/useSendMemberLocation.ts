@@ -36,7 +36,9 @@ export const useSendMemberLocation = (
         setMyLocation(currentLocation);
         updateMemberLocation(meetingId, currentLocation).catch(() => {});
       },
-      () => {},
+      () => {
+        setMyLocation(null);
+      },
       { enableHighAccuracy: true }
     );
   }, [meetingId, enabled, syncTick]);
