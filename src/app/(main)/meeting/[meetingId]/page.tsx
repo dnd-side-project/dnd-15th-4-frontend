@@ -36,7 +36,11 @@ const MeetingDetailPage = () => {
   const { meetingId } = useParams<{ meetingId: string }>();
   const numericMeetingId = Number(meetingId);
 
-  const { data: meeting } = useMeetingQuery(numericMeetingId);
+  const {
+    data: meeting,
+    isError: isMeetingError,
+    refetch: refetchMeeting,
+  } = useMeetingQuery(numericMeetingId);
   const { data: inProgress } = useMeetingInProgressQuery(numericMeetingId);
 
   const { data: reactionPresets } = useReactionPresetsQuery();
@@ -110,6 +114,21 @@ const MeetingDetailPage = () => {
       offsetY: (bottomInset - topInset) / 2,
     });
   };
+
+  if (isMeetingError) {
+    return (
+      <div className="flex min-h-screen w-full flex-col items-center justify-center gap-4 bg-black">
+        <p className="body3 text-white/70">약속 정보를 불러오지 못했어요</p>
+        <button
+          type="button"
+          onClick={() => refetchMeeting()}
+          className="bg-sub2-normal rounded-16 px-4 py-2 text-white"
+        >
+          다시 시도
+        </button>
+      </div>
+    );
+  }
 
   if (!meeting) {
     return (
