@@ -451,7 +451,9 @@ const MeetingInfoPage = () => {
           </div>
 
           <div className="flex w-full flex-col gap-3">
-            <h2 className="h4 text-primary font-bold">참여자 목록</h2>
+            <h2 className="h4 text-primary font-bold">
+              참여자 목록 ({meeting.currentParticipantCount}/{meeting.capacity})
+            </h2>
             <div className="flex flex-wrap gap-4">
               {sortedParticipants.map((participant) => (
                 <ParticipantAvatar
