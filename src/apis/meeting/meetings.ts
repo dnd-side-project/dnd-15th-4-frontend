@@ -5,12 +5,14 @@ import type {
   MeetingCreateResponse,
   MeetingData,
   MeetingInProgressResponse,
+  MeetingDetailResponse,
   MeetingInviteCodeResponse,
   MeetingJoinRequest,
   MeetingJoinResponse,
   MeetingPreviewRequest,
   MeetingPreviewResponse,
   MeetingStatus,
+  MeetingUpdateRequest,
 } from "@/types/meeting";
 
 const MEETING_STATUS_QUERY_PARAM: Record<MeetingStatus, string> = {
@@ -73,6 +75,22 @@ export const previewMeeting = async (
     request
   );
   return result.data;
+};
+
+export const fetchMeetingDetail = async (
+  meetingId: number
+): Promise<MeetingDetailResponse> => {
+  const result = await api.get<ApiResult<MeetingDetailResponse>>(
+    `/meetings/${meetingId}`
+  );
+  return result.data;
+};
+
+export const updateMeeting = async (
+  meetingId: number,
+  request: MeetingUpdateRequest
+): Promise<void> => {
+  await api.patch(`/meetings/${meetingId}`, request);
 };
 
 export const deleteMeeting = async (meetingId: number): Promise<void> => {
