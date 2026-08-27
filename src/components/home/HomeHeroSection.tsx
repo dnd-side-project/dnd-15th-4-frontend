@@ -12,6 +12,7 @@ import { AvatarStack } from "@/components/home/AvatarStack";
 import { IcProfile } from "@/components/icons/IcProfile";
 import { IcArrivalDot, IcPuzzlePiece } from "@/components/icons";
 import { useMemberDepartureQuery } from "@/hooks/meeting/departure/useMemberDeparture";
+import { useSendMemberLocation } from "@/hooks/meeting/progress/useSendMemberLocation";
 import { useParticipantLocationsQuery } from "@/hooks/meeting/shared/useParticipantLocations";
 import type { MeetingData, Participant, UserLocation } from "@/types/meeting";
 import { formatMeetingDateTime } from "@/utils/date";
@@ -226,6 +227,11 @@ export const HomeHeroSection = ({ meeting }: HomeHeroSectionProps) => {
     isError: isDepartureError,
   } = useMemberDepartureQuery(meeting?.meetingId ?? null);
   const [showDepartureError, setShowDepartureError] = useState(false);
+
+  useSendMemberLocation(
+    meeting?.meetingId ?? 0,
+    meeting?.status === "IN_PROGRESS" && Boolean(departure)
+  );
 
   const handleMeetingClick = () => {
     if (!meeting || isDepartureLoading) return;
