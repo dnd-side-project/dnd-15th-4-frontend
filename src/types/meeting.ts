@@ -71,7 +71,6 @@ export interface PuzzleGroupParticipant {
   locationUpdatedAt: string | null;
   departureLatitude: number | null;
   departureLongitude: number | null;
-  estimatedArrivalTime: number | null;
   pieceIndex: number;
   revealed: boolean;
 }

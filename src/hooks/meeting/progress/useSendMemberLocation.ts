@@ -1,22 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { updateMemberLocation } from "@/apis/meeting/location";
-import { getDistanceInMeters } from "@/utils/geo";
-import type { UserLocation } from "@/types/meeting";
 
-const ARRIVAL_PROXIMITY_METERS = 50;
+const LOCATION_SEND_INTERVAL_MS = 60000;
 
-export const useSendMemberLocation = (
-  meetingId: number,
-  enabled: boolean,
-  destinationLatitude: number | null,
-  destinationLongitude: number | null,
-  syncTick: number
-) => {
-  const [myLocation, setMyLocation] = useState<UserLocation | null>(null);
-
+export const useSendMemberLocation = (meetingId: number, enabled: boolean) => {
   useEffect(() => {
     if (
       !enabled ||
@@ -26,31 +16,21 @@ export const useSendMemberLocation = (
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const currentLocation: UserLocation = {
+    const sendCurrentLocation = () => {
+      navigator.geolocation.getCurrentPosition((position) => {
+        updateMemberLocation(meetingId, {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
-        };
+        }).catch(() => {});
+      });
+    };
 
-        setMyLocation(currentLocation);
-        updateMemberLocation(meetingId, currentLocation).catch(() => {});
-      },
-      () => {
-        setMyLocation(null);
-      },
-      { enableHighAccuracy: true }
+    sendCurrentLocation();
+    const intervalId = setInterval(
+      sendCurrentLocation,
+      LOCATION_SEND_INTERVAL_MS
     );
-  }, [meetingId, enabled, syncTick]);
 
-  const isNearDestination =
-    myLocation !== null &&
-    destinationLatitude !== null &&
-    destinationLongitude !== null &&
-    getDistanceInMeters(myLocation, {
-      latitude: destinationLatitude,
-      longitude: destinationLongitude,
-    }) <= ARRIVAL_PROXIMITY_METERS;
-
-  return { isNearDestination };
+    return () => clearInterval(intervalId);
+  }, [meetingId, enabled]);
 };
