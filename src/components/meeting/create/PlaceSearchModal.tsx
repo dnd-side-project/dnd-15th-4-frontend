@@ -59,9 +59,7 @@ export const PlaceSearchModal = ({
 
   const handleFavoriteClick = async (favoriteSearch: FavoriteSearchDto) => {
     try {
-      const [matchedPlace] = await searchPlaces(
-        favoriteSearch.roadAddressName
-      );
+      const [matchedPlace] = await searchPlaces(favoriteSearch.roadAddressName);
 
       if (matchedPlace) {
         setPendingPlace({
