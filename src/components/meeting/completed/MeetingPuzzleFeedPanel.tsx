@@ -5,17 +5,17 @@ import { useState } from "react";
 
 import { ImageDetailModal } from "./ImageDetailModal";
 import { IcInfo } from "@/components/icons";
-import type { CompletedPuzzleFeedItem } from "@/types/meeting";
+import type { MeetingUnselectedImage } from "@/types/meeting";
 
 interface MeetingPuzzleFeedPanelProps {
-  puzzleFeed: CompletedPuzzleFeedItem[];
+  unselectedImages: MeetingUnselectedImage[];
 }
 
 export const MeetingPuzzleFeedPanel = ({
-  puzzleFeed,
+  unselectedImages,
 }: MeetingPuzzleFeedPanelProps) => {
   const [selectedFeedItem, setSelectedFeedItem] =
-    useState<CompletedPuzzleFeedItem | null>(null);
+    useState<MeetingUnselectedImage | null>(null);
 
   return (
     <div className="mb-12 flex w-full flex-col">
@@ -26,7 +26,7 @@ export const MeetingPuzzleFeedPanel = ({
         </p>
       </div>
       <div className="mt-3 grid grid-cols-3 gap-x-1 gap-y-2">
-        {puzzleFeed.map((feedItem, index) => (
+        {unselectedImages.map((feedItem, index) => (
           <button
             key={`${feedItem.uploaderId}-${index}`}
             type="button"
