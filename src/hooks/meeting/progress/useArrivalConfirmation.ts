@@ -14,11 +14,16 @@ export const useArrivalConfirmation = (
   const [remainingSeconds, setRemainingSeconds] = useState(
     CONFIRMATION_COUNTDOWN_SECONDS
   );
-  // 매 렌더마다 갱신되는 콜백이라 deps에 넣으면 카운트다운 타이머가 매번 재시작된다
   const onConfirmedRef = useRef(onConfirmed);
-  onConfirmedRef.current = onConfirmed;
   const onConfirmErrorRef = useRef(onConfirmError);
-  onConfirmErrorRef.current = onConfirmError;
+
+  useEffect(() => {
+    onConfirmedRef.current = onConfirmed;
+  }, [onConfirmed]);
+
+  useEffect(() => {
+    onConfirmErrorRef.current = onConfirmError;
+  }, [onConfirmError]);
 
   useEffect(() => {
     if (canConfirm) return;
@@ -31,7 +36,6 @@ export const useArrivalConfirmation = (
 
     if (remainingSeconds <= 0) {
       setConfirmationStep("confirmed");
-      // 도착완료 API 호출이 실패하면 "도착"으로 확정 처리하지 않고 버튼을 다시 노출한다
       Promise.resolve()
         .then(() => onConfirmedRef.current?.())
         .catch(() => {
