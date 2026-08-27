@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import searchImage from "@/assets/images/home-empty-schedule.png";
 import { ScheduleCard } from "@/components/common/ScheduleCard";
@@ -13,6 +14,7 @@ interface HomeUpcomingSectionProps {
 export const HomeUpcomingSection = ({
   schedules = [],
 }: HomeUpcomingSectionProps) => {
+  const router = useRouter();
   const isEmpty = schedules.length === 0;
 
   return (
@@ -37,6 +39,9 @@ export const HomeUpcomingSection = ({
               <ScheduleCard
                 key={`${meeting.meetingId}-${index}`}
                 meeting={meeting}
+                onClick={() =>
+                  router.push(`/meeting/${meeting.meetingId}/info`)
+                }
               />
             ))}
           </div>

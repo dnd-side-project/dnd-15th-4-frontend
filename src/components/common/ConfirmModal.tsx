@@ -31,7 +31,9 @@ export const ConfirmModal = ({
   >
     <div className="flex flex-col items-center gap-3.5 text-center">
       <p className="h4 text-primary">{title}</p>
-      {description && <p className="body5 text-disable">{description}</p>}
+      {description && (
+        <p className="body5 text-disable whitespace-pre-line">{description}</p>
+      )}
     </div>
 
     <div className="flex w-full gap-3.75">
