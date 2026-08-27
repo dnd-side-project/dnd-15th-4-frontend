@@ -54,6 +54,7 @@ export const useUpdateMemberNicknameMutation = (meetingId: number) => {
   return useMutation({
     mutationFn: (nickname: string) => updateMemberNickname(meetingId, nickname),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: meetingKeys.lists() });
       queryClient.invalidateQueries({
         queryKey: meetingKeys.fullDetail(meetingId),
       });
