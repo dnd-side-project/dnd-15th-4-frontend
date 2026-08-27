@@ -26,7 +26,7 @@ import { useDateTimeSelection } from "@/hooks/meeting/create/useDateTimeSelectio
 import { useMeetingImageSelection } from "@/hooks/meeting/shared/useMeetingImageSelection";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
 import { formatDateTimeForApi } from "@/utils/date";
-import { urlToFile } from "@/utils/file";
+import { meetingImageSelectionToFile } from "@/utils/file";
 
 import type { MeetingCreateRequest } from "@/types/meeting";
 import type { SelectedPlace } from "@/types/place";
@@ -115,7 +115,10 @@ export default function CreateMeetingPage() {
         imageSet: selectedImage.type === "default",
       };
 
-      const image = await urlToFile(selectedImage.src, "meeting-image.jpg");
+      const image = await meetingImageSelectionToFile(
+        selectedImage,
+        "meeting-image.jpg"
+      );
 
       createMeetingMutation.mutate(
         { request, image },
