@@ -191,7 +191,7 @@ const MeetingInfoPage = () => {
       place.latitude !== meeting.latitude ||
       place.longitude !== meeting.longitude);
   const isMemoChanged = hasSyncedInitialValues && memo !== (meeting.memo ?? "");
-  const isImageChanged = selectedImage !== null || hasClearedProvidedImage;
+  const isImageChanged = selectedImage !== null;
   const isNicknameChanged =
     nicknameParticipation !== originalNicknameParticipation ||
     (nicknameParticipation && nickname !== originalNickname);
@@ -254,7 +254,7 @@ const MeetingInfoPage = () => {
         );
       }
 
-      if (isImageChanged && selectedImage) {
+      if (selectedImage) {
         tasks.push(
           meetingImageSelectionToFile(selectedImage, "puzzle-image.jpg")
             .then((image) => updatePuzzleImageMutation.mutateAsync(image))
