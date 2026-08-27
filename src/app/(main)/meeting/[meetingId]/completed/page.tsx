@@ -18,7 +18,8 @@ const MeetingCompletedPage = () => {
   const numericMeetingId = Number(meetingId);
   const isHistoryView = searchParams.get("view") === "history";
 
-  const { data: result } = useMeetingResultQuery(numericMeetingId);
+  const { data: result, isPending: isResultPending } =
+    useMeetingResultQuery(numericMeetingId);
   const { data: meetingDetail } = useMeetingDetailQuery(
     numericMeetingId,
     isHistoryView
@@ -26,6 +27,15 @@ const MeetingCompletedPage = () => {
 
   const [selectedPuzzlePage, setSelectedPuzzlePage] =
     useState<MeetingResultPuzzlePage | null>(null);
+
+  if (isResultPending) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-3">
+        <div className="border-border-1 border-t-primary-normal size-8 animate-spin rounded-full border-4" />
+        <p className="body6 text-disable">약속 결과를 불러오는 중...</p>
+      </div>
+    );
+  }
 
   const puzzleFeed = result?.puzzleFeed ?? [];
   const unselectedImages = result?.unselectedImages ?? [];
