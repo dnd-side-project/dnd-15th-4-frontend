@@ -1,0 +1,236 @@
+@theme inline {
+  /* fonts */
+  --font-pretendard: var(--font-pretendard);
+}
+
+@theme {
+  /* text */
+  --color-title: #1f2124;
+  --color-primary: #101112;
+  --color-secondary-1: #4b4b4b;
+  --color-secondary-2: #858894;
+  --color-secondary-3: #bdbdbd;
+  --color-secondary-4: #dfdfdf;
+  --color-disable: #9da5b6;
+  --color-red: #fb5967;
+  --color-red-2: #ff7782;
+
+  /* primary palette (Blue) */
+  --color-primary-light: #ecf8ff;
+  --color-primary-light-hover: #e2f5ff;
+  --color-primary-light-active: #c3eaff;
+  --color-primary-normal: #3dbaff;
+  --color-primary-normal-hover: #14abff;
+  --color-primary-normal-active: #009aef;
+  --color-primary-dark: #2e8cbf;
+  --color-primary-dark-hover: #257099;
+  --color-primary-dark-active: #1b5473;
+  --color-primary-darker: #154159;
+
+  /* sub1 palette (Light Blue) */
+  --color-sub1-light: #f6fcff;
+  --color-sub1-light-hover: #f1faff;
+  --color-sub1-light-active: #e2f4ff;
+  --color-sub1-normal: #a2ddff;
+  --color-sub1-normal-hover: #83d2ff;
+  --color-sub1-normal-active: #67c7ff;
+  --color-sub1-dark: #5486ee;
+  --color-sub1-dark-hover: #4da9de;
+  --color-sub1-dark-active: #3894c9;
+  --color-sub1-darker: #2a80b1;
+
+  /* sub2 palette (Brown Black) */
+  --color-sub2-light: #eae8e7;
+  --color-sub2-light-hover: #dfdddb;
+  --color-sub2-light-active: #bdb9b5;
+  --color-sub2-normal: #291d11;
+  --color-sub2-normal-hover: #251a0f;
+  --color-sub2-normal-active: #21170e;
+  --color-sub2-dark: #1f160d;
+  --color-sub2-dark-hover: #19110a;
+  --color-sub2-dark-active: #120d08;
+  --color-sub2-darker: #0e0a06;
+
+  /* point palette (Yellow) */
+  --color-point-light: #fffff8;
+  --color-point-light-hover: #fffff4;
+  --color-point-light-active: #ffffe9;
+  --color-point-normal: #fffcb7;
+  --color-point-normal-hover: #f4f1a3;
+  --color-point-normal-active: #e0dc80;
+  --color-point-dark: #c2bf7b;
+  --color-point-dark-hover: #99976e;
+  --color-point-dark-active: #737152;
+  --color-point-darker: #595840;
+
+  /* kakao brand */
+  --color-kakao: #fee500;
+
+  /* neutral */
+  --white: #ffffff;
+  --color-gray-1: #e9e9ea;
+  --color-gray-2: #dedefe;
+  --color-gray-3: #bbbcbd;
+  --color-gray-4: #25262a;
+  --color-gray-5: #212226;
+  --color-gray-6: #1e1e22;
+  --color-gray-7: #1c1d20;
+  --color-gray-8: #161719;
+  --black: #000000;
+
+  /* bg */
+  --color-bg-gray: #f6f7f9;
+  --color-bg-normal: #ffffff;
+
+  /* border */
+  --color-border-1: #e9e9ea;
+  --color-border-2: #bbbcbd;
+  --color-border-4: #291d11;
+  --color-handle: #e7e7e7;
+  --color-divider: #f2f2f2;
+  --color-divider-2: #f4f4f4;
+  --color-divider-3: #d9d9d9;
+  --color-divider-4: #f1f1f1;
+
+  /* surface */
+  --color-surface-0: #f5f5f5;
+  --color-surface-1: #e9ecf1;
+  --color-surface-2: #e2f5ff;
+  --color-surface-3: #fffcb7;
+  --color-surface-4: #3dbaff;
+  --color-surface-5: #a2ddff;
+  --color-surface-6: #291d11;
+  --color-surface-background-0: #ffffff;
+
+  /* radius */
+  --radius-4: 0.25rem;
+  --radius-8: 0.5rem;
+  --radius-12: 0.75rem;
+  --radius-16: 1rem;
+  --radius-18: 1.125rem;
+  --radius-20: 1.25rem;
+  --radius-30: 1.875rem;
+  --radius-pill: 9999px;
+
+  /* shadow */
+  --shadow-1: 0px 2px 14.2px 0px rgba(0, 0, 0, 0.18);
+  --shadow-2: 0 3px 7.6px 0 rgba(0, 0, 0, 0.11);
+  --shadow-3: 0 0 11px 0 rgba(0, 0, 0, 0.07);
+  --shadow-4: 0 0 10px 0 rgba(0, 0, 0, 0.08);
+}
+
+@layer components {
+  /* typography (Header) */
+  .h1 {
+    font-size: 1.625rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .h4 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+
+  /* typography (Body) */
+  .body1 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .body2 {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .body3 {
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .body4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .body5 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .body6 {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .body7 {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .body8 {
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+
+  /* typography (Caption / usage-specific) */
+  .puzzle-eta {
+    font-size: 2.5rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .bottom-button {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .puzzle-process {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .speech-bubble {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .menu {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+  .menu-select {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0em;
+  }
+}

@@ -1,0 +1,86 @@
+"use client";
+
+import { useSyncExternalStore } from "react";
+
+import type { PlaceDto } from "@/types/place";
+
+const STORAGE_KEY = "placeSearchFavorites";
+export const MAX_FAVORITE_PLACE_COUNT = 5;
+
+const isPlaceDto = (value: unknown): value is PlaceDto => {
+  if (typeof value !== "object" || value === null) return false;
+  const item = value as Record<string, unknown>;
+
+  return (
+    typeof item.placeId === "string" &&
+    typeof item.placeName === "string" &&
+    typeof item.addressName === "string" &&
+    (item.roadAddressName === null ||
+      typeof item.roadAddressName === "string") &&
+    typeof item.latitude === "number" &&
+    Number.isFinite(item.latitude) &&
+    typeof item.longitude === "number" &&
+    Number.isFinite(item.longitude)
+  );
+};
+
+const isPlaceDtoArray = (value: unknown): value is PlaceDto[] =>
+  Array.isArray(value) && value.every(isPlaceDto);
+
+const readStoredFavorites = (): PlaceDto[] => {
+  if (typeof window === "undefined") return [];
+
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (!stored) return [];
+
+  try {
+    const parsed: unknown = JSON.parse(stored);
+    if (isPlaceDtoArray(parsed)) return parsed;
+  } catch {
+    // 손상된 데이터는 무시하고 아래에서 초기화
+  }
+
+  localStorage.removeItem(STORAGE_KEY);
+  return [];
+};
+
+let favorites: PlaceDto[] = readStoredFavorites();
+const listeners = new Set<() => void>();
+
+const persist = (next: PlaceDto[]) => {
+  favorites = next;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  listeners.forEach((listener) => listener());
+};
+
+const subscribe = (listener: () => void) => {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+};
+
+const getSnapshot = () => favorites;
+
+const EMPTY_FAVORITES: PlaceDto[] = [];
+const getServerSnapshot = (): PlaceDto[] => EMPTY_FAVORITES;
+
+export const usePlaceSearchFavorites = () => {
+  const favorites = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot
+  );
+
+  const isFavorite = (placeId: string) =>
+    favorites.some((item) => item.placeId === placeId);
+
+  const addFavorite = (place: PlaceDto) => {
+    if (favorites.some((item) => item.placeId === place.placeId)) return;
+    persist([place, ...favorites]);
+  };
+
+  const removeFavorite = (placeId: string) => {
+    persist(favorites.filter((item) => item.placeId !== placeId));
+  };
+
+  return { favorites, isFavorite, addFavorite, removeFavorite };
+};

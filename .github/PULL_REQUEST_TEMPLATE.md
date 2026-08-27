@@ -16,4 +16,4 @@
 - [ ] 관련 이슈 연결
 - [ ] PR 관련 정보 연결 (작업자, 라벨, 마일스톤 등)
 - [ ] Github Action 통과
-- [ ] Code Rabbit 통과
+- [ ] CodeRabbit 통과

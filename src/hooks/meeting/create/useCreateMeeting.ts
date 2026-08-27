@@ -1,0 +1,78 @@
+"use client";
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import {
+  createMeeting,
+  fetchInviteCode,
+  fetchMeetings,
+} from "@/apis/meeting/meetings";
+import { meetingKeys } from "@/apis/meeting/keys";
+import { useAuthStore } from "@/stores/useAuthStore";
+import type { MeetingCreateRequest, MeetingData } from "@/types/meeting";
+
+export interface CreateMeetingVariables {
+  request: MeetingCreateRequest;
+  image: File;
+}
+
+export const useCreateMeetingMutation = () => {
+  const queryClient = useQueryClient();
+  const user = useAuthStore((state) => state.user);
+
+  return useMutation({
+    mutationFn: ({ request, image }: CreateMeetingVariables) =>
+      createMeeting(request, image),
+    onSuccess: (data, { request }) => {
+      queryClient.invalidateQueries({ queryKey: meetingKeys.lists() });
+
+      queryClient.setQueryData<MeetingData>(
+        meetingKeys.detail(data.meetingId),
+        {
+          meetingId: data.meetingId,
+          title: request.title,
+          dateTime: request.dateTime,
+          place: request.destination,
+          latitude: request.latitude,
+          longitude: request.longitude,
+          capacity: request.capacity,
+          currentParticipantCount: 1,
+          status: "WAITING",
+          participants: user
+            ? [
+                {
+                  id: user.id,
+                  name: request.nickname?.trim() || user.nickname,
+                  profileImageUrl: user.profileImageUrl ?? "",
+                },
+              ]
+            : [],
+        }
+      );
+    },
+  });
+};
+
+export const useMeetingQuery = (meetingId: number) =>
+  useQuery({
+    queryKey: meetingKeys.detail(meetingId),
+    queryFn: async () => {
+      const meetings = await fetchMeetings();
+      const meeting = meetings.find((item) => item.meetingId === meetingId);
+      if (!meeting) {
+        throw new Error("약속 정보를 찾을 수 없어요.");
+      }
+      return meeting;
+    },
+    enabled: meetingId > 0,
+  });
+
+export const useInviteCodeQuery = (meetingId: number) =>
+  useQuery({
+    queryKey: meetingKeys.inviteCode(meetingId),
+    queryFn: async () => {
+      const { inviteCode } = await fetchInviteCode(meetingId);
+      return inviteCode;
+    },
+    enabled: meetingId > 0,
+  });

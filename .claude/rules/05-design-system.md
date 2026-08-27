@@ -31,7 +31,7 @@ Tailwind CSS v4 및 shadcn/ui 기반의 스타일 작성 규칙을 정의합니�
 ### ✅ DO
 
 ```TypeScript
-// src/components/ui/button.tsx
+// src/components/common/Button.tsx
 import * as React from 'react';
 import { Button as BaseButton } from '@base-ui/react/button';
 import { cva, type VariantProps } from 'class-variance-authority';
