@@ -8,7 +8,7 @@ import { CHARACTER_FALLBACK_IMAGE } from "@/constants/character-images";
 export type AvatarStackItem = {
   id: number;
   name: string;
-  profileImageUrl: string;
+  profileImageUrl: string | null;
 };
 
 interface StackAvatarProps {
