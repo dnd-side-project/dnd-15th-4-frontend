@@ -38,3 +38,4 @@ export * from "./IcViewAgenda";
 export * from "./IcViewAgendaFilled";
 export * from "./IcWalk";
 export * from "./icon.types";
+export * from "./IcPerson";
