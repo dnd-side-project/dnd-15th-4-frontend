@@ -203,7 +203,7 @@ const MeetingSettingsPage = () => {
     );
   }
 
-  const hostId = meeting.participants[1]?.id;
+  const hostId = meeting.participants[0]?.id;
   const isHost = hostId === currentUserId;
 
   const displayDateTime = selectedDateTime ?? new Date(meeting.dateTime);
