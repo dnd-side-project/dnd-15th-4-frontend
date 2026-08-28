@@ -9,23 +9,15 @@ import { useCarouselPage } from "@/hooks/common/useCarouselPage";
 export interface OnboardingSlide {
   title: ReactNode;
   image: StaticImageData;
-  imageWidth: number;
-  imageHeight: number;
 }
 
 interface OnboardingCarouselProps {
   slides: OnboardingSlide[];
 }
 
-const IMAGE_TOP_OFFSET_PX = 62;
-
 export const OnboardingCarousel = ({ slides }: OnboardingCarouselProps) => {
   const { containerRef, currentPage, handleScroll } = useCarouselPage(
     slides.length
-  );
-
-  const trackHeight = Math.max(
-    ...slides.map((slide) => IMAGE_TOP_OFFSET_PX + slide.imageHeight)
   );
 
   return (
@@ -33,30 +25,28 @@ export const OnboardingCarousel = ({ slides }: OnboardingCarouselProps) => {
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        style={{ height: trackHeight }}
         className="flex snap-x snap-mandatory scrollbar-none overflow-x-auto"
       >
         {slides.map((slide, index) => (
           <div
             key={index}
-            className="relative w-full shrink-0 snap-center overflow-hidden"
+            className="flex w-full shrink-0 snap-center flex-col items-center overflow-hidden"
           >
-            <p className="h1 absolute inset-x-0 top-17.75 z-10 px-4 text-center">
+            <p className="px-4 text-center text-[22px] font-semibold">
               {slide.title}
             </p>
-            <div
-              className="rounded-20 absolute inset-x-0 -top-15.5 mx-auto overflow-hidden"
-              style={{ width: slide.imageWidth, height: slide.imageHeight }}
-            >
-              <Image src={slide.image} alt="" fill className="object-cover" />
-            </div>
+            <Image
+              src={slide.image}
+              alt=""
+              className="rounded-20 mx-auto mt-6 h-auto w-full max-w-98.25 object-cover"
+            />
           </div>
         ))}
       </div>
       <DotIndicator
         pageCount={slides.length}
         currentPage={currentPage}
-        className="pb-7.25"
+        className="mt-7.5 pb-7.25"
       />
     </div>
   );

@@ -5,7 +5,7 @@ import { PopoverMenu } from "@/components/common/PopoverMenu";
 import { IcMoreVert } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
-const HOME_HREF = "/";
+const HOME_HREF = "/home";
 
 interface MeetingSummaryCardProps {
   meetingId: number;
