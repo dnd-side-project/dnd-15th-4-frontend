@@ -16,6 +16,7 @@ import { useMemberDepartureQuery } from "@/hooks/meeting/departure/useMemberDepa
 import { useMeetingInProgressQuery } from "@/hooks/meeting/progress/useMeetingInProgress";
 import { useReactionPresetsQuery } from "@/hooks/meeting/progress/useReactionPresets";
 import { useArrivalProximityCheck } from "@/hooks/meeting/progress/useArrivalProximityCheck";
+import { useSendMemberLocation } from "@/hooks/meeting/progress/useSendMemberLocation";
 import { useSendReactionMessageMutation } from "@/hooks/meeting/progress/useSendReactionMessage";
 import { usePushSubscription } from "@/hooks/notification/usePushSubscription";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -53,6 +54,8 @@ const MeetingDetailPage = () => {
 
   const { data: myDeparture } = useMemberDepartureQuery(numericMeetingId);
   const currentUserId = useAuthStore((state) => state.user?.id);
+
+  useSendMemberLocation(numericMeetingId, Boolean(myDeparture));
 
   const { isNearDestination } = useArrivalProximityCheck(
     numericMeetingId,
