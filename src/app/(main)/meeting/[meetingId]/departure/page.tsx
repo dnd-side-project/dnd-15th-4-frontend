@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AlertModal } from "@/components/common/AlertModal";
 import { Header } from "@/components/common/Header";
@@ -17,8 +17,10 @@ import { ParticipantAvatar } from "@/components/meeting/shared/ParticipantAvatar
 import { useMeetingQuery } from "@/hooks/meeting/create/useCreateMeeting";
 import { useCreateMemberDepartureMutation } from "@/hooks/meeting/departure/useMemberDeparture";
 import { useSearchMeetingRoutesMutation } from "@/hooks/meeting/departure/useMeetingRoutes";
+import { useNotificationSettingsQuery } from "@/hooks/mypage/useNotificationSettings";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { DepartureOrigin, MeetingRoute } from "@/types/meeting";
+import type { NotificationSettings } from "@/types/user";
 import { formatMeetingDateTime } from "@/utils/date";
 import { DoubleButton } from "@/components/common/DoubleButton";
 
@@ -47,6 +49,27 @@ const DepartureSetupPage = () => {
     Number(meetingId)
   );
 
+  const {
+    data: defaultNotificationSettings,
+    isLoading: isNotificationSettingsLoading,
+  } = useNotificationSettingsQuery();
+  const [hasSyncedNotificationDefaults, setHasSyncedNotificationDefaults] =
+    useState(false);
+
+  const applyNotificationDefaults = (
+    settings: NotificationSettings | undefined
+  ) => {
+    setNotifyLocation(settings?.locationPermission ?? false);
+    setNotifyFriendArrival(settings?.friendArrival ?? false);
+    setNotifySpeechBubble(settings?.chatBubble ?? false);
+  };
+
+  useEffect(() => {
+    if (hasSyncedNotificationDefaults || !defaultNotificationSettings) return;
+    applyNotificationDefaults(defaultNotificationSettings);
+    setHasSyncedNotificationDefaults(true);
+  }, [hasSyncedNotificationDefaults, defaultNotificationSettings]);
+
   const canDepart = Boolean(origin && selectedRoute);
 
   const handleSelectOrigin = (selected: DepartureOrigin) => {
@@ -69,12 +92,11 @@ const DepartureSetupPage = () => {
   };
 
   const handleReset = () => {
+    if (isNotificationSettingsLoading) return;
     setOrigin(null);
     setSelectedRoute(null);
     setIsRouteListOpen(false);
-    setNotifyLocation(false);
-    setNotifyFriendArrival(false);
-    setNotifySpeechBubble(false);
+    applyNotificationDefaults(defaultNotificationSettings);
     searchRoutesMutation.reset();
   };
 
@@ -221,16 +243,19 @@ const DepartureSetupPage = () => {
           <ToggleField
             label="위치권한"
             checked={notifyLocation}
+            disabled={isNotificationSettingsLoading}
             onCheckedChange={setNotifyLocation}
           />
           <ToggleField
             label="친구도착"
             checked={notifyFriendArrival}
+            disabled={isNotificationSettingsLoading}
             onCheckedChange={setNotifyFriendArrival}
           />
           <ToggleField
             label="말풍선"
             checked={notifySpeechBubble}
+            disabled={isNotificationSettingsLoading}
             onCheckedChange={setNotifySpeechBubble}
           />
         </div>
@@ -251,6 +276,7 @@ const DepartureSetupPage = () => {
         <DoubleButton
           secondaryLabel="초기화"
           onSecondaryClick={handleReset}
+          isSecondaryDisabled={isNotificationSettingsLoading}
           primaryLabel={
             createDepartureMutation.isPending ? "출발 설정 중..." : "출발하기"
           }
