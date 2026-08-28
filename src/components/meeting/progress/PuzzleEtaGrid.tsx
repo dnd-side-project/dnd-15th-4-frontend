@@ -35,6 +35,7 @@ const GRID_STYLES: PuzzleCardStyle[] = [
 
 export interface PuzzleEtaGridProps {
   members: PuzzleGroupParticipant[];
+  puzzleImageUrl: string;
   canConfirmArrival?: boolean;
   confirmationStep?: ArrivalConfirmationStep;
   remainingSeconds?: number;
@@ -45,6 +46,7 @@ export interface PuzzleEtaGridProps {
 
 export const PuzzleEtaGrid = ({
   members,
+  puzzleImageUrl,
   canConfirmArrival = false,
   confirmationStep = "pending",
   remainingSeconds = 0,
@@ -81,6 +83,7 @@ export const PuzzleEtaGrid = ({
             backgroundClassName={style.backgroundClassName}
             textClassName={style.textClassName}
             image={member.profileImageUrl?.trim() || CHARACTER_FALLBACK_IMAGE}
+            puzzleImageUrl={puzzleImageUrl}
             nickname={member.nickname ?? ""}
             hasDeparted={member.departed}
             remainingMinutes={
