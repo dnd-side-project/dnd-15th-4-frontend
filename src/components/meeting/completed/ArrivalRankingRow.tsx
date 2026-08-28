@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { IcMedalBronze, IcMedalGold, IcMedalSilver } from "@/components/icons";
+import { CHARACTER_FALLBACK_IMAGE } from "@/constants/character-images";
 import { cn } from "@/lib/utils";
 import { getTimeLabel } from "@/utils/date";
 import type { MeetingRankingItem } from "@/types/meeting";
@@ -45,7 +46,7 @@ export const ArrivalRankingRow = ({
             )}
           >
             <Image
-              src={ranking.profileImageUrl}
+              src={ranking.profileImageUrl?.trim() || CHARACTER_FALLBACK_IMAGE}
               alt={ranking.nickname}
               fill
               className="object-cover"

@@ -44,7 +44,7 @@ export interface UserLocation {
 export interface MeetingRankingItem {
   userId: number;
   nickname: string;
-  profileImageUrl: string;
+  profileImageUrl: string | null;
   arrived: boolean;
   arrivedAt: string | null;
   earlyArrivalMinutes: number | null;
