@@ -1,11 +1,13 @@
 import { Button } from "@/components/common/Button";
 import { Modal } from "@/components/common/Modal";
+import { cn } from "@/lib/utils";
 
 export interface ConfirmModalProps {
   title: string;
   description?: string;
   cancelLabel?: string;
   confirmLabel?: string;
+  onCancelClassName?: string;
   onCancel: () => void;
   onConfirm: () => void;
 }
@@ -15,6 +17,7 @@ export const ConfirmModal = ({
   description,
   cancelLabel,
   confirmLabel = "확인",
+  onCancelClassName,
   onCancel,
   onConfirm,
 }: ConfirmModalProps) => (
@@ -42,7 +45,11 @@ export const ConfirmModal = ({
           type="button"
           variant="outline"
           onClick={onCancel}
-          className="text-red hover:bg-bg-normal rounded-16 bottom-button hover:text-red h-14 flex-1 border-1"
+          className={cn(
+            "rounded-16 bottom-button h-14 flex-1 border-1 transition-colors",
+            "hover:bg-bg-normal",
+            onCancelClassName || "text-red hover:text-red"
+          )}
         >
           {cancelLabel}
         </Button>
