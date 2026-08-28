@@ -63,7 +63,7 @@ export const MonthCalendar = ({
         ))}
       </div>
 
-      <div className="flex flex-col gap-1">
+      <div className="flex min-h-[20.75rem] flex-col gap-1">
         {weeks.map((week, weekIndex) => (
           <div key={weekIndex} className="grid grid-cols-7">
             {week.map((date, dayIndex) => {
