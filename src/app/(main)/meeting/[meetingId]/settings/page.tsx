@@ -501,7 +501,7 @@ const MeetingSettingsPage = () => {
                 />
 
                 <RouteSelectTrigger
-                  label={displayedRoute ? "이동경로 요약" : "이동 경로"}
+                  label="이동 경로"
                   value={
                     displayedRoute
                       ? getRouteSummary(
