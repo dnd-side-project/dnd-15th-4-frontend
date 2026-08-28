@@ -107,6 +107,7 @@ export default function HomePage() {
 
   const handleDepart = () => {
     if (!departureCandidate) return;
+    if (isDepartureCheckLoading) return;
 
     const candidate = departureCandidate;
     setDepartureCandidate(null);
