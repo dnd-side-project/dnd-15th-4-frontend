@@ -4,13 +4,15 @@ import { useRouter } from "next/navigation";
 
 import { AvatarStack } from "@/components/home/AvatarStack";
 import type { MeetingData, MeetingPreviewResponse } from "@/types/meeting";
-import { formatMeetingDateTime } from "@/utils/date";
+import { formatDotDateWithWeekday, formatMeetingDateTime } from "@/utils/date";
 
 interface ScheduleCardProps {
   meeting: MeetingData | MeetingPreviewResponse;
   participantLimit?: number;
   onClick?: () => void;
   showDDay?: boolean;
+  showParticipants?: boolean;
+  showFullDate?: boolean;
   interactive?: boolean;
 }
 
@@ -19,21 +21,27 @@ export const ScheduleCard = ({
   participantLimit,
   onClick,
   showDDay = true,
+  showParticipants = true,
+  showFullDate = false,
   interactive = true,
 }: ScheduleCardProps) => {
   const router = useRouter();
   const { dateFormatted, timeFormatted, dDay } = formatMeetingDateTime(
     meeting.dateTime
   );
+  const dateLabel = showFullDate
+    ? formatDotDateWithWeekday(meeting.dateTime)
+    : dateFormatted;
 
   if (!interactive) {
     return (
-      <div className="rounded-20 shadow-3 relative flex w-full shrink-0 items-center overflow-hidden bg-white px-4.5 pt-4.5 pb-5.5 text-left">
+      <div className="rounded-20 shadow-3 relative flex w-full shrink-0 items-center overflow-hidden bg-white px-4.5 pt-4.5 text-left">
         <ScheduleCardContent
           meeting={meeting}
           participantLimit={participantLimit}
           showDDay={showDDay}
-          dateFormatted={dateFormatted}
+          showParticipants={showParticipants}
+          dateFormatted={dateLabel}
           timeFormatted={timeFormatted}
           dDay={dDay}
         />
@@ -51,7 +59,8 @@ export const ScheduleCard = ({
         meeting={meeting}
         participantLimit={participantLimit}
         showDDay={showDDay}
-        dateFormatted={dateFormatted}
+        showParticipants={showParticipants}
+        dateFormatted={dateLabel}
         timeFormatted={timeFormatted}
         dDay={dDay}
       />
@@ -63,6 +72,7 @@ interface ScheduleCardContentProps {
   meeting: MeetingData | MeetingPreviewResponse;
   participantLimit?: number;
   showDDay: boolean;
+  showParticipants: boolean;
   dateFormatted: string;
   timeFormatted: string;
   dDay: string;
@@ -72,6 +82,7 @@ const ScheduleCardContent = ({
   meeting,
   participantLimit,
   showDDay,
+  showParticipants,
   dateFormatted,
   timeFormatted,
   dDay,
@@ -101,15 +112,16 @@ const ScheduleCardContent = ({
           </span>
         </div>
 
-        {participantLimit == undefined ? (
-          <div className="flex shrink-0 items-center">
-            <AvatarStack participants={meeting.participants} />
-          </div>
-        ) : (
-          <p className="body1 text-sub1-normal mt-2.5 font-medium">
-            {participantLimit}인 약속
-          </p>
-        )}
+        {showParticipants &&
+          (participantLimit == undefined ? (
+            <div className="flex shrink-0 items-center">
+              <AvatarStack participants={meeting.participants} />
+            </div>
+          ) : (
+            <p className="body1 text-sub1-normal mt-2.5 font-medium">
+              {participantLimit}인 약속
+            </p>
+          ))}
       </div>
 
       {showDDay && (

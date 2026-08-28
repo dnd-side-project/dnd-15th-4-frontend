@@ -3,10 +3,10 @@ import { useEffect } from "react";
 
 import { useCenteredCarouselIndex } from "@/hooks/common/useCenteredCarouselIndex";
 import { cn } from "@/lib/utils";
-import type { MeetingPuzzleGroup } from "@/types/meeting";
+import type { MeetingResultPuzzlePage } from "@/types/meeting";
 
 export interface PuzzleResultCarouselProps {
-  puzzleGroups: MeetingPuzzleGroup[];
+  puzzleFeed: MeetingResultPuzzlePage[];
   onCenteredIndexChange?: (index: number) => void;
   isAllFailed?: boolean;
 }
@@ -33,12 +33,12 @@ const PIECE_IMAGE_OFFSET_CLASS: Record<number, string> = {
 };
 
 export const PuzzleResultCarousel = ({
-  puzzleGroups,
+  puzzleFeed,
   onCenteredIndexChange,
   isAllFailed = false,
 }: PuzzleResultCarouselProps) => {
   const { containerRef, setItemRef, centeredIndex } = useCenteredCarouselIndex(
-    puzzleGroups.length
+    puzzleFeed.length
   );
 
   useEffect(() => {
@@ -50,15 +50,15 @@ export const PuzzleResultCarousel = ({
       ref={containerRef}
       className="flex w-full snap-x snap-mandatory [scrollbar-width:none] items-center gap-2 overflow-x-auto px-[calc(50%-7.4375rem)] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     >
-      {puzzleGroups.map((puzzleGroup, index) => {
-        const memberByPieceIndex = new Map(
-          puzzleGroup.members.map((member) => [member.pieceIndex, member])
+      {puzzleFeed.map((puzzlePage, index) => {
+        const pieceByIndex = new Map(
+          puzzlePage.pieces.map((piece) => [piece.pieceIndex, piece])
         );
         const isCentered = index === centeredIndex;
 
         return (
           <div
-            key={puzzleGroup.puzzleGroupId}
+            key={puzzlePage.puzzlePageId}
             ref={setItemRef(index)}
             className={cn(
               "rounded-20 grid shrink-0 snap-center grid-cols-2 grid-rows-2 overflow-hidden",
@@ -66,8 +66,7 @@ export const PuzzleResultCarousel = ({
             )}
           >
             {[1, 2, 3, 4].map((pieceIndex) => {
-              const isRevealed =
-                memberByPieceIndex.get(pieceIndex)?.revealed ?? false;
+              const isRevealed = pieceByIndex.get(pieceIndex)?.success ?? false;
 
               return (
                 <div
@@ -90,8 +89,8 @@ export const PuzzleResultCarousel = ({
                       )}
                     >
                       <Image
-                        src={puzzleGroup.puzzleImageUrl}
-                        alt={`퍼즐 세트 ${puzzleGroup.pageNumber} 조각 ${pieceIndex}`}
+                        src={puzzlePage.imageUrl}
+                        alt={`퍼즐 세트 ${puzzlePage.puzzlePageId} 조각 ${pieceIndex}`}
                         fill
                         className="object-cover"
                       />
