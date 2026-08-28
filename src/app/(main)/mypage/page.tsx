@@ -44,7 +44,7 @@ const MyPage = () => {
             className="rounded-12 size-25.5 border-[0.1875rem] border-black object-cover"
           />
         ) : (
-          <div className="bg-profile-icon-bg rounded-12 flex size-25.5 items-center justify-center border-[0.1875rem] border-black">
+          <div className="bg-profile-icon-bg rounded-12 flex size-25.5 items-center justify-center">
             <IcPerson size={51} className="text-profile-icon" />
           </div>
         )}
