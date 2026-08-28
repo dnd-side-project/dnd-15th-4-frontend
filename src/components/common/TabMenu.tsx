@@ -27,6 +27,7 @@ export const TabMenu = ({
         type="button"
         onClick={onLeftClick}
         aria-pressed={selectedTab === "left"}
+        aria-label={leftBadge ? `${leftLabel}, 변경 사항 있음` : leftLabel}
         className={cn(
           "menu relative flex-1 pb-3.25 text-center text-disable transition-colors pt-1",
           selectedTab === "left" && "menu-select text-primary"
@@ -43,6 +44,7 @@ export const TabMenu = ({
         type="button"
         onClick={onRightClick}
         aria-pressed={selectedTab === "right"}
+        aria-label={rightBadge ? `${rightLabel}, 변경 사항 있음` : rightLabel}
         className={cn(
           "menu relative flex-1 pb-3.25 text-center text-disable transition-colors pt-1",
           selectedTab === "right" && "menu-select text-primary"
