@@ -58,7 +58,11 @@ export const PuzzleEtaGrid = ({
 
   const realMembers = members.filter((member) => member.userId !== null);
   const isGroupComplete =
-    realMembers.length > 0 && realMembers.every((member) => member.arrived);
+    realMembers.length > 0 &&
+    realMembers.every(
+      (member) =>
+        member.arrived || (member.userId === currentUserId && isConfirmed)
+    );
 
   return (
     <div className="grid aspect-square w-full grid-cols-2 grid-rows-2">
