@@ -49,7 +49,10 @@ const DepartureSetupPage = () => {
     Number(meetingId)
   );
 
-  const { data: defaultNotificationSettings } = useNotificationSettingsQuery();
+  const {
+    data: defaultNotificationSettings,
+    isLoading: isNotificationSettingsLoading,
+  } = useNotificationSettingsQuery();
   const [hasSyncedNotificationDefaults, setHasSyncedNotificationDefaults] =
     useState(false);
 
@@ -89,6 +92,7 @@ const DepartureSetupPage = () => {
   };
 
   const handleReset = () => {
+    if (isNotificationSettingsLoading) return;
     setOrigin(null);
     setSelectedRoute(null);
     setIsRouteListOpen(false);
@@ -239,16 +243,19 @@ const DepartureSetupPage = () => {
           <ToggleField
             label="위치권한"
             checked={notifyLocation}
+            disabled={isNotificationSettingsLoading}
             onCheckedChange={setNotifyLocation}
           />
           <ToggleField
             label="친구도착"
             checked={notifyFriendArrival}
+            disabled={isNotificationSettingsLoading}
             onCheckedChange={setNotifyFriendArrival}
           />
           <ToggleField
             label="말풍선"
             checked={notifySpeechBubble}
+            disabled={isNotificationSettingsLoading}
             onCheckedChange={setNotifySpeechBubble}
           />
         </div>
@@ -269,6 +276,7 @@ const DepartureSetupPage = () => {
         <DoubleButton
           secondaryLabel="초기화"
           onSecondaryClick={handleReset}
+          isSecondaryDisabled={isNotificationSettingsLoading}
           primaryLabel={
             createDepartureMutation.isPending ? "출발 설정 중..." : "출발하기"
           }
