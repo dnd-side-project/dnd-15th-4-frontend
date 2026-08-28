@@ -15,7 +15,6 @@ import { PlaceMarker } from "@/components/common/PlaceMarker";
 import { PlaceSearchTrigger } from "@/components/common/PlaceSearchTrigger";
 import { TabMenu } from "@/components/common/TabMenu";
 import { ToggleField } from "@/components/common/ToggleField";
-import { InviteCodeField } from "@/components/meeting/create/InviteCodeField";
 import { PlaceSearchModal } from "@/components/meeting/create/PlaceSearchModal";
 import { TimeSelectModal } from "@/components/meeting/create/TimeSelectModal";
 import { RouteSelectTrigger } from "@/components/meeting/departure/RouteSelectTrigger";
@@ -479,8 +478,6 @@ const MeetingSettingsPage = () => {
                 </span>
               </InputLayout>
             )}
-
-            <InviteCodeField inviteCode={meeting.inviteCode} />
           </div>
         </main>
       ) : (
