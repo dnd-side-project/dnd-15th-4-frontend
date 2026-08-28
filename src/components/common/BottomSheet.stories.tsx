@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { ComponentProps } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { BottomSheet } from "./BottomSheet";
 import { MeetingProgressSheet } from "@/components/meeting/progress/MeetingProgressSheet";
@@ -121,29 +122,34 @@ const MOCK_PARTICIPANTS = MOCK_PUZZLE_GROUPS.flatMap(
 
 const MeetingDetailPagePreview = () => {
   const [snapPoint, setSnapPoint] = useState<number>(270);
+  const [queryClient] = useState(
+    () => new QueryClient({ defaultOptions: { queries: { retry: false } } })
+  );
 
   return (
-    <div className="bg-bg-gray relative h-screen w-full overflow-hidden">
-      <BottomSheet
-        open
-        onOpenChange={() => {}}
-        modal={false}
-        shouldShowBackdrop={false}
-        disablePointerDismissal
-        snapPoints={MEETING_DETAIL_SNAP_POINTS}
-        snapPoint={snapPoint}
-        onSnapPointChange={(point) => {
-          if (typeof point !== "number") return;
-          setSnapPoint(point);
-        }}
-      >
-        <MeetingProgressSheet
-          meetingId={1}
-          puzzleGroups={MOCK_PUZZLE_GROUPS}
-          participants={MOCK_PARTICIPANTS}
-        />
-      </BottomSheet>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <div className="bg-bg-gray relative h-screen w-full overflow-hidden">
+        <BottomSheet
+          open
+          onOpenChange={() => {}}
+          modal={false}
+          shouldShowBackdrop={false}
+          disablePointerDismissal
+          snapPoints={MEETING_DETAIL_SNAP_POINTS}
+          snapPoint={snapPoint}
+          onSnapPointChange={(point) => {
+            if (typeof point !== "number") return;
+            setSnapPoint(point);
+          }}
+        >
+          <MeetingProgressSheet
+            meetingId={1}
+            puzzleGroups={MOCK_PUZZLE_GROUPS}
+            participants={MOCK_PARTICIPANTS}
+          />
+        </BottomSheet>
+      </div>
+    </QueryClientProvider>
   );
 };
 
