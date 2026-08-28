@@ -1,6 +1,11 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import {
   createMemberDeparture,
@@ -20,6 +25,23 @@ export const useMemberDepartureQuery = (meetingId: number | null) =>
     enabled: meetingId !== null,
   });
 
+export const useDeparturesQuery = (meetingIds: number[]) =>
+  useQueries({
+    queries: meetingIds.map((meetingId) => ({
+      queryKey: meetingKeys.departure(meetingId),
+      queryFn: () => getMemberDeparture(meetingId),
+    })),
+    combine: (results) => {
+      const departedIndex = results.findIndex((result) => Boolean(result.data));
+
+      return {
+        departedMeetingId:
+          departedIndex === -1 ? null : (meetingIds[departedIndex] ?? null),
+        isLoading: results.some((result) => result.isLoading),
+      };
+    },
+  });
+
 export const useCreateMemberDepartureMutation = (meetingId: number) => {
   const queryClient = useQueryClient();
 
@@ -28,6 +50,7 @@ export const useCreateMemberDepartureMutation = (meetingId: number) => {
       createMemberDeparture(meetingId, request),
     onSuccess: (data) => {
       queryClient.setQueryData(meetingKeys.departure(meetingId), data);
+      queryClient.invalidateQueries({ queryKey: meetingKeys.lists() });
     },
   });
 };
@@ -40,6 +63,7 @@ export const useUpdateMemberDepartureMutation = (meetingId: number) => {
       updateMemberDeparture(meetingId, request),
     onSuccess: (data) => {
       queryClient.setQueryData(meetingKeys.departure(meetingId), data);
+      queryClient.invalidateQueries({ queryKey: meetingKeys.lists() });
     },
   });
 };
