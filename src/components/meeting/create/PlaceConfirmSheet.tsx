@@ -72,7 +72,7 @@ export const PlaceConfirmSheet = ({
                 <span className="text-primary-normal">{place.placeName}</span>
                 {getRoParticle(place.placeName)} 모일까요?
               </p>
-              <p className="body6 text-disable">
+              <p className="body6 text-disable min-h-23.5">
                 {place.roadAddressName || place.addressName}
               </p>
             </div>
