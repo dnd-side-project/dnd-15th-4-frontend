@@ -496,6 +496,7 @@ const MeetingSettingsPage = () => {
                   label="출발지 재설정"
                   place={origin}
                   placeholder="출발지를 선택해주세요"
+                  disabled={isDepartureSaving}
                   onClick={() => setIsOriginSearchOpen(true)}
                 />
 
@@ -515,7 +516,7 @@ const MeetingSettingsPage = () => {
                       ? "이동 경로를 선택해주세요"
                       : "출발지를 먼저 선택해주세요"
                   }
-                  disabled={!origin}
+                  disabled={!origin || isDepartureSaving}
                   onClick={handleRouteFieldClick}
                 />
 
@@ -549,16 +550,19 @@ const MeetingSettingsPage = () => {
                   <ToggleField
                     label="위치권한"
                     checked={notifyLocation}
+                    disabled={isDepartureSaving}
                     onCheckedChange={setNotifyLocation}
                   />
                   <ToggleField
                     label="친구도착"
                     checked={notifyFriendArrival}
+                    disabled={isDepartureSaving}
                     onCheckedChange={setNotifyFriendArrival}
                   />
                   <ToggleField
                     label="말풍선"
                     checked={notifySpeechBubble}
+                    disabled={isDepartureSaving}
                     onCheckedChange={setNotifySpeechBubble}
                   />
                 </div>
