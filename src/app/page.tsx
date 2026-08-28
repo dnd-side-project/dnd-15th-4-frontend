@@ -22,7 +22,7 @@ import { KakaoLoginButton } from "@/components/home/KakaoLoginButton";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
-const SPLASH_DURATION_MS = 500;
+const SPLASH_DURATION_MS = 5000;
 
 const ONBOARDING_SLIDES: OnboardingSlide[] = [
   {
