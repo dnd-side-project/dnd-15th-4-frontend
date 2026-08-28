@@ -10,7 +10,9 @@ import { Button } from "@/components/common/Button";
 import { Header } from "@/components/common/Header";
 import { InfoBanner } from "@/components/common/InfoBanner";
 import { Input } from "@/components/common/Input";
+import { ErrorScreen } from "@/components/common/ErrorScreen";
 import { InputLayout } from "@/components/common/InputLayout";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { PlaceMarker } from "@/components/common/PlaceMarker";
 import { PlaceSearchTrigger } from "@/components/common/PlaceSearchTrigger";
 import { TabMenu } from "@/components/common/TabMenu";
@@ -187,21 +189,12 @@ const MeetingSettingsPage = () => {
     setHasUnseenInfoChange(false);
   }, [meeting, numericMeetingId, selectedTab]);
 
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   if (!meeting) {
-    return (
-      <div className="flex min-h-dvh flex-col">
-        <Header
-          title="약속 설정"
-          onBack={() => router.back()}
-          className="sticky top-0 z-10 bg-white"
-        />
-        <p className="body3 text-disable flex flex-1 items-center justify-center">
-          {isLoading
-            ? "약속 정보를 불러오고 있어요"
-            : "약속 정보를 찾을 수 없어요"}
-        </p>
-      </div>
-    );
+    return <ErrorScreen title={"약속 정보를\n찾을 수 없어요"} />;
   }
 
   const hostId = meeting.participants[0]?.id;
