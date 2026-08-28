@@ -40,7 +40,7 @@ const buildStepRows = (
   const step = steps[index];
   const icon = STEP_ICON_MAP[step.type];
 
-  if (step.station) {
+  if (step.station?.start) {
     const isBus = step.type === "BUS";
     const boardLabel = isBus
       ? `${step.station.start} 정거장${step.line ? ` ${step.line}번` : ""} 버스승차`
@@ -60,7 +60,7 @@ const buildStepRows = (
 
   const nextStep = steps[index + 1];
 
-  if (nextStep?.station) {
+  if (nextStep?.station?.start) {
     const target = getBoardingStopLabel(nextStep);
     return [
       {

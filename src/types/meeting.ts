@@ -259,6 +259,12 @@ export interface MeetingRouteSearchRequest {
   travelMode?: MeetingTravelMode | null;
 }
 
+export interface MeetingRouteGuide {
+  code: string;
+  message: string;
+  travelMode: MeetingTravelMode;
+}
+
 export interface MeetingRouteRequest {
   totalTime: number;
   steps: MeetingRouteStep[];
