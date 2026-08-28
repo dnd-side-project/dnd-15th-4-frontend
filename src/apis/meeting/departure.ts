@@ -4,6 +4,7 @@ import type { ApiResult } from "@/types/api";
 import type {
   MeetingMemberDepartureCreateRequest,
   MeetingMemberDepartureResponse,
+  MeetingMemberDepartureUpdateRequest,
 } from "@/types/meeting";
 
 export const getMemberDeparture = async (
@@ -25,6 +26,17 @@ export const createMemberDeparture = async (
   request: MeetingMemberDepartureCreateRequest
 ): Promise<MeetingMemberDepartureResponse> => {
   const result = await api.post<ApiResult<MeetingMemberDepartureResponse>>(
+    `/meetings/${meetingId}/members/me/departure`,
+    request
+  );
+  return result.data;
+};
+
+export const updateMemberDeparture = async (
+  meetingId: number,
+  request: MeetingMemberDepartureUpdateRequest
+): Promise<MeetingMemberDepartureResponse> => {
+  const result = await api.patch<ApiResult<MeetingMemberDepartureResponse>>(
     `/meetings/${meetingId}/members/me/departure`,
     request
   );

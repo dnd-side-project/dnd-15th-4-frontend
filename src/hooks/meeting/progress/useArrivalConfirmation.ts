@@ -1,49 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const CONFIRMATION_COUNTDOWN_SECONDS = 5;
 
-export type ArrivalConfirmationStep = "pending" | "confirming" | "confirmed";
+type ArrivalConfirmationStep = "pending" | "confirming" | "confirmed";
 
-export const useArrivalConfirmation = (
-  canConfirm: boolean,
-  onConfirmed?: () => Promise<unknown> | void,
-  onConfirmError?: () => void
-) => {
+export const useArrivalConfirmation = (isArrived: boolean) => {
   const [confirmationStep, setConfirmationStep] =
     useState<ArrivalConfirmationStep>("pending");
   const [remainingSeconds, setRemainingSeconds] = useState(
     CONFIRMATION_COUNTDOWN_SECONDS
   );
-  const onConfirmedRef = useRef(onConfirmed);
-  const onConfirmErrorRef = useRef(onConfirmError);
 
   useEffect(() => {
-    onConfirmedRef.current = onConfirmed;
-  }, [onConfirmed]);
-
-  useEffect(() => {
-    onConfirmErrorRef.current = onConfirmError;
-  }, [onConfirmError]);
-
-  useEffect(() => {
-    if (canConfirm) return;
+    if (isArrived) return;
     setConfirmationStep("pending");
     setRemainingSeconds(CONFIRMATION_COUNTDOWN_SECONDS);
-  }, [canConfirm]);
+  }, [isArrived]);
 
   useEffect(() => {
     if (confirmationStep !== "confirming") return;
-    if (!canConfirm) return;
 
     if (remainingSeconds <= 0) {
       setConfirmationStep("confirmed");
-      Promise.resolve()
-        .then(() => onConfirmedRef.current?.())
-        .catch(() => {
-          setConfirmationStep("pending");
-          setRemainingSeconds(CONFIRMATION_COUNTDOWN_SECONDS);
-          onConfirmErrorRef.current?.();
-        });
       return;
     }
 
@@ -52,7 +30,7 @@ export const useArrivalConfirmation = (
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [confirmationStep, remainingSeconds, canConfirm]);
+  }, [confirmationStep, remainingSeconds]);
 
   const handleStartConfirmation = () => {
     setRemainingSeconds(CONFIRMATION_COUNTDOWN_SECONDS);
@@ -67,7 +45,7 @@ export const useArrivalConfirmation = (
   return {
     confirmationStep,
     remainingSeconds,
-    isConfirmed: canConfirm && confirmationStep === "confirmed",
+    isConfirmed: isArrived && confirmationStep === "confirmed",
     handleStartConfirmation,
     handleCancelConfirmation,
   };

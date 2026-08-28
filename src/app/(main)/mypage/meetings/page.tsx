@@ -41,13 +41,8 @@ const MeetingsPage = () => {
           <ScheduleCard
             key={meeting.meetingId}
             meeting={meeting}
-            onClick={() =>
-              router.push(
-                `/meeting/${meeting.meetingId}/completed?view=history`
-              )
-            }
+            onClick={() => router.push(`/meeting/${meeting.meetingId}`)}
             showDDay={false}
-            showFullDate
           />
         ))}
       </div>

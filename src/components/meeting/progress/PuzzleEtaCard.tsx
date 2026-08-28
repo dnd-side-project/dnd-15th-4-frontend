@@ -6,7 +6,7 @@ import type { StaticImageData } from "next/image";
 import { PillButton } from "@/components/common/PillButton";
 import artwork1 from "@/assets/images/artwork-1.png";
 import { IcAlarm } from "@/components/icons";
-import type { ArrivalConfirmationStep } from "@/hooks/meeting/progress/useArrivalConfirmation";
+import { useArrivalConfirmation } from "@/hooks/meeting/progress/useArrivalConfirmation";
 import { cn } from "@/lib/utils";
 
 export const CORNER_ROUNDING = {
@@ -33,14 +33,8 @@ interface PuzzleEtaCardProps {
   image: string | StaticImageData;
   nickname: string;
   hasDeparted: boolean;
-  remainingMinutes: number;
+  elapsedMinutes: number;
   isArrived?: boolean;
-  showConfirmButton?: boolean;
-  confirmationStep?: ArrivalConfirmationStep;
-  remainingSeconds?: number;
-  isConfirmed?: boolean;
-  onStartConfirmation?: () => void;
-  onCancelConfirmation?: () => void;
 }
 
 export const PuzzleEtaCard = ({
@@ -50,30 +44,31 @@ export const PuzzleEtaCard = ({
   image,
   nickname,
   hasDeparted,
-  remainingMinutes,
+  elapsedMinutes,
   isArrived = false,
-  showConfirmButton = false,
-  confirmationStep = "pending",
-  remainingSeconds = 0,
-  isConfirmed = false,
-  onStartConfirmation,
-  onCancelConfirmation,
 }: PuzzleEtaCardProps) => {
-  const hours = Math.floor(remainingMinutes / 60);
-  const minutes = remainingMinutes % 60;
+  const hours = Math.floor(elapsedMinutes / 60);
+  const minutes = elapsedMinutes % 60;
 
-  const hasArrived = isArrived || isConfirmed;
-  const resolvedTextClassName = hasArrived ? "text-primary" : textClassName;
+  const {
+    confirmationStep,
+    remainingSeconds,
+    isConfirmed,
+    handleStartConfirmation,
+    handleCancelConfirmation,
+  } = useArrivalConfirmation(isArrived);
+
+  const resolvedTextClassName = isConfirmed ? "text-primary" : textClassName;
 
   return (
     <div
       className={cn(
         "relative flex size-full flex-col justify-between overflow-hidden p-3",
         CORNER_ROUNDING[position],
-        hasArrived ? "bg-black" : backgroundClassName
+        isConfirmed ? "bg-black" : backgroundClassName
       )}
     >
-      {hasArrived && (
+      {isConfirmed && (
         <div
           className={cn(
             "absolute size-[200%]",
@@ -94,7 +89,7 @@ export const PuzzleEtaCard = ({
             <p
               className={cn(
                 "body6 text-secondary-2",
-                hasDeparted && !hasArrived && "invisible"
+                hasDeparted && !isConfirmed && "invisible"
               )}
             >
               {hasDeparted ? "도착" : "출발전"}
@@ -102,7 +97,7 @@ export const PuzzleEtaCard = ({
           </div>
         </div>
 
-        {showConfirmButton && (
+        {isArrived && !isConfirmed && (
           <PillButton
             text={
               confirmationStep === "confirming"
@@ -116,13 +111,13 @@ export const PuzzleEtaCard = ({
             }
             onClick={
               confirmationStep === "confirming"
-                ? onCancelConfirmation
-                : onStartConfirmation
+                ? handleCancelConfirmation
+                : handleStartConfirmation
             }
           />
         )}
 
-        {!hasArrived && !showConfirmButton && hasDeparted && (
+        {!isArrived && hasDeparted && (
           <div className="flex items-end justify-end gap-2">
             {hours > 0 && (
               <div className="flex items-baseline">

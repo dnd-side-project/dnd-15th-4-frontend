@@ -53,7 +53,7 @@ export const DateFilterModal = ({
       open
       onOpenChange={(open) => !open && onClose()}
       modal
-      backdropClassName="bg-black/63 backdrop-blur-[2px]"
+      backdropClassName="bg-black/63 backdrop-blur-[2px] z-10"
     >
       <div className="flex w-full flex-col px-4 pb-8">
         <MonthCalendar

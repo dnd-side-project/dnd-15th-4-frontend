@@ -28,12 +28,13 @@ export const MyPageListHeader = ({
   isFiltered,
   onResetFilter,
 }: MyPageListHeaderProps) => (
-  <div className="bg-bg-normal sticky top-0 z-20">
+  <>
     <Header
       title={title}
       onBack={onBack}
       rightActionLabel={isFiltered ? "전체보기" : undefined}
       onRightActionClick={onResetFilter}
+      className="bg-bg-normal sticky top-0 z-10"
     />
     <div className="mt-5.5 mb-4 flex justify-between px-4">
       <div className="flex items-center gap-2">
@@ -48,5 +49,5 @@ export const MyPageListHeader = ({
         <IcCalendarMonth size={24} />
       </button>
     </div>
-  </div>
+  </>
 );

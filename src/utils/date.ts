@@ -12,9 +12,6 @@ export const getTimeLabel = (dateTime: string): string => {
 export const getElapsedMinutes = (dateTime: string): number =>
   Math.max(0, Math.floor((Date.now() - new Date(dateTime).getTime()) / 60_000));
 
-export const getRemainingMinutes = (dateTime: string): number =>
-  Math.max(0, Math.round((new Date(dateTime).getTime() - Date.now()) / 60_000));
-
 export const getRemainingTimeLabel = (dateTime: string): string => {
   const remainingMinutes = Math.max(
     0,
@@ -144,25 +141,6 @@ export const formatDateTimeForApi = (date: Date): string => {
   const minutes = pad(date.getMinutes());
   const seconds = pad(date.getSeconds());
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-};
-
-export const formatDotDate = (dateTimeString: string): string => {
-  const date = new Date(dateTimeString);
-  if (Number.isNaN(date.getTime())) return "-";
-
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${date.getFullYear()}.${month}.${day}`;
-};
-
-export const formatDotDateWithWeekday = (dateTimeString: string): string => {
-  const date = new Date(dateTimeString);
-  if (Number.isNaN(date.getTime())) return "-";
-
-  const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"][date.getDay()];
-
-  return `${formatDotDate(dateTimeString)} (${dayOfWeek}요일)`;
 };
 
 export const formatMeetingDateTime = (dateTimeString: string) => {

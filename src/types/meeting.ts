@@ -51,7 +51,7 @@ export interface MeetingRankingItem {
   late: boolean;
 }
 
-export interface MeetingUnselectedImage {
+export interface CompletedPuzzleFeedItem {
   imageUrl: string;
   uploaderId: number;
   uploaderNickname: string;
@@ -64,13 +64,13 @@ export interface PuzzleGroupParticipant {
   profileImageUrl: string | null;
   departed: boolean;
   departedAt: string | null;
-  estimatedArrivalTime: string | null;
   arrived: boolean;
   latitude: number | null;
   longitude: number | null;
   locationUpdatedAt: string | null;
   departureLatitude: number | null;
   departureLongitude: number | null;
+  estimatedArrivalTime: number | null;
   pieceIndex: number;
   revealed: boolean;
 }
@@ -82,24 +82,9 @@ export interface MeetingPuzzleGroup {
   members: PuzzleGroupParticipant[];
 }
 
-export interface MeetingResultPuzzlePiece {
-  pieceIndex: number;
-  success: boolean;
-  uploaderId: number | null;
-  uploaderNickname: string | null;
-  uploaderProfileImageUrl: string | null;
-}
-
-export interface MeetingResultPuzzlePage {
-  puzzlePageId: number;
-  imageUrl: string;
-  completed: boolean;
-  pieces: MeetingResultPuzzlePiece[];
-}
-
 export interface MeetingResultResponse {
-  puzzleFeed: MeetingResultPuzzlePage[];
-  unselectedImages: MeetingUnselectedImage[];
+  puzzleFeed: CompletedPuzzleFeedItem[];
+  puzzleGroups?: MeetingPuzzleGroup[];
   rankings: MeetingRankingItem[];
   myDepartedAt: string | null;
 }
@@ -113,8 +98,6 @@ export interface MeetingInProgressResponse {
   puzzleGroups: MeetingPuzzleGroup[];
   quickMessages: MeetingQuickMessage[];
   completed: boolean;
-  destinationLatitude: number;
-  destinationLongitude: number;
 }
 
 export interface QuickMessageOption {
@@ -276,6 +259,12 @@ export interface MeetingRouteSearchRequest {
   travelMode?: MeetingTravelMode | null;
 }
 
+export interface MeetingRouteGuide {
+  code: string;
+  message: string;
+  travelMode: MeetingTravelMode;
+}
+
 export interface MeetingRouteRequest {
   totalTime: number;
   steps: MeetingRouteStep[];
@@ -289,6 +278,22 @@ export interface MeetingMemberDepartureCreateRequest {
   travelMode?: MeetingTravelMode | null;
 }
 
+export interface MeetingMemberDepartureUpdateRequest {
+  departure?: MeetingMemberDepartureOrigin | null;
+  notificationSettings?: MeetingMemberNotificationSettings | null;
+  nicknameSetting?: MeetingMemberNicknameSetting | null;
+  route?: MeetingRouteRequest | null;
+  travelMode?: MeetingTravelMode | null;
+}
+
+export interface MeetingDepartureRouteSegment {
+  content: string | null;
+  transportType: "SUBWAY" | "BUS" | "WALK" | "ETC";
+  transportContent: string | null;
+  estimatedTime: number;
+  station: MeetingRouteStation | null;
+}
+
 export interface MeetingMemberDepartureResponse {
   meetingId: number;
   departure: MeetingMemberDepartureOrigin;
@@ -296,6 +301,6 @@ export interface MeetingMemberDepartureResponse {
   nicknameSetting: MeetingMemberNicknameSetting;
   totalEstimatedTime: number;
   recommendedDepartureTime: string;
-  routes: MeetingRoute[];
+  routes: MeetingDepartureRouteSegment[];
   travelMode?: MeetingTravelMode | null;
 }

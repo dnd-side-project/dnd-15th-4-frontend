@@ -12,11 +12,11 @@ import {
 } from "@/apis/meeting/meetings";
 import type { MeetingUpdateRequest } from "@/types/meeting";
 
-export const useMeetingDetailQuery = (meetingId: number, enabled = true) =>
+export const useMeetingDetailQuery = (meetingId: number) =>
   useQuery({
     queryKey: meetingKeys.fullDetail(meetingId),
     queryFn: () => fetchMeetingDetail(meetingId),
-    enabled: meetingId > 0 && enabled,
+    enabled: meetingId > 0,
   });
 
 export const useUpdateMeetingMutation = (meetingId: number) => {

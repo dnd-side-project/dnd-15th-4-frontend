@@ -3,42 +3,36 @@ import type { StaticImageData } from "next/image";
 
 import { PillButton } from "@/components/common/PillButton";
 import { IcAlarm } from "@/components/icons";
-import type { ArrivalConfirmationStep } from "@/hooks/meeting/progress/useArrivalConfirmation";
+import { useArrivalConfirmation } from "@/hooks/meeting/progress/useArrivalConfirmation";
 import { cn } from "@/lib/utils";
 
 interface ParticipantStackItemProps {
   image: string | StaticImageData;
   nickname: string;
   hasDeparted: boolean;
-  remainingMinutes: number;
+  elapsedMinutes: number;
   isHighlighted?: boolean;
   isArrived?: boolean;
-  showConfirmButton?: boolean;
-  confirmationStep?: ArrivalConfirmationStep;
-  remainingSeconds?: number;
-  isConfirmed?: boolean;
-  onStartConfirmation?: () => void;
-  onCancelConfirmation?: () => void;
 }
 
 export const ParticipantStackItem = ({
   image,
   nickname,
   hasDeparted,
-  remainingMinutes,
+  elapsedMinutes,
   isHighlighted = false,
   isArrived = false,
-  showConfirmButton = false,
-  confirmationStep = "pending",
-  remainingSeconds = 0,
-  isConfirmed = false,
-  onStartConfirmation,
-  onCancelConfirmation,
 }: ParticipantStackItemProps) => {
-  const hours = Math.floor(remainingMinutes / 60);
-  const minutes = remainingMinutes % 60;
+  const hours = Math.floor(elapsedMinutes / 60);
+  const minutes = elapsedMinutes % 60;
 
-  const hasArrived = isArrived || isConfirmed;
+  const {
+    confirmationStep,
+    remainingSeconds,
+    isConfirmed,
+    handleStartConfirmation,
+    handleCancelConfirmation,
+  } = useArrivalConfirmation(isArrived);
 
   return (
     <div
@@ -55,14 +49,14 @@ export const ParticipantStackItem = ({
         </div>
         <div className="flex flex-col">
           <p className="body1 text-primary">{nickname}</p>
-          {hasArrived && <p className="body6 text-secondary-2">도착</p>}
-          {!hasDeparted && !hasArrived && (
+          {isConfirmed && <p className="body6 text-secondary-2">도착</p>}
+          {!hasDeparted && !isConfirmed && (
             <p className="body6 text-secondary-2">출발 전</p>
           )}
         </div>
       </div>
 
-      {showConfirmButton && (
+      {isArrived && !isConfirmed && (
         <PillButton
           text={
             confirmationStep === "confirming"
@@ -76,14 +70,14 @@ export const ParticipantStackItem = ({
           }
           onClick={
             confirmationStep === "confirming"
-              ? onCancelConfirmation
-              : onStartConfirmation
+              ? handleCancelConfirmation
+              : handleStartConfirmation
           }
           className="w-39"
         />
       )}
 
-      {!hasArrived && !showConfirmButton && hasDeparted && (
+      {!isArrived && hasDeparted && (
         <div className="flex h-13.5 items-end gap-1">
           {hours > 0 && (
             <div className="flex items-baseline">
