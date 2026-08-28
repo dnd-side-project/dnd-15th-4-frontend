@@ -7,6 +7,7 @@ import { Drawer } from "@base-ui/react/drawer";
 import { BottomSheet } from "@/components/common/BottomSheet";
 import { Button } from "@/components/common/Button";
 import { WheelPicker } from "@/components/common/WheelPicker";
+import { MIN_MEETING_CAPACITY } from "@/constants/validation";
 
 export interface CapacityPickerModalProps {
   value: number | null;
@@ -18,7 +19,7 @@ export interface CapacityPickerModalProps {
 
 export const CapacityPickerModal = ({
   value,
-  min = 1,
+  min = MIN_MEETING_CAPACITY,
   max = 12,
   onConfirm,
   onClose,

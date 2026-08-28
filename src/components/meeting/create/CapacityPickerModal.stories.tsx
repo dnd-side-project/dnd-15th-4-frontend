@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, fn, screen, userEvent, waitFor } from "storybook/test";
 
 import { CapacityPickerModal } from "./CapacityPickerModal";
+import { MIN_MEETING_CAPACITY } from "@/constants/validation";
 
 const meta = {
   title: "Meeting/Create/CapacityPickerModal",
@@ -11,7 +12,7 @@ const meta = {
   },
   args: {
     value: null,
-    min: 1,
+    min: MIN_MEETING_CAPACITY,
     max: 12,
     onConfirm: fn(),
     onClose: fn(),
@@ -32,11 +33,13 @@ export const ValueSelected: Story = {
 
 export const MinBoundary: Story = {
   args: {
-    value: 1,
+    value: MIN_MEETING_CAPACITY,
   },
   play: async () => {
-    await screen.findByText("1");
-    expect(screen.queryByText("0")).not.toBeInTheDocument();
+    await screen.findByText(String(MIN_MEETING_CAPACITY));
+    expect(
+      screen.queryByText(String(MIN_MEETING_CAPACITY - 1))
+    ).not.toBeInTheDocument();
   },
 };
 
