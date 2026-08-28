@@ -66,6 +66,10 @@
   /* kakao brand */
   --color-kakao: #fff42a;
 
+  /* profile fallback */
+  --color-profile-icon: #c2dbf1;
+  --color-profile-icon-bg: #94bfe7;
+
   /* neutral */
   --white: #ffffff;
   --color-gray-1: #e9e9ea;
