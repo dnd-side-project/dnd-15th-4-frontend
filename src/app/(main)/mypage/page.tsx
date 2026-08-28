@@ -24,6 +24,7 @@ const MyPage = () => {
   const favoriteSearchCount = favoriteSearches?.length ?? 0;
   const { data: completedMeetings } = useMeetingsQuery("COMPLETED");
   const previousAppointmentCount = completedMeetings?.length ?? 0;
+  const profileImageUrl = user?.profileImageUrl?.trim();
 
   return (
     <div className="h-screen scrollbar-none overflow-y-auto pb-2">
@@ -33,9 +34,9 @@ const MyPage = () => {
         className="bg-bg-normal sticky top-0 z-10"
       />
       <div className="mt-5.5 flex flex-col items-center gap-2.75">
-        {user?.profileImageUrl?.trim() ? (
+        {profileImageUrl ? (
           <Image
-            src={user.profileImageUrl}
+            src={profileImageUrl}
             alt={user?.nickname ?? ""}
             width={102}
             height={102}
