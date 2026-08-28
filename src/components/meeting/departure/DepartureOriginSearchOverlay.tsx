@@ -82,19 +82,19 @@ export const DepartureOriginSearchOverlay = ({
 
   const handleFavoriteClick = async (favoriteSearch: FavoriteSearchDto) => {
     const requestId = ++favoriteRequestIdRef.current;
-    setKeyword(favoriteSearch.keyword);
-    setSelectedPlace(null);
 
     try {
       const [matchedPlace] = await searchPlaces(favoriteSearch.roadAddressName);
       if (favoriteRequestIdRef.current !== requestId) return;
 
       if (matchedPlace) {
-        setSelectedPlace({
+        const place: PlaceDto = {
           ...matchedPlace,
           placeName: favoriteSearch.keyword,
           roadAddressName: favoriteSearch.roadAddressName,
-        });
+        };
+
+        onSelect(toDepartureOrigin(place));
       }
     } catch {
       // 검색 실패 시 목록에서 직접 선택하도록 둔다

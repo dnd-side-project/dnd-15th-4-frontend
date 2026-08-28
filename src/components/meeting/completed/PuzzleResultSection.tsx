@@ -5,60 +5,54 @@ import { useState } from "react";
 import { IconActionHeader } from "@/components/common/IconActionHeader";
 import { PuzzleResultCarousel } from "./PuzzleResultCarousel";
 import { DotIndicator } from "@/components/common/DotIndicator";
-import { IcArrowBack, IcHome } from "@/components/icons";
+import { IcHome } from "@/components/icons";
 import { cn } from "@/lib/utils";
-import type { MeetingResultPuzzlePage } from "@/types/meeting";
+import type { MeetingPuzzleGroup } from "@/types/meeting";
 
 export interface PuzzleResultSectionProps {
-  puzzleFeed: MeetingResultPuzzlePage[];
-  onIconClick: () => void;
-  onViewDetail?: (puzzlePage: MeetingResultPuzzlePage) => void;
-  meetingDateLabel?: string;
-  isHistoryView?: boolean;
+  puzzleGroups: MeetingPuzzleGroup[];
+  onGoHome: () => void;
+  onViewDetail?: (puzzleGroup: MeetingPuzzleGroup) => void;
 }
 
+const isGroupCompleted = (group: MeetingPuzzleGroup) =>
+  group.members.length > 0 && group.members.every((member) => member.revealed);
+
 export const PuzzleResultSection = ({
-  puzzleFeed,
-  onIconClick,
+  puzzleGroups,
+  onGoHome,
   onViewDetail,
-  meetingDateLabel,
-  isHistoryView = false,
 }: PuzzleResultSectionProps) => {
   const [centeredIndex, setCenteredIndex] = useState(0);
-  const completedCount = puzzleFeed.filter((page) => page.completed).length;
+  const completedCount = puzzleGroups.filter(isGroupCompleted).length;
   const isAllFailed = completedCount === 0;
-  const centeredPage = puzzleFeed[centeredIndex];
-  const isCenteredPageCompleted = centeredPage?.completed ?? false;
+  const centeredGroup = puzzleGroups[centeredIndex];
+  const isCenteredGroupCompleted = centeredGroup
+    ? isGroupCompleted(centeredGroup)
+    : false;
 
   return (
     <div
       className={cn(
-        "flex shrink-0 flex-col pb-5.75",
+        "flex flex-col pb-5.75",
         isAllFailed ? "bg-sub2-normal" : "bg-point-normal"
       )}
     >
       <IconActionHeader
         icon={
-          isHistoryView ? (
-            <IcArrowBack
-              size={24}
-              className={isAllFailed ? "text-white" : undefined}
-            />
-          ) : (
-            <IcHome
-              size={24}
-              className={isAllFailed ? "text-white" : undefined}
-            />
-          )
+          <IcHome
+            size={24}
+            className={isAllFailed ? "text-white" : undefined}
+          />
         }
-        iconAriaLabel={isHistoryView ? "뒤로 가기" : "홈으로 이동"}
-        onIconClick={onIconClick}
-        detailText={isCenteredPageCompleted ? "자세히 보기" : undefined}
-        onDetailClick={() => centeredPage && onViewDetail?.(centeredPage)}
+        iconAriaLabel="홈으로 이동"
+        onIconClick={onGoHome}
+        detailText={isCenteredGroupCompleted ? "자세히 보기" : undefined}
+        onDetailClick={() => centeredGroup && onViewDetail?.(centeredGroup)}
         className="mb-3"
       />
       <PuzzleResultCarousel
-        puzzleFeed={puzzleFeed}
+        puzzleGroups={puzzleGroups}
         onCenteredIndexChange={setCenteredIndex}
         isAllFailed={isAllFailed}
       />
@@ -68,14 +62,7 @@ export const PuzzleResultSection = ({
           isAllFailed ? "text-white" : "text-primary"
         )}
       >
-        {meetingDateLabel ? (
-          <>
-            <span className={isAllFailed ? "text-red" : "text-primary-normal"}>
-              {meetingDateLabel}
-            </span>
-            에 맞춘 퍼즐
-          </>
-        ) : isAllFailed ? (
+        {isAllFailed ? (
           <>
             약속퍼즐을 완성에 <span className="text-red">실패</span>했어요
           </>
@@ -88,9 +75,9 @@ export const PuzzleResultSection = ({
         )}
       </p>
       <DotIndicator
-        pageCount={Math.max(puzzleFeed.length, 1)}
+        pageCount={Math.max(puzzleGroups.length, 1)}
         currentPage={centeredIndex}
-        className={cn("mt-6", puzzleFeed.length <= 1 && "invisible")}
+        className={cn("mt-6", puzzleGroups.length <= 1 && "invisible")}
         activeDotClassName={
           isAllFailed ? "bg-surface-0 w-2.75" : "bg-point-dark-active w-2.75"
         }

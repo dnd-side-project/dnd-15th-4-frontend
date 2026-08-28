@@ -50,6 +50,7 @@ import type {
 import type { SelectedPlace } from "@/types/place";
 import { formatDateTimeForApi, formatMeetingDateTime } from "@/utils/date";
 import { meetingImageSelectionToFile } from "@/utils/file";
+import { cn } from "@/lib/utils";
 
 const MeetingInfoPage = () => {
   const router = useRouter();
@@ -476,7 +477,12 @@ const MeetingInfoPage = () => {
             />
           ) : (
             <InputLayout label="메모">
-              <span className="body3 text-primary">
+              <span
+                className={cn(
+                  "body3",
+                  meeting.memo ? "text-primary" : "text-disable"
+                )}
+              >
                 {meeting.memo || "등록된 메모가 없어요"}
               </span>
             </InputLayout>

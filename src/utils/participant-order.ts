@@ -1,7 +1,7 @@
-import { getRemainingMinutes } from "@/utils/date";
+import { getElapsedMinutes } from "@/utils/date";
 import type { PuzzleGroupParticipant } from "@/types/meeting";
 
-// 0: 도착, 1: 이동중(도착 예정 있음), 2: 출발 전 순으로 우선순위를 매긴다
+// 0: 도착, 1: 이동중(경과시간 있음), 2: 출발 전 순으로 우선순위를 매긴다
 const getProgressTier = (participant: PuzzleGroupParticipant) => {
   if (participant.arrived) return 0;
   if (participant.departed) return 1;
@@ -16,19 +16,15 @@ const compareByProgress = (
   if (tierDiff !== 0) return tierDiff;
 
   if (a.departed && !a.arrived && b.departed && !b.arrived) {
-    const remainingA = a.estimatedArrivalTime
-      ? getRemainingMinutes(a.estimatedArrivalTime)
-      : Infinity;
-    const remainingB = b.estimatedArrivalTime
-      ? getRemainingMinutes(b.estimatedArrivalTime)
-      : Infinity;
-    if (remainingA !== remainingB) return remainingA - remainingB;
+    const elapsedA = a.departedAt ? getElapsedMinutes(a.departedAt) : 0;
+    const elapsedB = b.departedAt ? getElapsedMinutes(b.departedAt) : 0;
+    if (elapsedA !== elapsedB) return elapsedB - elapsedA;
   }
 
   return (a.nickname ?? "").localeCompare(b.nickname ?? "", "ko");
 };
 
-// 나 최상단 > 도착 > 이동중(도착까지 남은 시간 적은 순) > 출발 전, 비교 불가능하면 가나다순
+// 나 최상단 > 도착 > 이동중(경과시간 긴 순) > 출발 전, 비교 불가능하면 가나다순
 export const sortParticipantsByProgress = (
   participants: PuzzleGroupParticipant[],
   currentUserId: number | undefined
