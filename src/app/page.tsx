@@ -34,8 +34,6 @@ const ONBOARDING_SLIDES: OnboardingSlide[] = [
       </>
     ),
     image: landingImage1,
-    imageWidth: 397,
-    imageHeight: 644.56,
   },
   {
     title: (
@@ -46,8 +44,6 @@ const ONBOARDING_SLIDES: OnboardingSlide[] = [
       </>
     ),
     image: landingImage2,
-    imageWidth: 379,
-    imageHeight: 726,
   },
   {
     title: (
@@ -59,8 +55,6 @@ const ONBOARDING_SLIDES: OnboardingSlide[] = [
       </>
     ),
     image: landingImage3,
-    imageWidth: 469,
-    imageHeight: 649,
   },
   {
     title: (
@@ -71,8 +65,6 @@ const ONBOARDING_SLIDES: OnboardingSlide[] = [
       </>
     ),
     image: landingImage4,
-    imageWidth: 469,
-    imageHeight: 627,
   },
   {
     title: (
@@ -84,8 +76,6 @@ const ONBOARDING_SLIDES: OnboardingSlide[] = [
       </>
     ),
     image: landingImage5,
-    imageWidth: 469,
-    imageHeight: 600,
   },
   {
     title: (
@@ -96,8 +86,6 @@ const ONBOARDING_SLIDES: OnboardingSlide[] = [
       </>
     ),
     image: landingImage6,
-    imageWidth: 469,
-    imageHeight: 871.92,
   },
 ];
 
