@@ -21,6 +21,7 @@ import { usePushSubscription } from "@/hooks/notification/usePushSubscription";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { getRemainingTimeLabel, getTimeLabel } from "@/utils/date";
 import type {
+  MeetingQuickMessage,
   PuzzleGroupParticipant,
   QuickMessageOption,
 } from "@/types/meeting";
@@ -43,6 +44,10 @@ const MeetingDetailPage = () => {
   } = useMeetingQuery(numericMeetingId);
   const { data: inProgress, dataUpdatedAt: inProgressUpdatedAt } =
     useMeetingInProgressQuery(numericMeetingId);
+
+  useEffect(() => {
+    if (inProgress) console.log(inProgress);
+  }, [inProgress]);
 
   const { data: reactionPresets } = useReactionPresetsQuery();
 
@@ -170,11 +175,30 @@ const MeetingDetailPage = () => {
       }
     : { lat: meeting.latitude, lng: meeting.longitude };
 
+  const latestQuickMessageBySenderId = new Map<number, MeetingQuickMessage>();
+  for (const quickMessage of inProgress?.quickMessages ?? []) {
+    const latestMessage = latestQuickMessageBySenderId.get(
+      quickMessage.senderId
+    );
+    if (!latestMessage || quickMessage.id > latestMessage.id) {
+      latestQuickMessageBySenderId.set(quickMessage.senderId, quickMessage);
+    }
+  }
+
   const locatedParticipantsWithBubbles = locatedParticipants.map(
-    (participant) =>
-      participant.userId === currentUserId
-        ? { ...participant, speechBubbleMessage: myMessage ?? undefined }
-        : participant
+    (participant) => {
+      const latestMessage = latestQuickMessageBySenderId.get(
+        participant.userId
+      )?.content;
+
+      return {
+        ...participant,
+        speechBubbleMessage:
+          participant.userId === currentUserId
+            ? (myMessage ?? latestMessage)
+            : latestMessage,
+      };
+    }
   );
 
   return (
