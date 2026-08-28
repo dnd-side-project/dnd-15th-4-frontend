@@ -204,11 +204,11 @@ const MeetingDetailPage = () => {
       </div>
       <MeetingSummaryCard
         ref={summaryCardRef}
+        meetingId={meeting.meetingId}
         title={meeting.title}
         location={meeting.place}
         time={getTimeLabel(meeting.dateTime)}
         remainingTime={getRemainingTimeLabel(meeting.dateTime)}
-        onMoreClick={() => router.push(`/meeting/${meetingId}/settings`)}
         className="absolute inset-x-4 top-3"
       />
       <ChatFloatingButton

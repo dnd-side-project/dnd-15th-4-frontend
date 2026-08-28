@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 const HOME_HREF = "/";
 
 interface MeetingSummaryCardProps {
+  meetingId: number;
   title: string;
   location: string;
   time: string;
@@ -17,6 +18,7 @@ interface MeetingSummaryCardProps {
 }
 
 export const MeetingSummaryCard = ({
+  meetingId,
   title,
   location,
   time,
@@ -28,7 +30,10 @@ export const MeetingSummaryCard = ({
 
   const menuItems = [
     { label: "홈으로 이동", onClick: () => router.push(HOME_HREF) },
-    { label: "약속 정보 수정하기", onClick: () => router.push(HOME_HREF) },
+    {
+      label: "약속 정보 수정하기",
+      onClick: () => router.push(`/meeting/${meetingId}/settings`),
+    },
   ];
 
   return (
