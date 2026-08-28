@@ -50,6 +50,7 @@ export const useCreateMemberDepartureMutation = (meetingId: number) => {
       createMemberDeparture(meetingId, request),
     onSuccess: (data) => {
       queryClient.setQueryData(meetingKeys.departure(meetingId), data);
+      queryClient.invalidateQueries({ queryKey: meetingKeys.lists() });
     },
   });
 };
@@ -62,6 +63,7 @@ export const useUpdateMemberDepartureMutation = (meetingId: number) => {
       updateMemberDeparture(meetingId, request),
     onSuccess: (data) => {
       queryClient.setQueryData(meetingKeys.departure(meetingId), data);
+      queryClient.invalidateQueries({ queryKey: meetingKeys.lists() });
     },
   });
 };
