@@ -50,6 +50,7 @@ import type {
 import type { SelectedPlace } from "@/types/place";
 import { formatDateTimeForApi, formatMeetingDateTime } from "@/utils/date";
 import { meetingImageSelectionToFile } from "@/utils/file";
+import { checkIsHost } from "@/utils/participant";
 import { cn } from "@/lib/utils";
 
 const MeetingInfoPage = () => {
@@ -134,7 +135,7 @@ const MeetingInfoPage = () => {
   }
 
   const hostId = meeting.participants[0]?.id;
-  const isHost = hostId === currentUserId;
+  const isHost = checkIsHost(hostId, currentUserId);
   const myParticipant = meeting.participants.find(
     (participant) => participant.id === currentUserId
   );

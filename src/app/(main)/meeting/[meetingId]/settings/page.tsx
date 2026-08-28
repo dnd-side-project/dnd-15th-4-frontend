@@ -46,6 +46,7 @@ import type {
 } from "@/types/meeting";
 import type { SelectedPlace } from "@/types/place";
 import { formatDateTimeForApi, formatMeetingDateTime } from "@/utils/date";
+import { checkIsHost } from "@/utils/participant";
 import { cn } from "@/lib/utils";
 
 const INFO_SEEN_KEY_PREFIX = "meeting-settings-info-seen:";
@@ -204,7 +205,7 @@ const MeetingSettingsPage = () => {
   }
 
   const hostId = meeting.participants[0]?.id;
-  const isHost = hostId === currentUserId;
+  const isHost = checkIsHost(hostId, currentUserId);
 
   const displayDateTime = selectedDateTime ?? new Date(meeting.dateTime);
 
