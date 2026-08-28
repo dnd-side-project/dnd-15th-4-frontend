@@ -16,6 +16,7 @@ import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { PlaceMarker } from "@/components/common/PlaceMarker";
 import { PlaceSearchTrigger } from "@/components/common/PlaceSearchTrigger";
 import { TabMenu } from "@/components/common/TabMenu";
+import { Toast } from "@/components/common/Toast";
 import { ToggleField } from "@/components/common/ToggleField";
 import { PlaceSearchModal } from "@/components/meeting/create/PlaceSearchModal";
 import { TimeSelectModal } from "@/components/meeting/create/TimeSelectModal";
@@ -35,6 +36,7 @@ import {
   useUpdateMeetingMutation,
 } from "@/hooks/meeting/detail/useMeetingDetail";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
+import { useToast } from "@/hooks/common/useToast";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type {
   DepartureOrigin,
@@ -116,6 +118,7 @@ const MeetingSettingsPage = () => {
   const [memo, setMemo] = useState("");
   const [hasUnseenInfoChange, setHasUnseenInfoChange] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const { toastMessage, showToast } = useToast();
 
   // 내 경로 탭
   const [isOriginSearchOpen, setIsOriginSearchOpen] = useState(false);
@@ -324,6 +327,8 @@ const MeetingSettingsPage = () => {
           return next;
         }
       );
+
+      showToast("수정이 완료되었습니다");
     } catch {
       setActionError("약속 정보 저장에 실패했어요. 다시 시도해주세요.");
     }
@@ -357,6 +362,8 @@ const MeetingSettingsPage = () => {
       await updateDepartureMutation.mutateAsync(request);
       const refreshed = await refetchDeparture();
       if (refreshed.data) applyDeparture(refreshed.data);
+
+      showToast("수정이 완료되었습니다");
     } catch {
       setActionError("경로 정보 저장에 실패했어요. 다시 시도해주세요.");
     }
@@ -640,6 +647,8 @@ const MeetingSettingsPage = () => {
           onConfirm={() => setActionError(null)}
         />
       )}
+
+      {toastMessage && <Toast message={toastMessage} position="top" />}
     </div>
   );
 };

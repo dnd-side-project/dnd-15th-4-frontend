@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { MeetingProgressHeader } from "./MeetingProgressHeader";
 import { ParticipantStackList } from "./ParticipantStackList";
@@ -6,6 +6,7 @@ import { ParticipantStatusRow } from "./ParticipantStatusRow";
 import { PuzzleEtaCarousel } from "./PuzzleEtaCarousel";
 import { Toast } from "@/components/common/Toast";
 import { useMeasuredHeight } from "@/hooks/common/useMeasuredHeight";
+import { useToast } from "@/hooks/common/useToast";
 import { useArrivalConfirmation } from "@/hooks/meeting/progress/useArrivalConfirmation";
 import { useConfirmArrivalMutation } from "@/hooks/meeting/progress/useConfirmArrival";
 import { cn } from "@/lib/utils";
@@ -14,8 +15,6 @@ import type {
   MeetingPuzzleGroup,
   PuzzleGroupParticipant,
 } from "@/types/meeting";
-
-const ARRIVAL_ERROR_TOAST_VISIBLE_MS = 2500;
 
 export interface MeetingProgressSheetProps {
   meetingId: number;
@@ -33,18 +32,7 @@ export const MeetingProgressSheet = ({
   isNearDestination = false,
 }: MeetingProgressSheetProps) => {
   const [isStackView, setIsStackView] = useState(false);
-  const [isArrivalErrorToastVisible, setIsArrivalErrorToastVisible] =
-    useState(false);
-
-  useEffect(() => {
-    if (!isArrivalErrorToastVisible) return;
-
-    const timer = setTimeout(
-      () => setIsArrivalErrorToastVisible(false),
-      ARRIVAL_ERROR_TOAST_VISIBLE_MS
-    );
-    return () => clearTimeout(timer);
-  }, [isArrivalErrorToastVisible]);
+  const { toastMessage, showToast } = useToast();
 
   const currentUserId = useAuthStore((state) => state.user?.id);
   const myParticipant = participants.find(
@@ -55,7 +43,8 @@ export const MeetingProgressSheet = ({
 
   const confirmArrivalMutation = useConfirmArrivalMutation(meetingId);
   const handleConfirmArrival = () => confirmArrivalMutation.mutateAsync();
-  const handleConfirmArrivalError = () => setIsArrivalErrorToastVisible(true);
+  const handleConfirmArrivalError = () =>
+    showToast("도착 확인에 실패했어요. 다시 시도해주세요.");
 
   const {
     confirmationStep,
@@ -126,9 +115,7 @@ export const MeetingProgressSheet = ({
         />
       </div>
 
-      {isArrivalErrorToastVisible && (
-        <Toast message="도착 확인에 실패했어요. 다시 시도해주세요." />
-      )}
+      {toastMessage && <Toast message={toastMessage} position="top" />}
     </div>
   );
 };

@@ -16,6 +16,7 @@ import { InputLayout } from "@/components/common/InputLayout";
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { PlaceMarker } from "@/components/common/PlaceMarker";
 import { PlaceSearchTrigger } from "@/components/common/PlaceSearchTrigger";
+import { Toast } from "@/components/common/Toast";
 import { ToggleField } from "@/components/common/ToggleField";
 import { DateSelectModal } from "@/components/meeting/create/DateSelectModal";
 import { DateTimeTrigger } from "@/components/meeting/create/DateTimeTrigger";
@@ -42,6 +43,7 @@ import {
 import { useLeaveMeetingMutation } from "@/hooks/meeting/participate/useLeaveMeeting";
 import { useMeetingImageSelection } from "@/hooks/meeting/shared/useMeetingImageSelection";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
+import { useToast } from "@/hooks/common/useToast";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type {
   MeetingDetailResponse,
@@ -101,6 +103,7 @@ const MeetingInfoPage = () => {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const { toastMessage, showToast } = useToast();
 
   useEffect(() => {
     if (hasSyncedInitialValues || !meeting || !user) return;
@@ -305,6 +308,8 @@ const MeetingInfoPage = () => {
 
       resetImage();
       setHasClearedProvidedImage(false);
+
+      showToast("수정이 완료되었습니다");
     } catch {
       setActionError("약속 정보 저장에 실패했어요. 다시 시도해주세요.");
     }
@@ -570,6 +575,8 @@ const MeetingInfoPage = () => {
           onConfirm={() => setActionError(null)}
         />
       )}
+
+      {toastMessage && <Toast message={toastMessage} position="top" />}
     </div>
   );
 };

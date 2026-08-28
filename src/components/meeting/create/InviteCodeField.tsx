@@ -1,40 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { IcCopy } from "@/components/icons";
 import { Toast } from "@/components/common/Toast";
+import { useToast } from "@/hooks/common/useToast";
 
 export interface InviteCodeFieldProps {
   label?: string;
   inviteCode: string;
 }
 
-const TOAST_VISIBLE_MS = 2000;
-const TOAST_EXIT_MS = 300;
-
-type ToastPhase = "hidden" | "entering" | "exiting";
-
 export const InviteCodeField = ({
   label = "초대 코드",
   inviteCode,
 }: InviteCodeFieldProps) => {
-  const [toastPhase, setToastPhase] = useState<ToastPhase>("hidden");
+  const { toastMessage, showToast } = useToast();
   const [origin, setOrigin] = useState("");
-  const toastTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const isMountedRef = useRef(true);
 
   useEffect(() => {
     setOrigin(window.location.origin);
-  }, []);
-
-  useEffect(() => {
-    isMountedRef.current = true;
-
-    return () => {
-      isMountedRef.current = false;
-      toastTimers.current.forEach(clearTimeout);
-    };
   }, []);
 
   const inviteLink = `${origin}/home?inviteCode=${encodeURIComponent(inviteCode)}&modal=invite`;
@@ -42,16 +27,7 @@ export const InviteCodeField = ({
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(inviteLink);
-      if (!isMountedRef.current) return;
-      toastTimers.current.forEach(clearTimeout);
-      setToastPhase("entering");
-      toastTimers.current = [
-        setTimeout(() => setToastPhase("exiting"), TOAST_VISIBLE_MS),
-        setTimeout(
-          () => setToastPhase("hidden"),
-          TOAST_VISIBLE_MS + TOAST_EXIT_MS
-        ),
-      ];
+      showToast("초대 링크가 복사되었습니다!");
     } catch {
       // memo: 클립보드 권한이 없는 환경(포커스 없음 등)에서 무시
     }
@@ -72,13 +48,7 @@ export const InviteCodeField = ({
         </button>
       </div>
 
-      {toastPhase !== "hidden" && (
-        <Toast
-          message="초대 링크가 복사되었습니다!"
-          position="top"
-          isExiting={toastPhase === "exiting"}
-        />
-      )}
+      {toastMessage && <Toast message={toastMessage} position="top" />}
     </div>
   );
 };
