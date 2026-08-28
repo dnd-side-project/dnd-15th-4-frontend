@@ -46,10 +46,6 @@ const MeetingDetailPage = () => {
   const { data: inProgress, dataUpdatedAt: inProgressUpdatedAt } =
     useMeetingInProgressQuery(numericMeetingId);
 
-  useEffect(() => {
-    if (inProgress) console.log(inProgress);
-  }, [inProgress]);
-
   const { data: reactionPresets } = useReactionPresetsQuery();
 
   const { data: myDeparture } = useMemberDepartureQuery(numericMeetingId);
