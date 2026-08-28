@@ -2,9 +2,7 @@ import { PuzzleEtaCard } from "./PuzzleEtaCard";
 import type { PuzzleEtaCardPosition } from "./PuzzleEtaCard";
 import { PuzzleEtaEmptyCard } from "./PuzzleEtaEmptyCard";
 import { CHARACTER_FALLBACK_IMAGE } from "@/constants/character-images";
-import type { ArrivalConfirmationStep } from "@/hooks/meeting/progress/useArrivalConfirmation";
-import { useAuthStore } from "@/stores/useAuthStore";
-import { getRemainingMinutes } from "@/utils/date";
+import { getElapsedMinutes } from "@/utils/date";
 import type { PuzzleGroupParticipant } from "@/types/meeting";
 
 interface PuzzleCardStyle {
@@ -35,25 +33,9 @@ const GRID_STYLES: PuzzleCardStyle[] = [
 
 export interface PuzzleEtaGridProps {
   members: PuzzleGroupParticipant[];
-  canConfirmArrival?: boolean;
-  confirmationStep?: ArrivalConfirmationStep;
-  remainingSeconds?: number;
-  isConfirmed?: boolean;
-  onStartConfirmation?: () => void;
-  onCancelConfirmation?: () => void;
 }
 
-export const PuzzleEtaGrid = ({
-  members,
-  canConfirmArrival = false,
-  confirmationStep = "pending",
-  remainingSeconds = 0,
-  isConfirmed = false,
-  onStartConfirmation,
-  onCancelConfirmation,
-}: PuzzleEtaGridProps) => {
-  const currentUserId = useAuthStore((state) => state.user?.id);
-
+export const PuzzleEtaGrid = ({ members }: PuzzleEtaGridProps) => {
   return (
     <div className="grid aspect-square w-full grid-cols-2 grid-rows-2">
       {GRID_STYLES.map((style, index) => {
@@ -72,8 +54,6 @@ export const PuzzleEtaGrid = ({
           );
         }
 
-        const isMe = member.userId === currentUserId;
-
         return (
           <PuzzleEtaCard
             key={member.userId}
@@ -83,18 +63,10 @@ export const PuzzleEtaGrid = ({
             image={member.profileImageUrl?.trim() || CHARACTER_FALLBACK_IMAGE}
             nickname={member.nickname ?? ""}
             hasDeparted={member.departed}
-            remainingMinutes={
-              member.estimatedArrivalTime
-                ? getRemainingMinutes(member.estimatedArrivalTime)
-                : 0
+            elapsedMinutes={
+              member.departedAt ? getElapsedMinutes(member.departedAt) : 0
             }
             isArrived={member.arrived}
-            showConfirmButton={isMe && canConfirmArrival && !isConfirmed}
-            confirmationStep={isMe ? confirmationStep : "pending"}
-            remainingSeconds={remainingSeconds}
-            isConfirmed={isMe && isConfirmed}
-            onStartConfirmation={onStartConfirmation}
-            onCancelConfirmation={onCancelConfirmation}
           />
         );
       })}

@@ -13,7 +13,6 @@ import type {
   MeetingMemberPuzzleImageUpdateResponse,
   MeetingPreviewRequest,
   MeetingPreviewResponse,
-  MeetingResultResponse,
   MeetingStatus,
   MeetingUpdateRequest,
 } from "@/types/meeting";
@@ -57,15 +56,6 @@ export const fetchMeetingInProgress = async (
 ): Promise<MeetingInProgressResponse> => {
   const result = await api.get<ApiResult<MeetingInProgressResponse>>(
     `/meetings/${meetingId}/in-progress`
-  );
-  return result.data;
-};
-
-export const fetchMeetingResult = async (
-  meetingId: number
-): Promise<MeetingResultResponse> => {
-  const result = await api.get<ApiResult<MeetingResultResponse>>(
-    `/meetings/${meetingId}/result`
   );
   return result.data;
 };

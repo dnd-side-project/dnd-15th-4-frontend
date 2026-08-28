@@ -24,7 +24,6 @@ export * from "./IcMedalSilver";
 export * from "./IcMessengerFill";
 export * from "./IcMoreVert";
 export * from "./IcOpenInNew";
-export * from "./IcPerson";
 export * from "./IcPin";
 export * from "./IcPlus";
 export * from "./IcSearch";

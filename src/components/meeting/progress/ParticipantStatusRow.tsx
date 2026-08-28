@@ -14,15 +14,11 @@ export interface ParticipantStatusRowProps {
   className?: string;
 }
 
-// 위치는 1분마다 전송되는데, 폴링 주기(1분)와 타이밍이 어긋나면 계속 접속 중이어도
-// 최신 위치가 1분보다 살짝 더 지난 것처럼 보일 수 있어 여유를 두고 2분부터 표시한다
-const MINUTES_AGO_DISPLAY_THRESHOLD = 2;
-
 const getMinutesAgoLabel = (participant: PuzzleGroupParticipant) => {
   if (participant.arrived || !participant.locationUpdatedAt) return undefined;
 
   const elapsedMinutes = getElapsedMinutes(participant.locationUpdatedAt);
-  if (elapsedMinutes < MINUTES_AGO_DISPLAY_THRESHOLD) return undefined;
+  if (elapsedMinutes < 1) return undefined;
 
   return `${elapsedMinutes}분전`;
 };
