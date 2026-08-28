@@ -44,7 +44,7 @@ export interface UserLocation {
 export interface MeetingRankingItem {
   userId: number;
   nickname: string;
-  profileImageUrl: string;
+  profileImageUrl: string | null;
   arrived: boolean;
   arrivedAt: string | null;
   earlyArrivalMinutes: number | null;
@@ -107,6 +107,7 @@ export interface MeetingResultResponse {
 export interface MeetingQuickMessage {
   id: number;
   content: string;
+  senderId: number;
 }
 
 export interface MeetingInProgressResponse {
@@ -118,7 +119,6 @@ export interface MeetingInProgressResponse {
 }
 
 export interface QuickMessageOption {
-  // 서버 프리셋이면 presetId, 프리셋이 없어 로컬로만 보여주는 문구면 null
   id: number | null;
   content: string;
 }

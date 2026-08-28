@@ -43,6 +43,7 @@ export const PuzzleEtaCarousel = ({
           >
             <PuzzleEtaGrid
               members={group.members}
+              puzzleImageUrl={group.puzzleImageUrl}
               canConfirmArrival={canConfirmArrival}
               confirmationStep={confirmationStep}
               remainingSeconds={remainingSeconds}

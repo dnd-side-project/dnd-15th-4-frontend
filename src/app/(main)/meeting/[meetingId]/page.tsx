@@ -16,11 +16,13 @@ import { useMemberDepartureQuery } from "@/hooks/meeting/departure/useMemberDepa
 import { useMeetingInProgressQuery } from "@/hooks/meeting/progress/useMeetingInProgress";
 import { useReactionPresetsQuery } from "@/hooks/meeting/progress/useReactionPresets";
 import { useArrivalProximityCheck } from "@/hooks/meeting/progress/useArrivalProximityCheck";
+import { useSendMemberLocation } from "@/hooks/meeting/progress/useSendMemberLocation";
 import { useSendReactionMessageMutation } from "@/hooks/meeting/progress/useSendReactionMessage";
 import { usePushSubscription } from "@/hooks/notification/usePushSubscription";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { getRemainingTimeLabel, getTimeLabel } from "@/utils/date";
 import type {
+  MeetingQuickMessage,
   PuzzleGroupParticipant,
   QuickMessageOption,
 } from "@/types/meeting";
@@ -48,6 +50,8 @@ const MeetingDetailPage = () => {
 
   const { data: myDeparture } = useMemberDepartureQuery(numericMeetingId);
   const currentUserId = useAuthStore((state) => state.user?.id);
+
+  useSendMemberLocation(numericMeetingId, Boolean(myDeparture));
 
   const { isNearDestination } = useArrivalProximityCheck(
     numericMeetingId,
@@ -170,11 +174,30 @@ const MeetingDetailPage = () => {
       }
     : { lat: meeting.latitude, lng: meeting.longitude };
 
+  const latestQuickMessageBySenderId = new Map<number, MeetingQuickMessage>();
+  for (const quickMessage of inProgress?.quickMessages ?? []) {
+    const latestMessage = latestQuickMessageBySenderId.get(
+      quickMessage.senderId
+    );
+    if (!latestMessage || quickMessage.id > latestMessage.id) {
+      latestQuickMessageBySenderId.set(quickMessage.senderId, quickMessage);
+    }
+  }
+
   const locatedParticipantsWithBubbles = locatedParticipants.map(
-    (participant) =>
-      participant.userId === currentUserId
-        ? { ...participant, speechBubbleMessage: myMessage ?? undefined }
-        : participant
+    (participant) => {
+      const latestMessage = latestQuickMessageBySenderId.get(
+        participant.userId
+      )?.content;
+
+      return {
+        ...participant,
+        speechBubbleMessage:
+          participant.userId === currentUserId
+            ? (myMessage ?? latestMessage)
+            : latestMessage,
+      };
+    }
   );
 
   return (

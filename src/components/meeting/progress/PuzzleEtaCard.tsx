@@ -4,7 +4,6 @@ import Image from "next/image";
 import type { StaticImageData } from "next/image";
 
 import { PillButton } from "@/components/common/PillButton";
-import artwork1 from "@/assets/images/artwork-1.png";
 import { IcAlarm } from "@/components/icons";
 import type { ArrivalConfirmationStep } from "@/hooks/meeting/progress/useArrivalConfirmation";
 import { cn } from "@/lib/utils";
@@ -19,7 +18,7 @@ export const CORNER_ROUNDING = {
 export type PuzzleEtaCardPosition = keyof typeof CORNER_ROUNDING;
 
 // 카드 하나가 전체 정사각형 일러스트의 어느 조각을 보여줄지 결정
-const QUADRANT_OFFSET_CLASS: Record<PuzzleEtaCardPosition, string> = {
+export const QUADRANT_OFFSET_CLASS: Record<PuzzleEtaCardPosition, string> = {
   "top-left": "top-0 left-0",
   "top-right": "top-0 -left-full",
   "bottom-left": "-top-full left-0",
@@ -31,6 +30,7 @@ interface PuzzleEtaCardProps {
   backgroundClassName: string;
   textClassName?: string;
   image: string | StaticImageData;
+  puzzleImageUrl: string;
   nickname: string;
   hasDeparted: boolean;
   remainingMinutes: number;
@@ -48,6 +48,7 @@ export const PuzzleEtaCard = ({
   backgroundClassName,
   textClassName = "text-primary",
   image,
+  puzzleImageUrl,
   nickname,
   hasDeparted,
   remainingMinutes,
@@ -80,7 +81,12 @@ export const PuzzleEtaCard = ({
             QUADRANT_OFFSET_CLASS[position]
           )}
         >
-          <Image src={artwork1} alt="" fill className="bg-white object-cover" />
+          <Image
+            src={puzzleImageUrl}
+            alt=""
+            fill
+            className="bg-white object-cover"
+          />
         </div>
       )}
 
