@@ -18,7 +18,7 @@ export const CORNER_ROUNDING = {
 export type PuzzleEtaCardPosition = keyof typeof CORNER_ROUNDING;
 
 // 카드 하나가 전체 정사각형 일러스트의 어느 조각을 보여줄지 결정
-const QUADRANT_OFFSET_CLASS: Record<PuzzleEtaCardPosition, string> = {
+export const QUADRANT_OFFSET_CLASS: Record<PuzzleEtaCardPosition, string> = {
   "top-left": "top-0 left-0",
   "top-right": "top-0 -left-full",
   "bottom-left": "-top-full left-0",

@@ -56,6 +56,10 @@ export const PuzzleEtaGrid = ({
 }: PuzzleEtaGridProps) => {
   const currentUserId = useAuthStore((state) => state.user?.id);
 
+  const realMembers = members.filter((member) => member.userId !== null);
+  const isGroupComplete =
+    realMembers.length > 0 && realMembers.every((member) => member.arrived);
+
   return (
     <div className="grid aspect-square w-full grid-cols-2 grid-rows-2">
       {GRID_STYLES.map((style, index) => {
@@ -70,6 +74,8 @@ export const PuzzleEtaGrid = ({
               key={style.position}
               position={style.position}
               backgroundClassName={style.backgroundClassName}
+              puzzleImageUrl={puzzleImageUrl}
+              isRevealed={isGroupComplete}
             />
           );
         }
