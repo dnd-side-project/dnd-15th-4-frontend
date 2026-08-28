@@ -7,7 +7,8 @@ import type { PlaceDto } from "@/types/place";
 
 export const useAddFavoriteSearch = (
   favoriteSearchCount: number,
-  maxFavoriteSearchCount: number
+  maxFavoriteSearchCount: number,
+  onAddSuccess?: () => void
 ) => {
   const [selectedPlace, setSelectedPlace] = useState<PlaceDto | null>(null);
   const [isAddConfirmOpen, setIsAddConfirmOpen] = useState(false);
@@ -35,6 +36,7 @@ export const useAddFavoriteSearch = (
           setSelectedPlace((current) =>
             current?.placeId === requestedPlaceId ? null : current
           );
+          onAddSuccess?.();
         },
         onError: () => setIsAddErrorOpen(true),
       }

@@ -48,7 +48,11 @@ const FavoritesPage = () => {
     isAddErrorOpen,
     setIsAddErrorOpen,
     handleAddClick,
-  } = useAddFavoriteSearch(favoriteSearches.length, MAX_FAVORITE_SEARCH_COUNT);
+  } = useAddFavoriteSearch(
+    favoriteSearches.length,
+    MAX_FAVORITE_SEARCH_COUNT,
+    () => setKeyword("")
+  );
   const deleteFavoriteSearchMutation = useDeleteFavoriteSearchMutation();
   const { data, isLoading, isError, isDebouncing } =
     usePlaceSearchQuery(keyword);

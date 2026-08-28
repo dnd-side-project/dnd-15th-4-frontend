@@ -1,27 +1,41 @@
 import type { Ref } from "react";
+import { useRouter } from "next/navigation";
 
+import { PopoverMenu } from "@/components/common/PopoverMenu";
 import { IcMoreVert } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
+const HOME_HREF = "/";
+
 interface MeetingSummaryCardProps {
+  meetingId: number;
   title: string;
   location: string;
   time: string;
   remainingTime: string;
-  onMoreClick?: () => void;
   className?: string;
   ref?: Ref<HTMLDivElement>;
 }
 
 export const MeetingSummaryCard = ({
+  meetingId,
   title,
   location,
   time,
   remainingTime,
-  onMoreClick,
   className,
   ref,
 }: MeetingSummaryCardProps) => {
+  const router = useRouter();
+
+  const menuItems = [
+    { label: "홈으로 이동", onClick: () => router.push(HOME_HREF) },
+    {
+      label: "약속 정보 수정하기",
+      onClick: () => router.push(`/meeting/${meetingId}/settings`),
+    },
+  ];
+
   return (
     <div
       ref={ref}
@@ -48,14 +62,16 @@ export const MeetingSummaryCard = ({
           <p className="h2">{remainingTime}</p>
         </div>
       </div>
-      <button
-        type="button"
-        aria-label="더보기"
-        onClick={onMoreClick}
-        className="flex size-12 items-center justify-center"
-      >
-        <IcMoreVert size={25.57} className="text-white/60" />
-      </button>
+      <PopoverMenu
+        triggerAriaLabel="더보기"
+        triggerClassName="flex size-12 items-center justify-center"
+        triggerContent={<IcMoreVert size={25.57} className="text-white/60" />}
+        items={menuItems}
+        side="bottom"
+        align="end"
+        sideOffset={28}
+        menuWidthClassName="w-39.25"
+      />
     </div>
   );
 };

@@ -15,7 +15,7 @@ import { useMeetingQuery } from "@/hooks/meeting/create/useCreateMeeting";
 import { useMemberDepartureQuery } from "@/hooks/meeting/departure/useMemberDeparture";
 import { useMeetingInProgressQuery } from "@/hooks/meeting/progress/useMeetingInProgress";
 import { useReactionPresetsQuery } from "@/hooks/meeting/progress/useReactionPresets";
-import { useSendMemberLocation } from "@/hooks/meeting/progress/useSendMemberLocation";
+import { useArrivalProximityCheck } from "@/hooks/meeting/progress/useArrivalProximityCheck";
 import { useSendReactionMessageMutation } from "@/hooks/meeting/progress/useSendReactionMessage";
 import { usePushSubscription } from "@/hooks/notification/usePushSubscription";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -41,14 +41,21 @@ const MeetingDetailPage = () => {
     isError: isMeetingError,
     refetch: refetchMeeting,
   } = useMeetingQuery(numericMeetingId);
-  const { data: inProgress } = useMeetingInProgressQuery(numericMeetingId);
+  const { data: inProgress, dataUpdatedAt: inProgressUpdatedAt } =
+    useMeetingInProgressQuery(numericMeetingId);
 
   const { data: reactionPresets } = useReactionPresetsQuery();
 
   const { data: myDeparture } = useMemberDepartureQuery(numericMeetingId);
   const currentUserId = useAuthStore((state) => state.user?.id);
 
-  useSendMemberLocation(numericMeetingId, Boolean(myDeparture));
+  const { isNearDestination } = useArrivalProximityCheck(
+    numericMeetingId,
+    Boolean(myDeparture),
+    inProgress?.destinationLatitude ?? null,
+    inProgress?.destinationLongitude ?? null,
+    inProgressUpdatedAt
+  );
 
   const sendReactionMessageMutation =
     useSendReactionMessageMutation(numericMeetingId);
@@ -59,9 +66,8 @@ const MeetingDetailPage = () => {
   }, [subscribeToPush]);
 
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [sheetSnapPoint, setSheetSnapPoint] = useState<number>(
-    SHEET_EXPANDED_HEIGHT
-  );
+  const [sheetSnapPoint, setSheetSnapPoint] =
+    useState<number>(SHEET_HALF_HEIGHT);
   const [focusedLocation, setFocusedLocation] =
     useState<MeetingMapFocusLocation | null>(null);
   const [isBubblePickerOpen, setIsBubblePickerOpen] = useState(false);
@@ -73,11 +79,6 @@ const MeetingDetailPage = () => {
     setIsSheetOpen(true);
   }, []);
 
-  useEffect(() => {
-    if (!inProgress?.completed) return;
-    router.replace(`/meeting/${meetingId}/completed`);
-  }, [inProgress?.completed, meetingId, router]);
-
   const puzzleGroups = inProgress?.puzzleGroups ?? [];
   const participants = puzzleGroups
     .flatMap((group) => group.members)
@@ -85,6 +86,16 @@ const MeetingDetailPage = () => {
       (member): member is PuzzleGroupParticipant & { userId: number } =>
         member.userId !== null
     );
+  const isEveryMemberArrived =
+    puzzleGroups.length > 0 &&
+    puzzleGroups.every((group) =>
+      group.members.every((member) => member.arrived)
+    );
+
+  useEffect(() => {
+    if (!inProgress?.completed && !isEveryMemberArrived) return;
+    router.replace(`/meeting/${meetingId}/completed`);
+  }, [inProgress?.completed, isEveryMemberArrived, meetingId, router]);
   const quickMessages: QuickMessageOption[] = reactionPresets?.length
     ? reactionPresets.map((preset) => ({
         id: preset.id,
@@ -193,11 +204,11 @@ const MeetingDetailPage = () => {
       </div>
       <MeetingSummaryCard
         ref={summaryCardRef}
+        meetingId={meeting.meetingId}
         title={meeting.title}
         location={meeting.place}
         time={getTimeLabel(meeting.dateTime)}
         remainingTime={getRemainingTimeLabel(meeting.dateTime)}
-        onMoreClick={() => router.push(`/meeting/${meetingId}/settings`)}
         className="absolute inset-x-4 top-3"
       />
       <ChatFloatingButton
@@ -237,9 +248,11 @@ const MeetingDetailPage = () => {
         }}
       >
         <MeetingProgressSheet
+          meetingId={numericMeetingId}
           puzzleGroups={puzzleGroups}
           participants={participants}
           onParticipantFocus={handleParticipantFocus}
+          isNearDestination={isNearDestination}
         />
       </BottomSheet>
     </div>

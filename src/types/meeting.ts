@@ -51,7 +51,7 @@ export interface MeetingRankingItem {
   late: boolean;
 }
 
-export interface CompletedPuzzleFeedItem {
+export interface MeetingUnselectedImage {
   imageUrl: string;
   uploaderId: number;
   uploaderNickname: string;
@@ -64,13 +64,13 @@ export interface PuzzleGroupParticipant {
   profileImageUrl: string | null;
   departed: boolean;
   departedAt: string | null;
+  estimatedArrivalTime: string | null;
   arrived: boolean;
   latitude: number | null;
   longitude: number | null;
   locationUpdatedAt: string | null;
   departureLatitude: number | null;
   departureLongitude: number | null;
-  estimatedArrivalTime: number | null;
   pieceIndex: number;
   revealed: boolean;
 }
@@ -82,9 +82,24 @@ export interface MeetingPuzzleGroup {
   members: PuzzleGroupParticipant[];
 }
 
+export interface MeetingResultPuzzlePiece {
+  pieceIndex: number;
+  success: boolean;
+  uploaderId: number | null;
+  uploaderNickname: string | null;
+  uploaderProfileImageUrl: string | null;
+}
+
+export interface MeetingResultPuzzlePage {
+  puzzlePageId: number;
+  imageUrl: string;
+  completed: boolean;
+  pieces: MeetingResultPuzzlePiece[];
+}
+
 export interface MeetingResultResponse {
-  puzzleFeed: CompletedPuzzleFeedItem[];
-  puzzleGroups?: MeetingPuzzleGroup[];
+  puzzleFeed: MeetingResultPuzzlePage[];
+  unselectedImages: MeetingUnselectedImage[];
   rankings: MeetingRankingItem[];
   myDepartedAt: string | null;
 }
@@ -98,6 +113,8 @@ export interface MeetingInProgressResponse {
   puzzleGroups: MeetingPuzzleGroup[];
   quickMessages: MeetingQuickMessage[];
   completed: boolean;
+  destinationLatitude: number;
+  destinationLongitude: number;
 }
 
 export interface QuickMessageOption {
