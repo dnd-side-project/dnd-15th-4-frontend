@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-
 import { IcKakao } from "@/components/icons";
+import { Toast } from "@/components/common/Toast";
+import { useToast } from "@/hooks/common/useToast";
 
 export interface KakaoShareButtonProps {
   title: string;
@@ -15,22 +15,22 @@ export const KakaoShareButton = ({
   description,
   linkUrl,
 }: KakaoShareButtonProps) => {
-  const [error, setError] = useState<string | null>(null);
+  const { toastMessage, showToast } = useToast();
 
   // todo: 카카오톡 메시지 SDK가 MVP에서 밀려남에 따라 현재 카카오톡 공유는 연동하지 않고 링크 복사로 임시 구현합니다.
   const handleShare = async () => {
-    setError(null);
     try {
       await navigator.clipboard.writeText(
         `${title}\n${description}\n${linkUrl}`
       );
+      showToast("공유 내용이 복사되었습니다!");
     } catch {
-      setError("링크 복사에 실패했어요. 잠시 후 다시 시도해주세요.");
+      showToast("링크 복사에 실패했어요. 잠시 후 다시 시도해주세요.");
     }
   };
 
   return (
-    <div className="flex w-full flex-col items-center gap-2">
+    <div className="relative flex w-full flex-col items-center gap-2">
       <button
         type="button"
         onClick={handleShare}
@@ -41,7 +41,7 @@ export const KakaoShareButton = ({
           카카오톡으로 공유하기
         </span>
       </button>
-      {error && <p className="body7 text-disable">{error}</p>}
+      {toastMessage && <Toast message={toastMessage} position="top" />}
     </div>
   );
 };
