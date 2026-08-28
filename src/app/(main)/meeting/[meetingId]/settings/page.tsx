@@ -192,7 +192,7 @@ const MeetingSettingsPage = () => {
       <div className="flex min-h-dvh flex-col">
         <Header
           title="약속 설정"
-          onBack={() => router.push(`/meeting/${meetingId}/settings`)}
+          onBack={() => router.back()}
           className="sticky top-0 z-10 bg-white"
         />
         <p className="body3 text-disable flex flex-1 items-center justify-center">
