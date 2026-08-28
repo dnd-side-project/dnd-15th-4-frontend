@@ -61,7 +61,7 @@ export const BottomSheet = ({
               aria-hidden
               className="rounded-pill bg-handle h-1 w-18 shrink-0"
             />
-            <Drawer.Content className="w-full flex-1 overflow-y-auto">
+            <Drawer.Content className="w-full flex-1 overflow-hidden">
               {children}
             </Drawer.Content>
           </Drawer.Popup>
