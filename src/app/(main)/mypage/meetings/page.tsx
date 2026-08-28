@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 
 import { DateFilterModal } from "@/components/common/DateFilterModal";
+import { ErrorScreen } from "@/components/common/ErrorScreen";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { ScheduleCard } from "@/components/common/ScheduleCard";
 import { MyPageListHeader } from "@/components/mypage/MyPageListHeader";
 import { useDateFilter } from "@/hooks/mypage/useDateFilter";
@@ -11,7 +13,7 @@ import { isSameDay } from "@/utils/date";
 
 const MeetingsPage = () => {
   const router = useRouter();
-  const { data } = useMeetingsQuery("COMPLETED");
+  const { data, isLoading, isError, refetch } = useMeetingsQuery("COMPLETED");
   const meetings = data ?? [];
 
   const {
@@ -23,6 +25,19 @@ const MeetingsPage = () => {
     setIsDateFilterOpen,
     filteredItems: sortedMeetings,
   } = useDateFilter(meetings, (meeting) => meeting.dateTime);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (isError) {
+    return (
+      <ErrorScreen
+        title={"지난 약속을\n불러오지 못했어요"}
+        onRetry={() => refetch()}
+      />
+    );
+  }
 
   return (
     <div className="h-screen scrollbar-none overflow-y-auto pb-12">

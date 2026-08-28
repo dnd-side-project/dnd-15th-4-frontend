@@ -5,6 +5,8 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { DateFilterModal } from "@/components/common/DateFilterModal";
+import { ErrorScreen } from "@/components/common/ErrorScreen";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { MyPageListHeader } from "@/components/mypage/MyPageListHeader";
 import { PuzzleMeetingDetailModal } from "@/components/mypage/PuzzleMeetingDetailModal";
 import { useDateFilter } from "@/hooks/mypage/useDateFilter";
@@ -31,7 +33,7 @@ const PuzzlesPage = () => {
     null
   );
 
-  const { data } = usePuzzlesQuery();
+  const { data, isLoading, isError, refetch } = usePuzzlesQuery();
   const puzzles = useMemo(() => data ?? [], [data]);
 
   const {
@@ -68,6 +70,19 @@ const PuzzlesPage = () => {
 
     setSelectedPuzzle({ puzzle, initialIndex: puzzleImage.indexInMeeting });
   };
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (isError) {
+    return (
+      <ErrorScreen
+        title={"모은 퍼즐을\n불러오지 못했어요"}
+        onRetry={() => refetch()}
+      />
+    );
+  }
 
   return (
     <div className="h-screen scrollbar-none overflow-y-auto pb-12">

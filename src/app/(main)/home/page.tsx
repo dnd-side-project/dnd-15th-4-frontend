@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { ErrorScreen } from "@/components/common/ErrorScreen";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { FloatingActionButton } from "@/components/home/FloatingActionButton";
 import { HomeHeroSection } from "@/components/home/HomeHeroSection";
 import { HomeUpcomingSection } from "@/components/home/HomeUpcomingSection";
@@ -25,7 +27,11 @@ export default function HomePage() {
     useState<MeetingData | null>(null);
   const [isDuplicateDepartureOpen, setIsDuplicateDepartureOpen] =
     useState(false);
-  const { data: meetings = [] } = useHomeMeetingsQuery();
+  const {
+    data: meetings = [],
+    isLoading: isMeetingsLoading,
+    isError: isMeetingsError,
+  } = useHomeMeetingsQuery();
 
   const visibleMeetings = meetings.filter((meeting) =>
     isActiveOrUpcomingMeeting(meeting)
@@ -61,21 +67,12 @@ export default function HomePage() {
     setIsInviteOpen(true);
   }, [searchParams]);
 
-  if (!isMounted) {
-    return (
-      <div className="relative flex h-dvh flex-col overflow-hidden bg-white">
-        <HomeHeroSection meeting={null} />
-        <HomeUpcomingSection schedules={[]} />
-        <FloatingActionButton
-          onParticipateClick={() => setIsInviteOpen(true)}
-        />
-        <InviteCodeJoinSheet
-          open={isInviteOpen}
-          onOpenChange={handleInviteOpenChange}
-          initialCode={initialInviteCode}
-        />
-      </div>
-    );
+  if (!isMounted || isMeetingsLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (isMeetingsError) {
+    return <ErrorScreen title={"약속 목록을\n불러오지 못했어요"} />;
   }
 
   const heroMeeting: MeetingData | null = isDepartureCheckLoading
