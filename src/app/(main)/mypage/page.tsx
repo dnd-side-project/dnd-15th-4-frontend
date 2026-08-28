@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { Header } from "@/components/common/Header";
 import { SummaryRow } from "@/components/common/SummaryRow";
-import { CHARACTER_FALLBACK_IMAGE } from "@/constants/character-images";
+import { IcPerson } from "@/components/icons";
 import { AccountSection } from "@/components/mypage/AccountSection";
 import { NotificationSettingsSection } from "@/components/mypage/NotificationSettingsSection";
 import { useFavoriteSearchesQuery } from "@/hooks/mypage/useFavoriteSearches";
@@ -24,6 +24,7 @@ const MyPage = () => {
   const favoriteSearchCount = favoriteSearches?.length ?? 0;
   const { data: completedMeetings } = useMeetingsQuery("COMPLETED");
   const previousAppointmentCount = completedMeetings?.length ?? 0;
+  const profileImageUrl = user?.profileImageUrl?.trim();
 
   return (
     <div className="h-screen scrollbar-none overflow-y-auto pb-2">
@@ -33,14 +34,20 @@ const MyPage = () => {
         className="bg-bg-normal sticky top-0 z-10"
       />
       <div className="mt-5.5 flex flex-col items-center gap-2.75">
-        <Image
-          src={user?.profileImageUrl?.trim() || CHARACTER_FALLBACK_IMAGE}
-          alt={user?.nickname ?? ""}
-          width={102}
-          height={102}
-          priority
-          className="rounded-12 size-25.5 border-[0.1875rem] border-black object-cover"
-        />
+        {profileImageUrl ? (
+          <Image
+            src={profileImageUrl}
+            alt={user?.nickname ?? ""}
+            width={102}
+            height={102}
+            priority
+            className="rounded-12 size-25.5 border-[0.1875rem] border-black object-cover"
+          />
+        ) : (
+          <div className="bg-profile-icon-bg rounded-12 flex size-25.5 items-center justify-center">
+            <IcPerson size={51} className="text-profile-icon" />
+          </div>
+        )}
         <p className="h4 text-primary">{user?.nickname}</p>
       </div>
       <SummaryRow
