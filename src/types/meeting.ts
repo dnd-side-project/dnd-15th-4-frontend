@@ -93,6 +93,8 @@ export interface MeetingResultPuzzlePiece {
 export interface MeetingResultPuzzlePage {
   puzzlePageId: number;
   imageUrl: string;
+  uploaderNickname: string;
+  uploaderProfileImageUrl: string;
   completed: boolean;
   pieces: MeetingResultPuzzlePiece[];
 }
