@@ -35,6 +35,7 @@ const GRID_STYLES: PuzzleCardStyle[] = [
 
 export interface PuzzleEtaGridProps {
   members: PuzzleGroupParticipant[];
+  puzzleImageUrl: string;
   canConfirmArrival?: boolean;
   confirmationStep?: ArrivalConfirmationStep;
   remainingSeconds?: number;
@@ -45,6 +46,7 @@ export interface PuzzleEtaGridProps {
 
 export const PuzzleEtaGrid = ({
   members,
+  puzzleImageUrl,
   canConfirmArrival = false,
   confirmationStep = "pending",
   remainingSeconds = 0,
@@ -53,6 +55,14 @@ export const PuzzleEtaGrid = ({
   onCancelConfirmation,
 }: PuzzleEtaGridProps) => {
   const currentUserId = useAuthStore((state) => state.user?.id);
+
+  const realMembers = members.filter((member) => member.userId !== null);
+  const isGroupComplete =
+    realMembers.length > 0 &&
+    realMembers.every(
+      (member) =>
+        member.arrived || (member.userId === currentUserId && isConfirmed)
+    );
 
   return (
     <div className="grid aspect-square w-full grid-cols-2 grid-rows-2">
@@ -68,6 +78,8 @@ export const PuzzleEtaGrid = ({
               key={style.position}
               position={style.position}
               backgroundClassName={style.backgroundClassName}
+              puzzleImageUrl={puzzleImageUrl}
+              isRevealed={isGroupComplete}
             />
           );
         }
@@ -81,6 +93,7 @@ export const PuzzleEtaGrid = ({
             backgroundClassName={style.backgroundClassName}
             textClassName={style.textClassName}
             image={member.profileImageUrl?.trim() || CHARACTER_FALLBACK_IMAGE}
+            puzzleImageUrl={puzzleImageUrl}
             nickname={member.nickname ?? ""}
             hasDeparted={member.departed}
             remainingMinutes={

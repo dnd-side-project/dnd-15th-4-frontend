@@ -46,7 +46,7 @@ const meta: Meta<typeof HomeUpcomingSection> = {
   },
   decorators: [
     (Story) => (
-      <div className="h-120 w-full max-w-90 bg-white">
+      <div className="flex h-120 w-full max-w-90 flex-col bg-white">
         <Story />
       </div>
     ),

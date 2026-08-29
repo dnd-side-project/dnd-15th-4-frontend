@@ -2,6 +2,8 @@
 
 import { useParams, useSearchParams } from "next/navigation";
 
+import { ErrorScreen } from "@/components/common/ErrorScreen";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { ScheduleCard } from "@/components/common/ScheduleCard";
 import { InviteCodeField } from "@/components/meeting/create/InviteCodeField";
 import { KakaoShareButton } from "@/components/meeting/create/KakaoShareButton";
@@ -32,21 +34,17 @@ export const MeetingSucessSectoin = () => {
     ? formatMeetingDateTime(meeting.dateTime)
     : { dateFormatted: "", timeFormatted: "" };
 
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (isError && !meeting) {
+    return <ErrorScreen title={"약속 정보를\n불러오지 못했어요"} />;
+  }
+
   return (
     <div className="flex min-h-0 flex-1 flex-col justify-between overflow-hidden px-4 pb-3">
       <div className="flex min-h-0 flex-1 scrollbar-none flex-col gap-6 overflow-y-auto">
-        {isLoading && (
-          <p className="body3 text-disable py-10 text-center">
-            약속 정보를 불러오는 중이에요
-          </p>
-        )}
-
-        {isError && (
-          <p className="body3 text-disable py-10 text-center">
-            약속 정보를 불러오지 못했어요
-          </p>
-        )}
-
         {meeting && (
           <div className="pointer-events-none select-none">
             <ScheduleCard meeting={meeting} participantLimit={capacity} />

@@ -30,8 +30,9 @@ export const PuzzleMeetingDetailModal = ({
   const { dateFormatted, timeFormatted } = formatMeetingDateTime(
     puzzle.meetingAt
   );
+  const onTimeRankings = puzzle.rankings.filter((ranking) => !ranking.late);
   const medalIconByUserId = new Map(
-    puzzle.rankings
+    onTimeRankings
       .slice(0, 3)
       .map((ranking, index) => [ranking.userId, MEDAL_ICONS[index]])
   );

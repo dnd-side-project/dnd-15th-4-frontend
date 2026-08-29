@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
+import { meetingKeys } from "@/apis/meeting/keys";
 import { updateMemberLocation } from "@/apis/meeting/location";
 
 const LOCATION_SEND_INTERVAL_MS = 60000;
 
 export const useSendMemberLocation = (meetingId: number, enabled: boolean) => {
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     if (
       !enabled ||
@@ -21,7 +25,13 @@ export const useSendMemberLocation = (meetingId: number, enabled: boolean) => {
         updateMemberLocation(meetingId, {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
-        }).catch(() => {});
+        })
+          .then(() => {
+            queryClient.invalidateQueries({
+              queryKey: meetingKeys.inProgress(meetingId),
+            });
+          })
+          .catch(() => {});
       });
     };
 
@@ -32,5 +42,5 @@ export const useSendMemberLocation = (meetingId: number, enabled: boolean) => {
     );
 
     return () => clearInterval(intervalId);
-  }, [meetingId, enabled]);
+  }, [meetingId, enabled, queryClient]);
 };

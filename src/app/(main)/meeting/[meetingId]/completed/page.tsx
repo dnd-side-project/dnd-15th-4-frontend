@@ -3,6 +3,8 @@
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
+import { ErrorScreen } from "@/components/common/ErrorScreen";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { ImageDetailModal } from "@/components/meeting/completed/ImageDetailModal";
 import { MeetingResultTabSection } from "@/components/meeting/completed/MeetingResultTabSection";
 import { PuzzleResultSection } from "@/components/meeting/completed/PuzzleResultSection";
@@ -18,8 +20,12 @@ const MeetingCompletedPage = () => {
   const numericMeetingId = Number(meetingId);
   const isHistoryView = searchParams.get("view") === "history";
 
-  const { data: result, isPending: isResultPending } =
-    useMeetingResultQuery(numericMeetingId);
+  const {
+    data: result,
+    isPending: isResultPending,
+    isError: isResultError,
+    refetch: refetchResult,
+  } = useMeetingResultQuery(numericMeetingId);
   const { data: meetingDetail } = useMeetingDetailQuery(
     numericMeetingId,
     isHistoryView
@@ -29,11 +35,15 @@ const MeetingCompletedPage = () => {
     useState<MeetingResultPuzzlePage | null>(null);
 
   if (isResultPending) {
+    return <LoadingScreen />;
+  }
+
+  if (isResultError && !result) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center gap-3">
-        <div className="border-border-1 border-t-primary-normal size-8 animate-spin rounded-full border-4" />
-        <p className="body6 text-disable">약속 결과를 불러오는 중...</p>
-      </div>
+      <ErrorScreen
+        title={"약속 결과를\n불러오지 못했어요"}
+        onRetry={() => refetchResult()}
+      />
     );
   }
 
@@ -77,6 +87,14 @@ const MeetingCompletedPage = () => {
               alt: `퍼즐 세트 ${selectedPuzzlePage.puzzlePageId}`,
             },
           ]}
+          uploaderNickname={
+            isHistoryView ? undefined : selectedPuzzlePage.uploaderNickname
+          }
+          uploaderProfileImageUrl={
+            isHistoryView
+              ? undefined
+              : selectedPuzzlePage.uploaderProfileImageUrl
+          }
         />
       )}
     </div>

@@ -10,6 +10,5 @@ export const useMeetingInProgressQuery = (meetingId: number) =>
     queryKey: meetingKeys.inProgress(meetingId),
     queryFn: () => fetchMeetingInProgress(meetingId),
     enabled: meetingId > 0,
-    refetchInterval: 60000,
-    retry: false,
+    refetchInterval: 30000,
   });

@@ -13,7 +13,7 @@ import landingImage4 from "@/assets/images/landing/landing-4.png";
 import landingImage5 from "@/assets/images/landing/landing-5.png";
 import landingImage6 from "@/assets/images/landing/landing-6.png";
 import puzzle from "@/assets/images/puzzle-2.png";
-import { AuthLoadingScreen } from "@/components/common/AuthLoadingScreen";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import {
   OnboardingCarousel,
   type OnboardingSlide,
@@ -22,7 +22,7 @@ import { KakaoLoginButton } from "@/components/home/KakaoLoginButton";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
-const SPLASH_DURATION_MS = 500;
+const SPLASH_DURATION_MS = 5000;
 
 const ONBOARDING_SLIDES: OnboardingSlide[] = [
   {
@@ -34,8 +34,6 @@ const ONBOARDING_SLIDES: OnboardingSlide[] = [
       </>
     ),
     image: landingImage1,
-    imageWidth: 397,
-    imageHeight: 644.56,
   },
   {
     title: (
@@ -46,8 +44,6 @@ const ONBOARDING_SLIDES: OnboardingSlide[] = [
       </>
     ),
     image: landingImage2,
-    imageWidth: 379,
-    imageHeight: 726,
   },
   {
     title: (
@@ -59,8 +55,6 @@ const ONBOARDING_SLIDES: OnboardingSlide[] = [
       </>
     ),
     image: landingImage3,
-    imageWidth: 469,
-    imageHeight: 649,
   },
   {
     title: (
@@ -71,8 +65,6 @@ const ONBOARDING_SLIDES: OnboardingSlide[] = [
       </>
     ),
     image: landingImage4,
-    imageWidth: 469,
-    imageHeight: 627,
   },
   {
     title: (
@@ -84,8 +76,6 @@ const ONBOARDING_SLIDES: OnboardingSlide[] = [
       </>
     ),
     image: landingImage5,
-    imageWidth: 469,
-    imageHeight: 600,
   },
   {
     title: (
@@ -96,8 +86,6 @@ const ONBOARDING_SLIDES: OnboardingSlide[] = [
       </>
     ),
     image: landingImage6,
-    imageWidth: 469,
-    imageHeight: 871.92,
   },
 ];
 
@@ -159,7 +147,7 @@ const LandingPage = () => {
   }
 
   if (!isReady || isAuthenticated) {
-    return <AuthLoadingScreen />;
+    return <LoadingScreen />;
   }
 
   return (

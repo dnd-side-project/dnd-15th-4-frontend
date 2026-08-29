@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { AuthLoadingScreen } from "@/components/common/AuthLoadingScreen";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
@@ -19,7 +19,7 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   }, [isReady, isAuthenticated, router]);
 
   if (!isReady) {
-    return <AuthLoadingScreen />;
+    return <LoadingScreen />;
   }
 
   if (!isAuthenticated) {

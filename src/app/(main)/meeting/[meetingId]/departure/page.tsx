@@ -4,8 +4,10 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { AlertModal } from "@/components/common/AlertModal";
+import { ErrorScreen } from "@/components/common/ErrorScreen";
 import { Header } from "@/components/common/Header";
 import { InfoBanner } from "@/components/common/InfoBanner";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { PlaceSearchTrigger } from "@/components/common/PlaceSearchTrigger";
 import { ToggleField } from "@/components/common/ToggleField";
 import { DepartureOriginSearchOverlay } from "@/components/meeting/departure/DepartureOriginSearchOverlay";
@@ -129,21 +131,12 @@ const DepartureSetupPage = () => {
     );
   };
 
+  if (isMeetingLoading) {
+    return <LoadingScreen />;
+  }
+
   if (!meeting) {
-    return (
-      <div className="flex min-h-dvh flex-col">
-        <Header
-          title="출발 설정"
-          onBack={() => router.back()}
-          className="bg-primary-light-active sticky top-0 z-10"
-        />
-        <p className="body3 text-disable flex flex-1 items-center justify-center">
-          {isMeetingLoading
-            ? "약속 정보를 불러오고 있어요"
-            : "약속 정보를 찾을 수 없어요"}
-        </p>
-      </div>
-    );
+    return <ErrorScreen title={"약속 정보를\n찾을 수 없어요"} />;
   }
 
   const { timeFormatted } = formatMeetingDateTime(meeting.dateTime);

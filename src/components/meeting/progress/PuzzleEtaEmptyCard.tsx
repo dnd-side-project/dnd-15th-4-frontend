@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { CORNER_ROUNDING } from "./PuzzleEtaCard";
+import { CORNER_ROUNDING, QUADRANT_OFFSET_CLASS } from "./PuzzleEtaCard";
 import type { PuzzleEtaCardPosition } from "./PuzzleEtaCard";
 import puzzle from "@/assets/images/puzzle.png";
 import { cn } from "@/lib/utils";
@@ -15,12 +15,41 @@ const TEXT_COLOR_CLASS: Record<PuzzleEtaCardPosition, string> = {
 export interface PuzzleEtaEmptyCardProps {
   position: PuzzleEtaCardPosition;
   backgroundClassName: string;
+  puzzleImageUrl?: string;
+  isRevealed?: boolean;
 }
 
 export const PuzzleEtaEmptyCard = ({
   position,
   backgroundClassName,
+  puzzleImageUrl,
+  isRevealed = false,
 }: PuzzleEtaEmptyCardProps) => {
+  if (isRevealed && puzzleImageUrl) {
+    return (
+      <div
+        className={cn(
+          "relative size-full overflow-hidden bg-black",
+          CORNER_ROUNDING[position]
+        )}
+      >
+        <div
+          className={cn(
+            "absolute size-[200%]",
+            QUADRANT_OFFSET_CLASS[position]
+          )}
+        >
+          <Image
+            src={puzzleImageUrl}
+            alt=""
+            fill
+            className="bg-white object-cover"
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(

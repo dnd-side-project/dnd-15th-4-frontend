@@ -11,8 +11,8 @@ self.addEventListener("push", (event) => {
   const title = payload.title || "퍼즐밋";
   const options = {
     body: payload.body || "",
-    icon: payload.icon || "/character-1.png",
-    badge: payload.badge || "/character-1.png",
+    icon: payload.icon || "/favicon.ico",
+    badge: payload.badge || "/favicon.ico",
     data: { url: payload.url || "/" },
   };
 

@@ -66,7 +66,9 @@ export const PuzzleResultCarousel = ({
             )}
           >
             {[1, 2, 3, 4].map((pieceIndex) => {
-              const isRevealed = pieceByIndex.get(pieceIndex)?.success ?? false;
+              const isRevealed =
+                puzzlePage.completed ||
+                (pieceByIndex.get(pieceIndex)?.success ?? false);
 
               return (
                 <div
