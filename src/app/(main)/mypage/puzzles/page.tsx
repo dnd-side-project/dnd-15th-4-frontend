@@ -76,7 +76,7 @@ const PuzzlesPage = () => {
     return <LoadingScreen />;
   }
 
-  if (isError) {
+  if (isError && !data) {
     return (
       <ErrorScreen
         title={"모은 퍼즐을\n불러오지 못했어요"}

@@ -38,7 +38,7 @@ export const MeetingSucessSectoin = () => {
     return <LoadingScreen />;
   }
 
-  if (isError) {
+  if (isError && !meeting) {
     return <ErrorScreen title={"약속 정보를\n불러오지 못했어요"} />;
   }
 

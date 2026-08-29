@@ -31,7 +31,7 @@ const MeetingsPage = () => {
     return <LoadingScreen />;
   }
 
-  if (isError) {
+  if (isError && !data) {
     return (
       <ErrorScreen
         title={"지난 약속을\n불러오지 못했어요"}

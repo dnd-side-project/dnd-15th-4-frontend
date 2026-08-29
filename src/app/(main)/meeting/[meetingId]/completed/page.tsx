@@ -38,7 +38,7 @@ const MeetingCompletedPage = () => {
     return <LoadingScreen />;
   }
 
-  if (isResultError) {
+  if (isResultError && !result) {
     return (
       <ErrorScreen
         title={"약속 결과를\n불러오지 못했어요"}

@@ -71,7 +71,7 @@ export default function HomePage() {
     return <LoadingScreen />;
   }
 
-  if (isMeetingsError) {
+  if (isMeetingsError && meetings.length === 0) {
     return <ErrorScreen title={"약속 목록을\n불러오지 못했어요"} />;
   }
 
