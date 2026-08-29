@@ -10,10 +10,13 @@ import { Button } from "@/components/common/Button";
 import { Header } from "@/components/common/Header";
 import { InfoBanner } from "@/components/common/InfoBanner";
 import { Input } from "@/components/common/Input";
+import { ErrorScreen } from "@/components/common/ErrorScreen";
 import { InputLayout } from "@/components/common/InputLayout";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { PlaceMarker } from "@/components/common/PlaceMarker";
 import { PlaceSearchTrigger } from "@/components/common/PlaceSearchTrigger";
 import { TabMenu } from "@/components/common/TabMenu";
+import { Toast } from "@/components/common/Toast";
 import { ToggleField } from "@/components/common/ToggleField";
 import { PlaceSearchModal } from "@/components/meeting/create/PlaceSearchModal";
 import { TimeSelectModal } from "@/components/meeting/create/TimeSelectModal";
@@ -33,6 +36,7 @@ import {
   useUpdateMeetingMutation,
 } from "@/hooks/meeting/detail/useMeetingDetail";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
+import { useToast } from "@/hooks/common/useToast";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type {
   DepartureOrigin,
@@ -46,6 +50,7 @@ import type {
 } from "@/types/meeting";
 import type { SelectedPlace } from "@/types/place";
 import { formatDateTimeForApi, formatMeetingDateTime } from "@/utils/date";
+import { checkIsHost } from "@/utils/participant";
 import { cn } from "@/lib/utils";
 
 const INFO_SEEN_KEY_PREFIX = "meeting-settings-info-seen:";
@@ -113,6 +118,7 @@ const MeetingSettingsPage = () => {
   const [memo, setMemo] = useState("");
   const [hasUnseenInfoChange, setHasUnseenInfoChange] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const { toastMessage, showToast } = useToast();
 
   // 내 경로 탭
   const [isOriginSearchOpen, setIsOriginSearchOpen] = useState(false);
@@ -186,25 +192,16 @@ const MeetingSettingsPage = () => {
     setHasUnseenInfoChange(false);
   }, [meeting, numericMeetingId, selectedTab]);
 
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   if (!meeting) {
-    return (
-      <div className="flex min-h-dvh flex-col">
-        <Header
-          title="약속 설정"
-          onBack={() => router.back()}
-          className="sticky top-0 z-10 bg-white"
-        />
-        <p className="body3 text-disable flex flex-1 items-center justify-center">
-          {isLoading
-            ? "약속 정보를 불러오고 있어요"
-            : "약속 정보를 찾을 수 없어요"}
-        </p>
-      </div>
-    );
+    return <ErrorScreen title={"약속 정보를\n찾을 수 없어요"} />;
   }
 
   const hostId = meeting.participants[0]?.id;
-  const isHost = hostId === currentUserId;
+  const isHost = checkIsHost(hostId, currentUserId);
 
   const displayDateTime = selectedDateTime ?? new Date(meeting.dateTime);
 
@@ -330,6 +327,8 @@ const MeetingSettingsPage = () => {
           return next;
         }
       );
+
+      showToast("수정이 완료되었습니다");
     } catch {
       setActionError("약속 정보 저장에 실패했어요. 다시 시도해주세요.");
     }
@@ -363,6 +362,8 @@ const MeetingSettingsPage = () => {
       await updateDepartureMutation.mutateAsync(request);
       const refreshed = await refetchDeparture();
       if (refreshed.data) applyDeparture(refreshed.data);
+
+      showToast("수정이 완료되었습니다");
     } catch {
       setActionError("경로 정보 저장에 실패했어요. 다시 시도해주세요.");
     }
@@ -646,6 +647,8 @@ const MeetingSettingsPage = () => {
           onConfirm={() => setActionError(null)}
         />
       )}
+
+      {toastMessage && <Toast message={toastMessage} position="top" />}
     </div>
   );
 };

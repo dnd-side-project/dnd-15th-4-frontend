@@ -23,7 +23,7 @@ export const FloatingActionButton = ({
   return (
     <PopoverMenu
       triggerAriaLabel="약속 생성 및 참여"
-      triggerClassName="bg-sub2-normal rounded-pill size-15.5rem absolute right-4 bottom-6 z-20 flex cursor-pointer items-center justify-center shadow-lg"
+      triggerClassName="bg-sub2-normal rounded-pill size-15.5 fixed right-4 bottom-6 z-20 flex cursor-pointer items-center justify-center shadow-lg"
       triggerContent={<IcPlus size={62} className="text-white" />}
       items={menuItems}
       side="top"

@@ -13,7 +13,7 @@ import landingImage4 from "@/assets/images/landing/landing-4.png";
 import landingImage5 from "@/assets/images/landing/landing-5.png";
 import landingImage6 from "@/assets/images/landing/landing-6.png";
 import puzzle from "@/assets/images/puzzle-2.png";
-import { AuthLoadingScreen } from "@/components/common/AuthLoadingScreen";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import {
   OnboardingCarousel,
   type OnboardingSlide,
@@ -147,7 +147,7 @@ const LandingPage = () => {
   }
 
   if (!isReady || isAuthenticated) {
-    return <AuthLoadingScreen />;
+    return <LoadingScreen />;
   }
 
   return (

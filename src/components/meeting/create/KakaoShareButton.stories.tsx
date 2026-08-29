@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, waitFor, within } from "storybook/test";
+import { expect, fn, waitFor, within } from "storybook/test";
 
 import { KakaoShareButton } from "./KakaoShareButton";
 
@@ -22,8 +22,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const SdkUnavailableShowsMessage: Story = {
+export const ShareShowsToast: Story = {
   play: async ({ canvasElement }) => {
+    const writeTextSpy = fn();
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: writeTextSpy },
+      configurable: true,
+    });
+
     const canvas = within(canvasElement);
     const shareButton = await canvas.findByRole("button", {
       name: "카카오톡으로 공유하기",
@@ -31,12 +37,15 @@ export const SdkUnavailableShowsMessage: Story = {
 
     await shareButton.click();
 
-    await waitFor(
-      () =>
-        expect(
-          canvas.getByText(/카카오톡 공유를 사용할 수 없어요/)
-        ).toBeInTheDocument(),
-      { timeout: 5000 }
+    await waitFor(() =>
+      expect(writeTextSpy).toHaveBeenCalledWith(
+        "성수동 약속\n2026.08.25 (화) 오후 2:00 · 성수 상상플래닛\nhttps://puzzlemeet.kr/invite/123"
+      )
+    );
+    await waitFor(() =>
+      expect(canvas.getByRole("status")).toHaveTextContent(
+        "공유 내용이 복사되었습니다!"
+      )
     );
   },
 };

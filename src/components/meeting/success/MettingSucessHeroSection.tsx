@@ -34,7 +34,7 @@ export const MeetingSucessHeroSectoin = () => {
         <br />
         완료되었습니다!
       </h1>
-      <p className="body2 text-primary mt-3">초대 코드를 공유해보세요</p>
+      <p className="body2 text-primary-dark mt-4">초대 코드를 공유해보세요</p>
     </section>
   );
 };

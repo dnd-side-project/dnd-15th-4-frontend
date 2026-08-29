@@ -27,6 +27,8 @@ interface HomeHeroSectionProps {
   meeting?: MeetingData | null;
 }
 
+const ARRIVAL_LABEL_OVERLAP_PERCENT = 83;
+
 interface ProgressTrackProps {
   participants: Participant[];
   destination: UserLocation;
@@ -57,7 +59,9 @@ const ProgressTrack = ({
     return [{ item: participant, percent }];
   });
 
-  const groups = groupOverlappingMarkers(movingMarkers);
+  const groups = groupOverlappingMarkers(movingMarkers).filter(
+    (group) => group.percent < ARRIVAL_LABEL_OVERLAP_PERCENT
+  );
 
   return (
     <div className="relative h-14 w-full">

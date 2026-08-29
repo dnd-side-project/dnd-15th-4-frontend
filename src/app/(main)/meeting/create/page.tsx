@@ -32,6 +32,7 @@ import type { MeetingCreateRequest } from "@/types/meeting";
 import type { SelectedPlace } from "@/types/place";
 import {
   MEMO_MAX_LENGTH,
+  MIN_MEETING_CAPACITY,
   NICKNAME_MAX_LENGTH,
   TITLE_MAX_LENGTH,
 } from "@/constants/validation";
@@ -76,7 +77,8 @@ export default function CreateMeetingPage() {
 
   const isNicknameValid = !nicknameParticipation || nickname.trim().length > 0;
   const isCapacitySelected =
-    capacitySelection.capacity !== null && capacitySelection.capacity > 0;
+    capacitySelection.capacity !== null &&
+    capacitySelection.capacity >= MIN_MEETING_CAPACITY;
 
   const canSubmit =
     selectedImage !== null &&

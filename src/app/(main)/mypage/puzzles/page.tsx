@@ -5,6 +5,9 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { DateFilterModal } from "@/components/common/DateFilterModal";
+import { EmptyState } from "@/components/common/EmptyState";
+import { ErrorScreen } from "@/components/common/ErrorScreen";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { MyPageListHeader } from "@/components/mypage/MyPageListHeader";
 import { PuzzleMeetingDetailModal } from "@/components/mypage/PuzzleMeetingDetailModal";
 import { useDateFilter } from "@/hooks/mypage/useDateFilter";
@@ -31,7 +34,7 @@ const PuzzlesPage = () => {
     null
   );
 
-  const { data } = usePuzzlesQuery();
+  const { data, isLoading, isError, refetch } = usePuzzlesQuery();
   const puzzles = useMemo(() => data ?? [], [data]);
 
   const {
@@ -69,8 +72,21 @@ const PuzzlesPage = () => {
     setSelectedPuzzle({ puzzle, initialIndex: puzzleImage.indexInMeeting });
   };
 
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (isError && !data) {
+    return (
+      <ErrorScreen
+        title={"모은 퍼즐을\n불러오지 못했어요"}
+        onRetry={() => refetch()}
+      />
+    );
+  }
+
   return (
-    <div className="h-screen scrollbar-none overflow-y-auto pb-12">
+    <div className="flex h-screen scrollbar-none flex-col overflow-y-auto pb-12">
       <MyPageListHeader
         title="모은 퍼즐"
         onBack={() => router.back()}
@@ -81,23 +97,29 @@ const PuzzlesPage = () => {
         isFiltered={filterDate !== null}
         onResetFilter={() => setFilterDate(null)}
       />
-      <div className="grid grid-cols-3 gap-x-1 gap-y-2">
-        {puzzleImages.map((puzzleImage) => (
-          <button
-            key={puzzleImage.key}
-            type="button"
-            onClick={() => handleSelectImage(puzzleImage)}
-            className="relative aspect-square overflow-hidden bg-white"
-          >
-            <Image
-              src={puzzleImage.imageUrl}
-              alt={puzzleImage.title}
-              fill
-              className="object-cover"
-            />
-          </button>
-        ))}
-      </div>
+      {puzzleImages.length === 0 ? (
+        <div className="flex flex-1 items-center justify-center">
+          <EmptyState message="모은 퍼즐이 없습니다" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-3 gap-x-1 gap-y-2">
+          {puzzleImages.map((puzzleImage) => (
+            <button
+              key={puzzleImage.key}
+              type="button"
+              onClick={() => handleSelectImage(puzzleImage)}
+              className="relative aspect-square overflow-hidden bg-white"
+            >
+              <Image
+                src={puzzleImage.imageUrl}
+                alt={puzzleImage.title}
+                fill
+                className="object-cover"
+              />
+            </button>
+          ))}
+        </div>
+      )}
 
       {selectedPuzzle && (
         <PuzzleMeetingDetailModal

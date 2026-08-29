@@ -11,9 +11,12 @@ import { DoubleButton } from "@/components/common/DoubleButton";
 import { Header } from "@/components/common/Header";
 import { InfoBanner } from "@/components/common/InfoBanner";
 import { Input } from "@/components/common/Input";
+import { ErrorScreen } from "@/components/common/ErrorScreen";
 import { InputLayout } from "@/components/common/InputLayout";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { PlaceMarker } from "@/components/common/PlaceMarker";
 import { PlaceSearchTrigger } from "@/components/common/PlaceSearchTrigger";
+import { Toast } from "@/components/common/Toast";
 import { ToggleField } from "@/components/common/ToggleField";
 import { DateSelectModal } from "@/components/meeting/create/DateSelectModal";
 import { DateTimeTrigger } from "@/components/meeting/create/DateTimeTrigger";
@@ -40,6 +43,7 @@ import {
 import { useLeaveMeetingMutation } from "@/hooks/meeting/participate/useLeaveMeeting";
 import { useMeetingImageSelection } from "@/hooks/meeting/shared/useMeetingImageSelection";
 import { useMeetingsQuery } from "@/hooks/meeting/shared/useMeetings";
+import { useToast } from "@/hooks/common/useToast";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type {
   MeetingDetailResponse,
@@ -50,6 +54,7 @@ import type {
 import type { SelectedPlace } from "@/types/place";
 import { formatDateTimeForApi, formatMeetingDateTime } from "@/utils/date";
 import { meetingImageSelectionToFile } from "@/utils/file";
+import { checkIsHost } from "@/utils/participant";
 import { cn } from "@/lib/utils";
 
 const MeetingInfoPage = () => {
@@ -98,6 +103,7 @@ const MeetingInfoPage = () => {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const { toastMessage, showToast } = useToast();
 
   useEffect(() => {
     if (hasSyncedInitialValues || !meeting || !user) return;
@@ -116,25 +122,16 @@ const MeetingInfoPage = () => {
     setHasSyncedInitialValues(true);
   }, [hasSyncedInitialValues, meeting, user]);
 
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   if (!meeting) {
-    return (
-      <div className="flex min-h-dvh flex-col">
-        <Header
-          title="약속 정보"
-          onBack={() => router.back()}
-          className="sticky top-0 z-10 bg-white"
-        />
-        <p className="body3 text-disable flex flex-1 items-center justify-center">
-          {isLoading
-            ? "약속 정보를 불러오고 있어요"
-            : "약속 정보를 찾을 수 없어요"}
-        </p>
-      </div>
-    );
+    return <ErrorScreen title={"약속 정보를\n찾을 수 없어요"} />;
   }
 
   const hostId = meeting.participants[0]?.id;
-  const isHost = hostId === currentUserId;
+  const isHost = checkIsHost(hostId, currentUserId);
   const myParticipant = meeting.participants.find(
     (participant) => participant.id === currentUserId
   );
@@ -311,6 +308,8 @@ const MeetingInfoPage = () => {
 
       resetImage();
       setHasClearedProvidedImage(false);
+
+      showToast("수정이 완료되었습니다");
     } catch {
       setActionError("약속 정보 저장에 실패했어요. 다시 시도해주세요.");
     }
@@ -576,6 +575,8 @@ const MeetingInfoPage = () => {
           onConfirm={() => setActionError(null)}
         />
       )}
+
+      {toastMessage && <Toast message={toastMessage} position="top" />}
     </div>
   );
 };
