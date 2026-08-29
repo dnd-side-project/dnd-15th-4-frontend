@@ -145,6 +145,7 @@ export default function HomePage() {
           onCancelClassName="text-primary"
           onCancel={handleViewInfo}
           onConfirm={handleDepart}
+          onClose={() => setDepartureCandidate(null)}
         />
       )}
 
