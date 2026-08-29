@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
-
-import searchImage from "@/assets/images/home-empty-schedule.png";
+import { EmptyState } from "@/components/common/EmptyState";
 import { ScheduleCard } from "@/components/common/ScheduleCard";
 import type { MeetingData } from "@/types/meeting";
 
@@ -24,13 +22,10 @@ export const HomeUpcomingSection = ({
       </h2>
 
       {isEmpty ? (
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-46">
-          <Image src={searchImage} alt="" width={96} height={96} />
-          <p className="body1 text-secondary-1 text-center">
-            예정된 약속이 없습니다.
-            <br />
-            약속을 생성해 보세요!
-          </p>
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <EmptyState
+            message={"예정된 약속이 없습니다.\n약속을 생성해 보세요!"}
+          />
         </div>
       ) : (
         <div className="relative flex min-h-0 flex-1 flex-col">

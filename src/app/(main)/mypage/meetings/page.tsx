@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import { DateFilterModal } from "@/components/common/DateFilterModal";
+import { EmptyState } from "@/components/common/EmptyState";
 import { ErrorScreen } from "@/components/common/ErrorScreen";
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { ScheduleCard } from "@/components/common/ScheduleCard";
@@ -40,7 +41,7 @@ const MeetingsPage = () => {
   }
 
   return (
-    <div className="h-screen scrollbar-none overflow-y-auto pb-12">
+    <div className="flex h-screen scrollbar-none flex-col overflow-y-auto pb-12">
       <MyPageListHeader
         title="지난 약속"
         onBack={() => router.back()}
@@ -51,21 +52,27 @@ const MeetingsPage = () => {
         isFiltered={filterDate !== null}
         onResetFilter={() => setFilterDate(null)}
       />
-      <div className="flex flex-col gap-3 px-4">
-        {sortedMeetings.map((meeting) => (
-          <ScheduleCard
-            key={meeting.meetingId}
-            meeting={meeting}
-            onClick={() =>
-              router.push(
-                `/meeting/${meeting.meetingId}/completed?view=history`
-              )
-            }
-            showDDay={false}
-            showFullDate
-          />
-        ))}
-      </div>
+      {sortedMeetings.length === 0 ? (
+        <div className="flex flex-1 items-center justify-center">
+          <EmptyState message="기록된 약속이 없습니다" />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3 px-4">
+          {sortedMeetings.map((meeting) => (
+            <ScheduleCard
+              key={meeting.meetingId}
+              meeting={meeting}
+              onClick={() =>
+                router.push(
+                  `/meeting/${meeting.meetingId}/completed?view=history`
+                )
+              }
+              showDDay={false}
+              showFullDate
+            />
+          ))}
+        </div>
+      )}
 
       {isDateFilterOpen && (
         <DateFilterModal
