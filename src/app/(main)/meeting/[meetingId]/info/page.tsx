@@ -67,6 +67,8 @@ const MeetingInfoPage = () => {
 
   const [nicknameParticipation, setNicknameParticipation] = useState(false);
   const [nickname, setNickname] = useState("");
+  const [originalNicknameSet, setOriginalNicknameSet] = useState(false);
+  const [originalImageSet, setOriginalImageSet] = useState(false);
   const [hasSyncedInitialValues, setHasSyncedInitialValues] = useState(false);
 
   const { data: meeting, isLoading } = useMeetingDetailQuery(numericMeetingId);
@@ -115,9 +117,14 @@ const MeetingInfoPage = () => {
       (participant) => participant.id === user.id
     );
 
-    if (myParticipant && !myParticipant.defaultNicknameUsed) {
-      setNicknameParticipation(true);
-      setNickname(myParticipant.name);
+    if (myParticipant) {
+      const initialNicknameSet = Boolean(myParticipant.nicknameSet);
+
+      setOriginalNicknameSet(initialNicknameSet);
+      setOriginalImageSet(Boolean(myParticipant.imageSet));
+
+      setNicknameParticipation(initialNicknameSet);
+      setNickname(initialNicknameSet ? (myParticipant.name ?? "") : "");
     }
     setHasSyncedInitialValues(true);
   }, [hasSyncedInitialValues, meeting, user]);
@@ -158,25 +165,19 @@ const MeetingInfoPage = () => {
     latitude: meeting.latitude,
     longitude: meeting.longitude,
   };
-  const originalImageUsed = myParticipant?.defaultImageUsed ?? false;
   const isProvidedImageChecked = selectedImage
     ? selectedImage.type === "default"
-    : hasClearedProvidedImage
-      ? false
-      : originalImageUsed;
+    : !hasClearedProvidedImage && originalImageSet;
   const displayImage =
     selectedImage ??
     (!hasClearedProvidedImage && myParticipant?.puzzleImageUrl
       ? {
-          type: originalImageUsed ? ("default" as const) : ("user" as const),
+          type: originalImageSet ? ("default" as const) : ("user" as const),
           src: myParticipant.puzzleImageUrl,
         }
       : null);
 
   const originalNickname = myParticipant?.name ?? "";
-  const originalNicknameParticipation = Boolean(
-    myParticipant && !myParticipant.defaultNicknameUsed
-  );
 
   const isTitleChanged = hasSyncedInitialValues && title !== meeting.title;
   const isDateTimeChanged =
@@ -189,10 +190,15 @@ const MeetingInfoPage = () => {
       place.latitude !== meeting.latitude ||
       place.longitude !== meeting.longitude);
   const isMemoChanged = hasSyncedInitialValues && memo !== (meeting.memo ?? "");
-  const isImageChanged = selectedImage !== null;
-  const isNicknameChanged =
-    nicknameParticipation !== originalNicknameParticipation ||
-    (nicknameParticipation && nickname !== originalNickname);
+
+  const isImageChanged =
+    selectedImage !== null ||
+    hasClearedProvidedImage ||
+    isProvidedImageChecked !== originalImageSet;
+  const isNicknameSetChanged = nicknameParticipation !== originalNicknameSet;
+  const isNicknameTextChanged =
+    nicknameParticipation && nickname.trim() !== originalNickname;
+  const isNicknameChanged = isNicknameSetChanged || isNicknameTextChanged;
 
   const isMeetingFieldsChanged =
     isTitleChanged || isDateTimeChanged || isPlaceChanged || isMemoChanged;
@@ -242,20 +248,31 @@ const MeetingInfoPage = () => {
       }
 
       if (isNicknameChanged) {
-        const nextNickname = nicknameParticipation
+        const targetNickname = nicknameParticipation
           ? nickname.trim()
           : (user?.nickname ?? "");
+
         tasks.push(
-          updateNicknameMutation.mutateAsync(nextNickname).then((result) => {
-            nicknameResult = result;
-          })
+          updateNicknameMutation
+            .mutateAsync({
+              nickname: targetNickname,
+              nicknameSet: nicknameParticipation,
+            })
+            .then((result) => {
+              nicknameResult = result;
+            })
         );
       }
 
       if (selectedImage) {
+        const imageFile = await meetingImageSelectionToFile(
+          selectedImage,
+          "puzzle-image.jpg"
+        );
+        const imageSet = selectedImage.type === "default";
         tasks.push(
-          meetingImageSelectionToFile(selectedImage, "puzzle-image.jpg")
-            .then((image) => updatePuzzleImageMutation.mutateAsync(image))
+          updatePuzzleImageMutation
+            .mutateAsync({ image: imageFile, imageSet })
             .then((result) => {
               imageResult = result;
             })
@@ -263,6 +280,9 @@ const MeetingInfoPage = () => {
       }
 
       await Promise.all(tasks);
+
+      if (nicknameResult) setOriginalNicknameSet(nicknameResult.nicknameSet);
+      if (imageResult) setOriginalImageSet(imageResult.imageSet);
 
       queryClient.setQueryData<MeetingDetailResponse>(
         meetingKeys.fullDetail(numericMeetingId),
@@ -291,11 +311,11 @@ const MeetingInfoPage = () => {
                     ...participant,
                     ...(nicknameResult && {
                       name: nicknameResult.nickname,
-                      defaultNicknameUsed: !nicknameParticipation,
+                      nicknameSet: nicknameResult.nicknameSet,
                     }),
                     ...(imageResult && {
                       puzzleImageUrl: imageResult.imageUrl,
-                      defaultImageUsed: selectedImage?.type === "default",
+                      imageSet: imageResult.imageSet,
                     }),
                   }
                 : participant
@@ -305,6 +325,10 @@ const MeetingInfoPage = () => {
           return next;
         }
       );
+
+      await queryClient.invalidateQueries({
+        queryKey: meetingKeys.fullDetail(numericMeetingId),
+      });
 
       resetImage();
       setHasClearedProvidedImage(false);
@@ -344,7 +368,10 @@ const MeetingInfoPage = () => {
       <main className="flex flex-col items-center gap-7 px-4 pt-2">
         <ImageUploadBox
           selectedImage={displayImage}
-          onFileSelected={handleFileSelected}
+          onFileSelected={(file) => {
+            setHasClearedProvidedImage(false);
+            handleFileSelected(file);
+          }}
         />
 
         <div className="flex w-full flex-col gap-6">
@@ -366,9 +393,7 @@ const MeetingInfoPage = () => {
               onCheckedChange={(checked) => {
                 setNicknameParticipation(checked);
                 setNickname(
-                  checked && originalNicknameParticipation
-                    ? originalNickname
-                    : ""
+                  checked ? (originalNicknameSet ? originalNickname : "") : ""
                 );
               }}
             />
