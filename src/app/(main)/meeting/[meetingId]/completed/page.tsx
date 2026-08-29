@@ -87,6 +87,14 @@ const MeetingCompletedPage = () => {
               alt: `퍼즐 세트 ${selectedPuzzlePage.puzzlePageId}`,
             },
           ]}
+          uploaderNickname={
+            isHistoryView ? undefined : selectedPuzzlePage.uploaderNickname
+          }
+          uploaderProfileImageUrl={
+            isHistoryView
+              ? undefined
+              : selectedPuzzlePage.uploaderProfileImageUrl
+          }
         />
       )}
     </div>
