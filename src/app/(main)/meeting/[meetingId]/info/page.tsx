@@ -67,6 +67,8 @@ const MeetingInfoPage = () => {
 
   const [nicknameParticipation, setNicknameParticipation] = useState(false);
   const [nickname, setNickname] = useState("");
+  const [originalNicknameSet, setOriginalNicknameSet] = useState(false);
+  const [originalImageSet, setOriginalImageSet] = useState(false);
   const [hasSyncedInitialValues, setHasSyncedInitialValues] = useState(false);
 
   const { data: meeting, isLoading } = useMeetingDetailQuery(numericMeetingId);
@@ -102,6 +104,7 @@ const MeetingInfoPage = () => {
 
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
+  const [isSaveConfirmOpen, setIsSaveConfirmOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const { toastMessage, showToast } = useToast();
 
@@ -115,9 +118,14 @@ const MeetingInfoPage = () => {
       (participant) => participant.id === user.id
     );
 
-    if (myParticipant && !myParticipant.defaultNicknameUsed) {
-      setNicknameParticipation(true);
-      setNickname(myParticipant.name);
+    if (myParticipant) {
+      const initialNicknameSet = Boolean(myParticipant.nicknameSet);
+
+      setOriginalNicknameSet(initialNicknameSet);
+      setOriginalImageSet(Boolean(myParticipant.imageSet));
+
+      setNicknameParticipation(initialNicknameSet);
+      setNickname(initialNicknameSet ? (myParticipant.name ?? "") : "");
     }
     setHasSyncedInitialValues(true);
   }, [hasSyncedInitialValues, meeting, user]);
@@ -158,25 +166,19 @@ const MeetingInfoPage = () => {
     latitude: meeting.latitude,
     longitude: meeting.longitude,
   };
-  const originalImageUsed = myParticipant?.defaultImageUsed ?? false;
   const isProvidedImageChecked = selectedImage
     ? selectedImage.type === "default"
-    : hasClearedProvidedImage
-      ? false
-      : originalImageUsed;
+    : !hasClearedProvidedImage && originalImageSet;
   const displayImage =
     selectedImage ??
     (!hasClearedProvidedImage && myParticipant?.puzzleImageUrl
       ? {
-          type: originalImageUsed ? ("default" as const) : ("user" as const),
+          type: originalImageSet ? ("default" as const) : ("user" as const),
           src: myParticipant.puzzleImageUrl,
         }
       : null);
 
   const originalNickname = myParticipant?.name ?? "";
-  const originalNicknameParticipation = Boolean(
-    myParticipant && !myParticipant.defaultNicknameUsed
-  );
 
   const isTitleChanged = hasSyncedInitialValues && title !== meeting.title;
   const isDateTimeChanged =
@@ -189,10 +191,15 @@ const MeetingInfoPage = () => {
       place.latitude !== meeting.latitude ||
       place.longitude !== meeting.longitude);
   const isMemoChanged = hasSyncedInitialValues && memo !== (meeting.memo ?? "");
-  const isImageChanged = selectedImage !== null;
-  const isNicknameChanged =
-    nicknameParticipation !== originalNicknameParticipation ||
-    (nicknameParticipation && nickname !== originalNickname);
+
+  const isImageChanged =
+    selectedImage !== null ||
+    hasClearedProvidedImage ||
+    isProvidedImageChecked !== originalImageSet;
+  const isNicknameSetChanged = nicknameParticipation !== originalNicknameSet;
+  const isNicknameTextChanged =
+    nicknameParticipation && nickname.trim() !== originalNickname;
+  const isNicknameChanged = isNicknameSetChanged || isNicknameTextChanged;
 
   const isMeetingFieldsChanged =
     isTitleChanged || isDateTimeChanged || isPlaceChanged || isMemoChanged;
@@ -214,6 +221,8 @@ const MeetingInfoPage = () => {
   };
 
   const handleSaveChanges = async () => {
+    setIsSaveConfirmOpen(false);
+
     if (!isAnyFieldChanged) {
       router.back();
       return;
@@ -242,20 +251,31 @@ const MeetingInfoPage = () => {
       }
 
       if (isNicknameChanged) {
-        const nextNickname = nicknameParticipation
+        const targetNickname = nicknameParticipation
           ? nickname.trim()
           : (user?.nickname ?? "");
+
         tasks.push(
-          updateNicknameMutation.mutateAsync(nextNickname).then((result) => {
-            nicknameResult = result;
-          })
+          updateNicknameMutation
+            .mutateAsync({
+              nickname: targetNickname,
+              nicknameSet: nicknameParticipation,
+            })
+            .then((result) => {
+              nicknameResult = result;
+            })
         );
       }
 
       if (selectedImage) {
+        const imageFile = await meetingImageSelectionToFile(
+          selectedImage,
+          "puzzle-image.jpg"
+        );
+        const imageSet = selectedImage.type === "default";
         tasks.push(
-          meetingImageSelectionToFile(selectedImage, "puzzle-image.jpg")
-            .then((image) => updatePuzzleImageMutation.mutateAsync(image))
+          updatePuzzleImageMutation
+            .mutateAsync({ image: imageFile, imageSet })
             .then((result) => {
               imageResult = result;
             })
@@ -263,6 +283,9 @@ const MeetingInfoPage = () => {
       }
 
       await Promise.all(tasks);
+
+      if (nicknameResult) setOriginalNicknameSet(nicknameResult.nicknameSet);
+      if (imageResult) setOriginalImageSet(imageResult.imageSet);
 
       queryClient.setQueryData<MeetingDetailResponse>(
         meetingKeys.fullDetail(numericMeetingId),
@@ -291,11 +314,11 @@ const MeetingInfoPage = () => {
                     ...participant,
                     ...(nicknameResult && {
                       name: nicknameResult.nickname,
-                      defaultNicknameUsed: !nicknameParticipation,
+                      nicknameSet: nicknameResult.nicknameSet,
                     }),
                     ...(imageResult && {
                       puzzleImageUrl: imageResult.imageUrl,
-                      defaultImageUsed: selectedImage?.type === "default",
+                      imageSet: imageResult.imageSet,
                     }),
                   }
                 : participant
@@ -306,6 +329,10 @@ const MeetingInfoPage = () => {
         }
       );
 
+      await queryClient.invalidateQueries({
+        queryKey: meetingKeys.fullDetail(numericMeetingId),
+      });
+
       resetImage();
       setHasClearedProvidedImage(false);
 
@@ -313,6 +340,14 @@ const MeetingInfoPage = () => {
     } catch {
       setActionError("약속 정보 저장에 실패했어요. 다시 시도해주세요.");
     }
+  };
+
+  const handleSavePress = () => {
+    if (isHost && isPlaceChanged) {
+      setIsSaveConfirmOpen(true);
+      return;
+    }
+    handleSaveChanges();
   };
 
   const handleConfirmDelete = () => {
@@ -344,7 +379,10 @@ const MeetingInfoPage = () => {
       <main className="flex flex-col items-center gap-7 px-4 pt-2">
         <ImageUploadBox
           selectedImage={displayImage}
-          onFileSelected={handleFileSelected}
+          onFileSelected={(file) => {
+            setHasClearedProvidedImage(false);
+            handleFileSelected(file);
+          }}
         />
 
         <div className="flex w-full flex-col gap-6">
@@ -366,9 +404,7 @@ const MeetingInfoPage = () => {
               onCheckedChange={(checked) => {
                 setNicknameParticipation(checked);
                 setNickname(
-                  checked && originalNicknameParticipation
-                    ? originalNickname
-                    : ""
+                  checked ? (originalNicknameSet ? originalNickname : "") : ""
                 );
               }}
             />
@@ -503,7 +539,7 @@ const MeetingInfoPage = () => {
               : leaveMeetingMutation.isPending
           }
           primaryLabel={isSaving ? "저장 중..." : "수정 저장"}
-          onPrimaryClick={handleSaveChanges}
+          onPrimaryClick={handleSavePress}
           isPrimaryDisabled={!isAnyFieldChanged || isSaving}
           secondaryClassName="text-red"
         />
@@ -550,7 +586,9 @@ const MeetingInfoPage = () => {
       {isDeleteConfirmOpen && (
         <ConfirmModal
           title="약속을 삭제할까요?"
-          description={`삭제하면 약속 정보가 모두 사라지고,${"\n"}다른 참여자들에게도 삭제된 것으로 표시돼요.`}
+          description={
+            "삭제하면 약속 정보가 모두 사라지고,\n다른 참여자들에게도 삭제된 것으로 표시돼요."
+          }
           cancelLabel="취소"
           confirmLabel="삭제"
           onCancel={() => setIsDeleteConfirmOpen(false)}
@@ -561,11 +599,24 @@ const MeetingInfoPage = () => {
       {isLeaveConfirmOpen && (
         <ConfirmModal
           title="이 약속에 불참할까요?"
-          description={`불참하시면 참여자 목록에서 제외되고,${"\n"}약속 정보는 그대로 유지돼요.`}
+          description={
+            "불참하시면 참여자 목록에서 제외되고,\n약속 정보는 그대로 유지돼요."
+          }
           cancelLabel="취소"
           confirmLabel="불참하기"
           onCancel={() => setIsLeaveConfirmOpen(false)}
           onConfirm={handleConfirmLeave}
+        />
+      )}
+
+      {isSaveConfirmOpen && (
+        <ConfirmModal
+          title="약속 장소를 변경합니다"
+          description={"초대된 다른 참여자들에게도\n변경된 장소가 적용됩니다"}
+          cancelLabel="취소"
+          confirmLabel="완료"
+          onCancel={() => setIsSaveConfirmOpen(false)}
+          onConfirm={handleSaveChanges}
         />
       )}
 

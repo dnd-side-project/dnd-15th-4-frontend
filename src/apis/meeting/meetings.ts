@@ -111,20 +111,23 @@ export const deleteMeeting = async (meetingId: number): Promise<void> => {
 
 export const updateMemberNickname = async (
   meetingId: number,
-  nickname: string
+  nickname: string,
+  nicknameSet: boolean
 ): Promise<MeetingMemberNicknameUpdateResponse> => {
   const result = await api.patch<
     ApiResult<MeetingMemberNicknameUpdateResponse>
-  >(`/meetings/${meetingId}/members/me/nickname`, { nickname });
+  >(`/meetings/${meetingId}/members/me/nickname`, { nickname, nicknameSet });
   return result.data;
 };
 
 export const updateMemberPuzzleImage = async (
   meetingId: number,
-  image: File
+  image: File,
+  imageSet: boolean
 ): Promise<MeetingMemberPuzzleImageUpdateResponse> => {
   const formData = new FormData();
   formData.append("image", image);
+  formData.append("imageSet", String(imageSet));
 
   const result = await api.patch<
     ApiResult<MeetingMemberPuzzleImageUpdateResponse>

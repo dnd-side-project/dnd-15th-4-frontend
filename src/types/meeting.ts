@@ -9,8 +9,8 @@ export interface ParticipantDetail {
   name: string;
   profileImageUrl: string;
   puzzleImageUrl: string;
-  defaultNicknameUsed: boolean;
-  defaultImageUsed: boolean;
+  imageSet: boolean;
+  nicknameSet: boolean;
 }
 
 export type MeetingStatus =
@@ -175,11 +175,13 @@ export interface MeetingUpdateRequest {
 export interface MeetingMemberNicknameUpdateResponse {
   meetingId: number;
   nickname: string;
+  nicknameSet: boolean;
 }
 
 export interface MeetingMemberPuzzleImageUpdateResponse {
   meetingId: number;
   imageUrl: string;
+  imageSet: boolean;
 }
 
 export interface MeetingInviteCodeResponse {
