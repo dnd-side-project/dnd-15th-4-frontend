@@ -104,6 +104,7 @@ const MeetingInfoPage = () => {
 
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
+  const [isSaveConfirmOpen, setIsSaveConfirmOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const { toastMessage, showToast } = useToast();
 
@@ -220,6 +221,8 @@ const MeetingInfoPage = () => {
   };
 
   const handleSaveChanges = async () => {
+    setIsSaveConfirmOpen(false);
+
     if (!isAnyFieldChanged) {
       router.back();
       return;
@@ -337,6 +340,14 @@ const MeetingInfoPage = () => {
     } catch {
       setActionError("약속 정보 저장에 실패했어요. 다시 시도해주세요.");
     }
+  };
+
+  const handleSavePress = () => {
+    if (isHost && isMeetingFieldsChanged) {
+      setIsSaveConfirmOpen(true);
+      return;
+    }
+    handleSaveChanges();
   };
 
   const handleConfirmDelete = () => {
@@ -528,7 +539,7 @@ const MeetingInfoPage = () => {
               : leaveMeetingMutation.isPending
           }
           primaryLabel={isSaving ? "저장 중..." : "수정 저장"}
-          onPrimaryClick={handleSaveChanges}
+          onPrimaryClick={handleSavePress}
           isPrimaryDisabled={!isAnyFieldChanged || isSaving}
           secondaryClassName="text-red"
         />
@@ -575,7 +586,9 @@ const MeetingInfoPage = () => {
       {isDeleteConfirmOpen && (
         <ConfirmModal
           title="약속을 삭제할까요?"
-          description={`삭제하면 약속 정보가 모두 사라지고,${"\n"}다른 참여자들에게도 삭제된 것으로 표시돼요.`}
+          description={
+            "삭제하면 약속 정보가 모두 사라지고,\n다른 참여자들에게도 삭제된 것으로 표시돼요."
+          }
           cancelLabel="취소"
           confirmLabel="삭제"
           onCancel={() => setIsDeleteConfirmOpen(false)}
@@ -586,11 +599,24 @@ const MeetingInfoPage = () => {
       {isLeaveConfirmOpen && (
         <ConfirmModal
           title="이 약속에 불참할까요?"
-          description={`불참하시면 참여자 목록에서 제외되고,${"\n"}약속 정보는 그대로 유지돼요.`}
+          description={
+            "불참하시면 참여자 목록에서 제외되고,\n약속 정보는 그대로 유지돼요."
+          }
           cancelLabel="취소"
           confirmLabel="불참하기"
           onCancel={() => setIsLeaveConfirmOpen(false)}
           onConfirm={handleConfirmLeave}
+        />
+      )}
+
+      {isSaveConfirmOpen && (
+        <ConfirmModal
+          title="약속 장소를 변경합니다"
+          description={"초대된 다른 참여자들에게도\n변경된 장소가 적용됩니다"}
+          cancelLabel="취소"
+          confirmLabel="완료"
+          onCancel={() => setIsSaveConfirmOpen(false)}
+          onConfirm={handleSaveChanges}
         />
       )}
 
