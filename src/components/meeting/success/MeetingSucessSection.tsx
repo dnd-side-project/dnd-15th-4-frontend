@@ -2,8 +2,6 @@
 
 import { useParams, useSearchParams } from "next/navigation";
 
-import { ErrorScreen } from "@/components/common/ErrorScreen";
-import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { ScheduleCard } from "@/components/common/ScheduleCard";
 import { InviteCodeField } from "@/components/meeting/create/InviteCodeField";
 import { KakaoShareButton } from "@/components/meeting/create/KakaoShareButton";
@@ -35,11 +33,19 @@ export const MeetingSucessSectoin = () => {
     : { dateFormatted: "", timeFormatted: "" };
 
   if (isLoading) {
-    return <LoadingScreen />;
+    return (
+      <p className="body3 text-disable py-10 text-center">
+        약속 정보를 불러오는 중이에요
+      </p>
+    );
   }
 
   if (isError && !meeting) {
-    return <ErrorScreen title={"약속 정보를\n불러오지 못했어요"} />;
+    return (
+      <p className="body3 text-disable py-10 text-center">
+        약속 정보를 불러오지 못했어요{" "}
+      </p>
+    );
   }
 
   return (
