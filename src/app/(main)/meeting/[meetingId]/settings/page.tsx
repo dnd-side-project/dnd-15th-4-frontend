@@ -122,6 +122,7 @@ const MeetingSettingsPage = () => {
   const [isMeetingSaveConfirmOpen, setIsMeetingSaveConfirmOpen] =
     useState(false);
   const [isArrivalNoticeOpen, setIsArrivalNoticeOpen] = useState(false);
+  const [isInfoChangeNoticeOpen, setIsInfoChangeNoticeOpen] = useState(false);
   const { toastMessage, showToast } = useToast();
 
   // 내 경로 탭
@@ -173,15 +174,17 @@ const MeetingSettingsPage = () => {
         place: string;
         memo: string | null;
       };
-      setHasUnseenInfoChange(
+      const changed =
         seen.dateTime !== meeting.dateTime ||
-          seen.place !== meeting.place ||
-          seen.memo !== meeting.memo
-      );
+        seen.place !== meeting.place ||
+        seen.memo !== meeting.memo;
+      setHasUnseenInfoChange(changed);
+
+      if (changed) setIsInfoChangeNoticeOpen(true);
     } catch {
       setHasUnseenInfoChange(false);
     }
-  }, [meeting, numericMeetingId]);
+  }, [meeting, numericMeetingId, currentUserId]);
 
   useEffect(() => {
     if (!meeting || selectedTab !== "left") return;
@@ -673,6 +676,16 @@ const MeetingSettingsPage = () => {
           confirmLabel="확인"
           onCancel={() => setIsArrivalNoticeOpen(false)}
           onConfirm={() => setIsArrivalNoticeOpen(false)}
+        />
+      )}
+
+      {isInfoChangeNoticeOpen && (
+        <ConfirmModal
+          title="약속장소 변경"
+          description={"약속장소가 변경되었습니다\n이동경로를 재설정하세요"}
+          confirmLabel="확인"
+          onCancel={() => setIsInfoChangeNoticeOpen(false)}
+          onConfirm={() => setIsInfoChangeNoticeOpen(false)}
         />
       )}
 
