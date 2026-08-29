@@ -10,6 +10,7 @@ export interface ConfirmModalProps {
   onCancelClassName?: string;
   onCancel: () => void;
   onConfirm: () => void;
+  onClose?: () => void;
 }
 
 export const ConfirmModal = ({
@@ -20,12 +21,15 @@ export const ConfirmModal = ({
   onCancelClassName,
   onCancel,
   onConfirm,
+  onClose,
 }: ConfirmModalProps) => (
   <Modal
     title={title}
     open
     onOpenChange={(nextOpen) => {
-      if (!nextOpen) onCancel();
+      if (!nextOpen) {
+        (onClose ?? onCancel)();
+      }
     }}
     className="rounded-18 gap-6 p-6"
     backdropClassName="bg-black/70 backdrop-blur-[5px]"

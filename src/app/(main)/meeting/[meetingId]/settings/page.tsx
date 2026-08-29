@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { meetingKeys } from "@/apis/meeting/keys";
 import { AlertModal } from "@/components/common/AlertModal";
 import { Button } from "@/components/common/Button";
+import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { Header } from "@/components/common/Header";
 import { InfoBanner } from "@/components/common/InfoBanner";
 import { Input } from "@/components/common/Input";
@@ -118,6 +119,10 @@ const MeetingSettingsPage = () => {
   const [memo, setMemo] = useState("");
   const [hasUnseenInfoChange, setHasUnseenInfoChange] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [isMeetingSaveConfirmOpen, setIsMeetingSaveConfirmOpen] =
+    useState(false);
+  const [isArrivalNoticeOpen, setIsArrivalNoticeOpen] = useState(false);
+  const [isInfoChangeNoticeOpen, setIsInfoChangeNoticeOpen] = useState(false);
   const { toastMessage, showToast } = useToast();
 
   // 내 경로 탭
@@ -169,15 +174,17 @@ const MeetingSettingsPage = () => {
         place: string;
         memo: string | null;
       };
-      setHasUnseenInfoChange(
+      const changed =
         seen.dateTime !== meeting.dateTime ||
-          seen.place !== meeting.place ||
-          seen.memo !== meeting.memo
-      );
+        seen.place !== meeting.place ||
+        seen.memo !== meeting.memo;
+      setHasUnseenInfoChange(changed);
+
+      if (seen.place !== meeting.place) setIsInfoChangeNoticeOpen(true);
     } catch {
       setHasUnseenInfoChange(false);
     }
-  }, [meeting, numericMeetingId]);
+  }, [meeting, numericMeetingId, currentUserId]);
 
   useEffect(() => {
     if (!meeting || selectedTab !== "left") return;
@@ -293,7 +300,17 @@ const MeetingSettingsPage = () => {
     setIsRouteListOpen(false);
   };
 
+  const handleSaveMeetingInfoPress = () => {
+    if (!isHost || !isMeetingFieldsChanged) return;
+    if (isPlaceChanged) {
+      setIsMeetingSaveConfirmOpen(true);
+      return;
+    }
+    handleSaveMeetingInfo();
+  };
+
   const handleSaveMeetingInfo = async () => {
+    setIsMeetingSaveConfirmOpen(false);
     if (!isHost || !isMeetingFieldsChanged) return;
 
     try {
@@ -363,7 +380,11 @@ const MeetingSettingsPage = () => {
       const refreshed = await refetchDeparture();
       if (refreshed.data) applyDeparture(refreshed.data);
 
-      showToast("수정이 완료되었습니다");
+      if (isRouteChanged) {
+        setIsArrivalNoticeOpen(true);
+      } else {
+        showToast("수정이 완료되었습니다");
+      }
     } catch {
       setActionError("경로 정보 저장에 실패했어요. 다시 시도해주세요.");
     }
@@ -371,21 +392,19 @@ const MeetingSettingsPage = () => {
 
   return (
     <div className="min-h-dvh bg-white pb-32">
-      <Header
-        title="약속 설정"
-        onBack={() => router.back()}
-        className="sticky top-0 z-10 bg-white"
-      />
+      <div className="sticky top-0 z-10 bg-white">
+        <Header title="약속 설정" onBack={() => router.back()} />
 
-      <div className="px-4">
-        <TabMenu
-          leftLabel="약속정보"
-          rightLabel="내 경로"
-          selectedTab={selectedTab}
-          onLeftClick={() => setSelectedTab("left")}
-          onRightClick={() => setSelectedTab("right")}
-          leftBadge={hasUnseenInfoChange}
-        />
+        <div className="px-4">
+          <TabMenu
+            leftLabel="약속정보"
+            rightLabel="내 경로"
+            selectedTab={selectedTab}
+            onLeftClick={() => setSelectedTab("left")}
+            onRightClick={() => setSelectedTab("right")}
+            leftBadge={hasUnseenInfoChange}
+          />
+        </div>
       </div>
 
       {selectedTab === "left" ? (
@@ -587,7 +606,7 @@ const MeetingSettingsPage = () => {
               <Button
                 type="button"
                 disabled={!isMeetingFieldsChanged || isMeetingSaving}
-                onClick={handleSaveMeetingInfo}
+                onClick={handleSaveMeetingInfoPress}
                 className={
                   isMeetingFieldsChanged
                     ? "bg-sub2-normal hover:bg-sub2-normal-hover"
@@ -638,6 +657,39 @@ const MeetingSettingsPage = () => {
         <PlaceSearchModal
           onClose={() => setIsOriginSearchOpen(false)}
           onSelect={handleSelectOrigin}
+        />
+      )}
+
+      {isMeetingSaveConfirmOpen && (
+        <ConfirmModal
+          title="약속 장소를 변경합니다"
+          description={"초대된 다른 참여자들에게도\n변경된 장소가 적용됩니다"}
+          cancelLabel="취소"
+          confirmLabel="완료"
+          onCancel={() => setIsMeetingSaveConfirmOpen(false)}
+          onConfirm={handleSaveMeetingInfo}
+        />
+      )}
+
+      {isArrivalNoticeOpen && (
+        <ConfirmModal
+          title="도착예정시간 변경"
+          description={
+            "변경한 경로에 따라 도착예정시간이\n수정 및 약속화면에 저장 되었습니다"
+          }
+          confirmLabel="확인"
+          onCancel={() => setIsArrivalNoticeOpen(false)}
+          onConfirm={() => setIsArrivalNoticeOpen(false)}
+        />
+      )}
+
+      {isInfoChangeNoticeOpen && (
+        <ConfirmModal
+          title="약속장소 변경"
+          description={"약속장소가 변경되었습니다\n이동경로를 재설정하세요"}
+          confirmLabel="확인"
+          onCancel={() => setIsInfoChangeNoticeOpen(false)}
+          onConfirm={() => setIsInfoChangeNoticeOpen(false)}
         />
       )}
 

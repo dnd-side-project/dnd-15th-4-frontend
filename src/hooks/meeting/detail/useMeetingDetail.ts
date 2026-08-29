@@ -48,11 +48,17 @@ export const useDeleteMeetingMutation = (meetingId: number) => {
   });
 };
 
+export interface UpdateMemberNicknameVariables {
+  nickname: string;
+  nicknameSet: boolean;
+}
+
 export const useUpdateMemberNicknameMutation = (meetingId: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (nickname: string) => updateMemberNickname(meetingId, nickname),
+    mutationFn: ({ nickname, nicknameSet }: UpdateMemberNicknameVariables) =>
+      updateMemberNickname(meetingId, nickname, nicknameSet),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: meetingKeys.lists() });
       queryClient.invalidateQueries({
@@ -62,11 +68,17 @@ export const useUpdateMemberNicknameMutation = (meetingId: number) => {
   });
 };
 
+export interface UpdateMemberPuzzleImageVariables {
+  image: File;
+  imageSet: boolean;
+}
+
 export const useUpdateMemberPuzzleImageMutation = (meetingId: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (image: File) => updateMemberPuzzleImage(meetingId, image),
+    mutationFn: ({ image, imageSet }: UpdateMemberPuzzleImageVariables) =>
+      updateMemberPuzzleImage(meetingId, image, imageSet),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: meetingKeys.fullDetail(meetingId),
