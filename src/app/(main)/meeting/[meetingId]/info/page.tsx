@@ -343,7 +343,7 @@ const MeetingInfoPage = () => {
   };
 
   const handleSavePress = () => {
-    if (isHost && isMeetingFieldsChanged) {
+    if (isHost && isPlaceChanged) {
       setIsSaveConfirmOpen(true);
       return;
     }

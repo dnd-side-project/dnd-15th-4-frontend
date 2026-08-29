@@ -180,7 +180,7 @@ const MeetingSettingsPage = () => {
         seen.memo !== meeting.memo;
       setHasUnseenInfoChange(changed);
 
-      if (changed) setIsInfoChangeNoticeOpen(true);
+      if (seen.place !== meeting.place) setIsInfoChangeNoticeOpen(true);
     } catch {
       setHasUnseenInfoChange(false);
     }
@@ -302,7 +302,11 @@ const MeetingSettingsPage = () => {
 
   const handleSaveMeetingInfoPress = () => {
     if (!isHost || !isMeetingFieldsChanged) return;
-    setIsMeetingSaveConfirmOpen(true);
+    if (isPlaceChanged) {
+      setIsMeetingSaveConfirmOpen(true);
+      return;
+    }
+    handleSaveMeetingInfo();
   };
 
   const handleSaveMeetingInfo = async () => {
