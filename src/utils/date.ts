@@ -116,7 +116,7 @@ export const isActiveOrUpcomingMeeting = (
   (meeting.status === "WAITING" &&
     new Date(meeting.dateTime).getTime() > now.getTime());
 
-export const MIN_LEAD_TIME_MINUTES = 30;
+export const MIN_LEAD_TIME_MINUTES = 1;
 
 export type DateTimeValidationResult = "valid" | "past" | "too-soon";
 

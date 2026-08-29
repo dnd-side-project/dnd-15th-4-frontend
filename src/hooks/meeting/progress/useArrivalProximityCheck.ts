@@ -6,7 +6,7 @@ import { updateMemberLocation } from "@/apis/meeting/location";
 import { getDistanceInMeters } from "@/utils/geo";
 import type { UserLocation } from "@/types/meeting";
 
-const ARRIVAL_PROXIMITY_METERS = 50;
+const ARRIVAL_PROXIMITY_METERS = 500;
 
 export const useArrivalProximityCheck = (
   meetingId: number,
@@ -35,13 +35,23 @@ export const useArrivalProximityCheck = (
 
         setMyLocation(currentLocation);
         updateMemberLocation(meetingId, currentLocation).catch(() => {});
+
+        if (destinationLatitude !== null && destinationLongitude !== null) {
+          const distanceInMeters = getDistanceInMeters(currentLocation, {
+            latitude: destinationLatitude,
+            longitude: destinationLongitude,
+          });
+          console.info(
+            `[도착 거리] 목적지까지 ${distanceInMeters.toFixed(1)}m 남음`
+          );
+        }
       },
       () => {
         setMyLocation(null);
       },
       { enableHighAccuracy: true }
     );
-  }, [meetingId, enabled, syncTick]);
+  }, [meetingId, enabled, syncTick, destinationLatitude, destinationLongitude]);
 
   const isNearDestination =
     myLocation !== null &&
