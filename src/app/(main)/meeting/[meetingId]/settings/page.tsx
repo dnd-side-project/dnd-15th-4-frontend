@@ -385,21 +385,19 @@ const MeetingSettingsPage = () => {
 
   return (
     <div className="min-h-dvh bg-white pb-32">
-      <Header
-        title="약속 설정"
-        onBack={() => router.back()}
-        className="sticky top-0 z-10 bg-white"
-      />
+      <div className="sticky top-0 z-10 bg-white">
+        <Header title="약속 설정" onBack={() => router.back()} />
 
-      <div className="px-4">
-        <TabMenu
-          leftLabel="약속정보"
-          rightLabel="내 경로"
-          selectedTab={selectedTab}
-          onLeftClick={() => setSelectedTab("left")}
-          onRightClick={() => setSelectedTab("right")}
-          leftBadge={hasUnseenInfoChange}
-        />
+        <div className="px-4">
+          <TabMenu
+            leftLabel="약속정보"
+            rightLabel="내 경로"
+            selectedTab={selectedTab}
+            onLeftClick={() => setSelectedTab("left")}
+            onRightClick={() => setSelectedTab("right")}
+            leftBadge={hasUnseenInfoChange}
+          />
+        </div>
       </div>
 
       {selectedTab === "left" ? (
