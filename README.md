@@ -1,6 +1,4 @@
-# 🧩 퍼즐밋
-
-모임을 퍼즐로 완성하는 약속 관리 웹 애플리케이션입니다.
+<img width="1920" height="1080" alt="표지" src="https://github.com/user-attachments/assets/ebbb3baf-7374-44f3-a57f-7abd58e073e1" />
 
 ## 🛠 Tech Stack
 
@@ -50,3 +48,5 @@ $ pnpm dev
 - `hotfix → main`: Merge Commit
 
 커밋, 브랜치 네이밍, Merge 전략에 대한 상세 규칙은 [`07-commit-conventions.md`](.claude/rules/07-commit-conventions.md) 를 참고하세요.
+
+<img width="1920" height="1080" alt="요약" src="https://github.com/user-attachments/assets/bb94d594-7da2-406f-bc1e-d5165e680875" />
