@@ -34,6 +34,7 @@ const SHEET_HALF_HEIGHT = 270;
 const SHEET_EXPANDED_HEIGHT = 9999;
 
 const MAP_FOCUS_TOP_PADDING = 16;
+const CHAT_FLOATING_BUTTON_GAP = 12;
 
 const MeetingDetailPage = () => {
   const router = useRouter();
@@ -226,24 +227,26 @@ const MeetingDetailPage = () => {
         remainingTime={getRemainingTimeLabel(meeting.dateTime)}
         className="absolute inset-x-4 top-3"
       />
-      <ChatFloatingButton
-        isOpen={isBubblePickerOpen}
-        onOpenChange={setIsBubblePickerOpen}
-        onSelectMessage={(message) => {
-          setMyMessage(message.content);
-          setIsBubblePickerOpen(false);
-          if (message.id !== null) {
-            sendReactionMessageMutation.mutate(message.id);
-          }
-        }}
-        messages={quickMessages}
-        className="absolute right-4 bottom-45 cursor-pointer"
-        style={
-          sheetSnapPoint !== SHEET_EXPANDED_HEIGHT
-            ? { bottom: sheetSnapPoint + 12 }
-            : undefined
-        }
-      />
+      {sheetSnapPoint !== SHEET_EXPANDED_HEIGHT && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-999 flex justify-center">
+          <div className="relative w-full max-w-md">
+            <ChatFloatingButton
+              isOpen={isBubblePickerOpen}
+              onOpenChange={setIsBubblePickerOpen}
+              onSelectMessage={(message) => {
+                setMyMessage(message.content);
+                setIsBubblePickerOpen(false);
+                if (message.id !== null) {
+                  sendReactionMessageMutation.mutate(message.id);
+                }
+              }}
+              messages={quickMessages}
+              className="pointer-events-auto absolute right-4 cursor-pointer transition-[bottom] duration-300"
+              style={{ bottom: sheetSnapPoint + CHAT_FLOATING_BUTTON_GAP }}
+            />
+          </div>
+        </div>
+      )}
       <BottomSheet
         ref={sheetPopupRef}
         open={isSheetOpen}
