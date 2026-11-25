@@ -5,6 +5,8 @@ import type { ReactNode } from "react";
 
 import { DotIndicator } from "@/components/meeting/progress/PuzzleSetIndicator";
 import { useCarouselPage } from "@/hooks/common/useCarouselPage";
+import { useMouseDragScroll } from "@/hooks/common/useMouseDragScroll";
+import { cn } from "@/lib/utils";
 
 export interface OnboardingSlide {
   title: ReactNode;
@@ -16,16 +18,25 @@ interface OnboardingCarouselProps {
 }
 
 export const OnboardingCarousel = ({ slides }: OnboardingCarouselProps) => {
-  const { containerRef, currentPage, handleScroll } = useCarouselPage(
+  const { containerRef, currentPage, handleScroll, goToPage } = useCarouselPage(
     slides.length
   );
+  const { isDragging, isSnapDisabled, dragHandlers } = useMouseDragScroll({
+    containerRef,
+    goToPage,
+  });
 
   return (
     <div className="flex flex-col overflow-hidden">
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className="flex snap-x snap-mandatory scrollbar-none overflow-x-auto"
+        {...dragHandlers}
+        className={cn(
+          "flex scrollbar-none cursor-grab overflow-x-auto",
+          isSnapDisabled ? "snap-none" : "snap-x snap-mandatory",
+          isDragging && "cursor-grabbing select-none"
+        )}
       >
         {slides.map((slide, index) => (
           <div
@@ -38,6 +49,7 @@ export const OnboardingCarousel = ({ slides }: OnboardingCarouselProps) => {
             <Image
               src={slide.image}
               alt=""
+              draggable={false}
               className="rounded-20 mx-auto mt-6 h-auto w-full max-w-98.25 object-cover"
             />
           </div>
