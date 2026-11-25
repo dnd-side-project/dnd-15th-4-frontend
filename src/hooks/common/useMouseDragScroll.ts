@@ -35,10 +35,18 @@ export const useMouseDragScroll = ({
   goToPage,
 }: UseMouseDragScrollParams) => {
   const dragStateRef = useRef<DragState | null>(null);
+  const pendingRestoreRef = useRef<(() => void) | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isSnapDisabled, setIsSnapDisabled] = useState(false);
 
+  const cancelPendingRestore = useCallback(() => {
+    pendingRestoreRef.current?.();
+    pendingRestoreRef.current = null;
+  }, []);
+
   const restoreSnapAfterScroll = useCallback(() => {
+    cancelPendingRestore();
+
     const container = containerRef.current;
     if (!container) {
       setIsSnapDisabled(false);
@@ -46,16 +54,23 @@ export const useMouseDragScroll = ({
     }
 
     let timerId = 0;
-    const handleScrollEnd = () => {
+    const cleanup = () => {
       window.clearTimeout(timerId);
       container.removeEventListener("scrollend", handleScrollEnd);
+      if (pendingRestoreRef.current === cleanup) {
+        pendingRestoreRef.current = null;
+      }
+    };
+    const handleScrollEnd = () => {
+      cleanup();
       setIsSnapDisabled(false);
     };
 
     // scrollend 미지원 브라우저 및 이동 거리 0인 경우 대비
     timerId = window.setTimeout(handleScrollEnd, SNAP_RESTORE_FALLBACK_MS);
     container.addEventListener("scrollend", handleScrollEnd);
-  }, [containerRef]);
+    pendingRestoreRef.current = cleanup;
+  }, [containerRef, cancelPendingRestore]);
 
   const handlePointerDown = useCallback(
     (event: PointerEvent<HTMLDivElement>) => {
@@ -69,11 +84,12 @@ export const useMouseDragScroll = ({
         startScrollLeft: container.scrollLeft,
         startPage: Math.round(container.scrollLeft / container.clientWidth),
       };
+      cancelPendingRestore();
       container.setPointerCapture(event.pointerId);
       setIsDragging(true);
       setIsSnapDisabled(true);
     },
-    [containerRef]
+    [containerRef, cancelPendingRestore]
   );
 
   const handlePointerMove = useCallback(
